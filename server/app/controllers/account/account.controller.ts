@@ -1,7 +1,9 @@
+import { Auth0SyncGuard } from '@app/authorization/auth0-sync.guard';
 import { AuthorizationGuard } from '@app/authorization/authorization.guard';
 import { Language, ThemeVisual } from '@app/constants/constants';
 import { AccountHandlerGateway } from '@app/gateways/accounts-handler/account-handler.gateway';
 import { CreateAccountDTO } from '@app/model/dto/account/create-account.dto';
+import { SyncAccountDto } from '@app/model/dto/account/sync-account.dto';
 import { AccountService } from '@app/services/account/account.service';
 import { Body, Controller, Delete, Get, HttpStatus, Logger, Param, Patch, Post, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
@@ -73,6 +75,27 @@ export class AccountController {
         }
     }
 
+
+    /**
+     * Auth0 Action calls this on login/signup to ensure the user has a MongoDB account.
+     * Secured by x-auth0-sync-secret header. Must be a public URL (deployed server).
+     */
+    @UseGuards(Auth0SyncGuard)
+    @Post('sync')
+    async syncAccountFromAuth0(@Body() body: SyncAccountDto, @Res() res: Response) {
+        try {
+            const account = await this.accountService.syncAccountFromAuth0(body.userId, body.email, body.pseudonym);
+            const accounts = await this.accountService.findAllBasicInfo();
+            this.accountHandlerGateway.createAccountEmit(accounts);
+            return res.status(HttpStatus.OK).json(account);
+        } catch (error) {
+            this.logger.error(`Error syncing account from Auth0: ${error.message}`);
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+                message: 'Failed to sync account',
+            });
+        }
+    }
 
     @Post('pseudonym')
     async findAccountByUserName(@Body('pseudonym') pseudonym: string, @Res() res: Response) {

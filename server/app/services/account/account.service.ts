@@ -5,6 +5,7 @@ import { Friend } from '@app/model/database/friend';
 import { CreateAccountDTO } from '@app/model/dto/account/create-account.dto';
 import { FriendRequestDto } from '@app/model/dto/friend-request/friend-request-dto';
 import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import axios from 'axios';
 import { Model } from 'mongoose';
@@ -15,6 +16,7 @@ export class AccountService {
         @InjectModel(Account.name) private readonly accountModel: Model<AccountDocument>,
         private readonly logger: Logger,
         private readonly friendHandlerGateway: FriendHandlerGateway,
+        private readonly configService: ConfigService,
     ) {}
 
     async findAll(): Promise<Account[]> {
@@ -253,6 +255,42 @@ export class AccountService {
         return newAccount.save();
     }
 
+    /**
+     * Create MongoDB account from Auth0 user (idempotent).
+     * Called by Auth0 Action on login/signup so the app has a matching account.
+     */
+    async syncAccountFromAuth0(userId: string, email: string, pseudonym?: string): Promise<Account> {
+        const existing = await this.accountModel.findOne({ userId }).exec();
+        if (existing) {
+            this.logger.log(`Account already exists for userId ${userId}, skipping sync`);
+            return existing;
+        }
+        const displayName = pseudonym?.trim() || email.split('@')[0] || 'User';
+        const createDto: CreateAccountDTO = {
+            userId,
+            pseudonym: displayName,
+            email,
+            avatarUrl: null,
+            themeVisual: ThemeVisual.LIGHT,
+            lang: Language.FR,
+            gamesPlayed: 0,
+            gamesWon: 0,
+            avgQuestionsCorrect: 0,
+            avgTimePerGame: 0,
+            money: 0,
+            ownedThemes: [],
+            ownedAvatars: [],
+            friends: [],
+            friendRequests: [],
+            friendsThatUserRequested: [],
+            blocked: [],
+            UsersBlocked: [],
+            UsersBlockingMe: [],
+        };
+        this.logger.log(`Syncing new account from Auth0: userId=${userId}, pseudonym=${displayName}`);
+        return this.createAccount(createDto);
+    }
+
     async updateAvatar(userId: string, avatarUrl: string): Promise<Account> {
         this.logger.log(`Updating avatar for userId ${userId}`);
         const updatedAccount = await this.accountModel.findOneAndUpdate({ userId }, { avatarUrl }, { new: true });
@@ -486,8 +524,9 @@ export class AccountService {
 
         try {
             const accessToken = await this.getAuth0AccessToken();
+            const auth0Domain = this.configService.get<string>('AUTH0_DOMAIN')?.replace(/\/$/, '') || '';
             await axios.patch(
-                `https://polyquiz.ca.auth0.com/api/v2/users/${userId}`,
+                `${auth0Domain}/api/v2/users/${userId}`,
                 { username: newPseudonym },
                 {
                     headers: {
@@ -522,10 +561,11 @@ export class AccountService {
     }
 
     async getAuth0AccessToken(): Promise<string> {
-        const response = await axios.post('https://polyquiz.ca.auth0.com/oauth/token', {
-            client_id: '1t2sEjGA4sq8exgQRIxAiIaCKihm5py3',
-            client_secret: '9MEVggrOCvGWrQAIY5BeRmwlLvJyfiYbhJdhkysrVgdw6kQEYc2_5W_BYLEx65QW',
-            audience: 'https://polyquiz.ca.auth0.com/api/v2/',
+        const auth0Domain = this.configService.get<string>('AUTH0_DOMAIN')?.replace(/\/$/, '') || '';
+        const response = await axios.post(`${auth0Domain}/oauth/token`, {
+            client_id: this.configService.get<string>('AUTH0_M2M_CLIENT_ID'),
+            client_secret: this.configService.get<string>('AUTH0_M2M_CLIENT_SECRET'),
+            audience: `${auth0Domain}/api/v2/`,
             grant_type: 'client_credentials',
         });
         return response.data.access_token;
@@ -542,7 +582,8 @@ export class AccountService {
     
         try {
             // Fetch all users from Auth0
-            const usersResponse = await axios.get('https://polyquiz.ca.auth0.com/api/v2/users', {
+            const auth0Domain = this.configService.get<string>('AUTH0_DOMAIN')?.replace(/\/$/, '') || '';
+            const usersResponse = await axios.get(`${auth0Domain}/api/v2/users`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                     'Content-Type': 'application/json',
@@ -564,7 +605,7 @@ export class AccountService {
             await Promise.all(
                 users.map(async (user: { user_id: string }) => {
                     try {
-                        await axios.delete(`https://polyquiz.ca.auth0.com/api/v2/users/${user.user_id}`, {
+                        await axios.delete(`${auth0Domain}/api/v2/users/${user.user_id}`, {
                             headers: {
                                 Authorization: `Bearer ${accessToken}`,
                                 'Content-Type': 'application/json',
