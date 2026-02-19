@@ -26,7 +26,7 @@ export class SocketService {
 
     connect(): void {
         if (this.isSocketAlive()) return;
-        this.socket = io(this.serverConfig.serverUrlRoot, { transports: ['websocket'], upgrade: false });
+        this.socket = io(this.serverConfig.serverUrlRoot, { transports: ['websocket', 'polling'] });
         (window as any).electronAPI.getProfile().then((profile: any) => {
             if (!profile) return;
             this.send(ChatSocketsEmitEvents.UserInfo, profile?.sub as string);

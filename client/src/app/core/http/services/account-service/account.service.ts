@@ -31,6 +31,10 @@ export class AccountService {
         return this.http.delete(`${this.serverConfig.serverUrl}/sessions/${this.auth0Id}`);
     }
 
+    createSession() {
+        return this.http.post(`${this.serverConfig.serverUrl}/sessions/create/${this.auth0Id}`, {});
+    }
+
     getAccount(userID: string = this.auth0Id) {
         return this.http.get<Account>(`${this.serverConfig.serverUrl}/accounts/${userID}`);
     }

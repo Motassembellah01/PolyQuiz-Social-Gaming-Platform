@@ -14,7 +14,7 @@ const redirectUri = process.env.AUTH0_REDIRECT_URI || 'http://localhost/callback
 const logoutReturnTo = process.env.AUTH0_LOGOUT_RETURN_TO || 'http://localhost/logout';
 
 const keytarService = 'electron-openid-oauth';
-const keytarAccount = os.userInfo().username;
+const keytarAccount = `${os.userInfo().username}-${Date.now()}`;
 
 let accessToken = null;
 let profile = null;

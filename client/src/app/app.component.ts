@@ -65,6 +65,7 @@ export class AppComponent implements OnInit {
                     this.router.navigateByUrl('/set-avatar');
                     return;
                 }
+                this.accountService.createSession().subscribe();
             });
         });
     }

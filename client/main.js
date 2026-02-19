@@ -3,6 +3,10 @@ require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 const { app, ipcMain, BrowserWindow } = require('electron');
 
+const instanceId = `inst-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+app.setPath('userData', path.join(app.getPath('userData'), instanceId));
+app.name = `PolyQuiz-${instanceId}`;
+
 const { createAuthWindow, createLogoutWindow } = require('./electron/auth-process');
 const { createAppWindow } = require('./electron/app-process');
 const { createChatWin } = require('./electron/chat-process');
@@ -17,9 +21,6 @@ async function showWindow() {
     }
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 app.on('ready', () => {
     // Handle IPC messages from the renderer process.
     ipcMain.handle('auth:get-profile', authService.getProfile);
