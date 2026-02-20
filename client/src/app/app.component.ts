@@ -61,11 +61,11 @@ export class AppComponent implements OnInit {
                     return;
                 }
                 this.translationService.changeLang(account.lang);
+                this.accountService.createSession().subscribe();
                 if (!account.avatarUrl) {
                     this.router.navigateByUrl('/set-avatar');
                     return;
                 }
-                this.accountService.createSession().subscribe();
             });
         });
     }
