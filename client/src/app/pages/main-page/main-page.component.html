@@ -1,78 +1,36 @@
-<app-logo></app-logo>
 <div
-    class="container justified"
-    [ngClass]="{ 'light-mode-main': this.accountService.isLightMode, 'dark-mode-main': !this.accountService.isLightMode }"
+    class="home"
+    [ngClass]="{
+        'theme-light': accountService.theme === 'light',
+        'theme-dark': accountService.theme === 'dark',
+        'theme-christmas': accountService.theme === 'christmas',
+        'theme-valentines': accountService.theme === 'valentines'
+    }"
 >
-    <img class="image" *ngIf="this.accountService.theme === 'christmas'" src="assets/christmas_mode.jpg" />
-    <img class="image" *ngIf="this.accountService.theme === 'light'" src="assets/home_page_desktop.png" />
-    <img class="image" *ngIf="this.accountService.theme === 'dark'" src="assets/dark_mode_main.jpg" />
-    <img class="image" *ngIf="this.accountService.theme === 'valentines'" src="assets/valentines_mode.jpg" />
-    <h1
-        class="header-item"
-        [ngClass]="{
-            'color-blue': this.accountService.theme === 'light' || this.accountService.theme === 'valentines',
-            'color-brown': this.accountService.theme === 'christmas' || this.accountService.theme === 'dark',
-        }"
-    >
-        {{ 'MAIN_PAGE.TITLE' | translate }}
-    </h1>
-    <section class="justified">
-        <div class="justified">
-            <button
-                mat-raised-button
-                class="button background-beige"
-                routerLink="/play"
-                [ngClass]="{
-                    'color-green': this.accountService.theme === 'christmas',
-                    'color-pink': this.accountService.theme === 'valentines',
-                }"
-            >
-                {{ 'MAIN_PAGE.JOIN_GAME' | translate }}
+    <img class="bg-image" *ngIf="accountService.theme === 'christmas'" src="assets/christmas_mode.jpg" />
+    <img class="bg-image" *ngIf="accountService.theme === 'light'" src="assets/home_page_desktop.png" />
+    <img class="bg-image" *ngIf="accountService.theme === 'dark'" src="assets/dark_mode_main.jpg" />
+    <img class="bg-image" *ngIf="accountService.theme === 'valentines'" src="assets/valentines_mode.jpg" />
+    <div class="bg-overlay"></div>
+
+    <div class="hero-content">
+        <img src="assets/Logo_Cooquiz.png" alt="Logo" class="logo" />
+        <h1 class="title">{{ 'MAIN_PAGE.TITLE' | translate }}</h1>
+        <p class="subtitle">{{ 'MAIN_PAGE.SUBTITLE' | translate }}</p>
+
+        <div class="buttons">
+            <button mat-raised-button class="action-btn btn-join" routerLink="/play">
+                <mat-icon>sports_esports</mat-icon>
+                <span>{{ 'MAIN_PAGE.JOIN_GAME' | translate }}</span>
             </button>
-            <button
-                mat-raised-button
-                class="button clr-turquoise"
-                routerLink="/create"
-                [ngClass]="{
-                    'color-green': this.accountService.theme === 'christmas',
-                    'color-pink': this.accountService.theme === 'valentines',
-                }"
-            >
-                {{ 'MAIN_PAGE.CREATE_GAME' | translate }}
+            <button mat-raised-button class="action-btn btn-create" routerLink="/create">
+                <mat-icon>add_circle_outline</mat-icon>
+                <span>{{ 'MAIN_PAGE.CREATE_GAME' | translate }}</span>
             </button>
-            <button
-                mat-raised-button
-                class="button background-pink"
-                routerLink="/administration"
-                [ngClass]="{
-                    'color-green': this.accountService.theme === 'christmas',
-                    'color-pink': this.accountService.theme === 'valentines',
-                }"
-            >
-                {{ 'MAIN_PAGE.ADMINISTER_GAMES' | translate }}
+            <button mat-raised-button class="action-btn btn-manage" routerLink="/administration">
+                <mat-icon>dashboard</mat-icon>
+                <span>{{ 'MAIN_PAGE.ADMINISTER_GAMES' | translate }}</span>
             </button>
         </div>
-    </section>
-
-    <footer
-        class="footer-item"
-        [ngClass]="{
-            'light-mode': this.accountService.theme === 'light',
-            'dark-mode': this.accountService.theme === 'dark',
-            christmas: this.accountService.theme === 'christmas',
-            valentines: this.accountService.theme === 'valentines',
-        }"
-    >
-        <h4 class="team-name color-red">{{ 'MAIN_PAGE.TEAM_NAME' | translate }}</h4>
-        <p
-            [ngClass]="{
-                'color-blue': this.accountService.theme === 'light' || this.accountService.theme === 'valentines',
-                'color-brown': this.accountService.theme === 'christmas' || this.accountService.theme === 'dark',
-            }"
-        >
-            <span>Manel Abroudj</span>, <span>Lina Belloui</span>, <span>Damaris Calestrov</span>,
-            <br />
-            <span>Simon Cloutier</span>, <span>Aymen Ghodbane</span>, <span>Motassembellah Mohamed Bassiouni</span>
-        </p>
-    </footer>
+    </div>
 </div>

@@ -1,10 +1,13 @@
 {
     "MAIN_PAGE": {
         "TITLE": "Poly Quiz",
+        "SUBTITLE": "Challenge your friends in real-time quiz battles",
         "JOIN_GAME": "Join a Game",
+        "JOIN_DESC": "Enter a match and compete with other players",
         "CREATE_GAME": "Create a Game",
+        "CREATE_DESC": "Design your own quiz with custom questions",
         "ADMINISTER_GAMES": "Manage Games",
-        "TEAM_NAME": "Team 111"
+        "ADMIN_DESC": "Edit, organize and review your game library"
     },
     "SET_AVATAR": {
         "SELECT_AVATAR": "Select Your Avatar",

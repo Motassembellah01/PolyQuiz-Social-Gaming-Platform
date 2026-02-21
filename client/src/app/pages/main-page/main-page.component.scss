@@ -1,99 +1,249 @@
-.light-mode-main {
-    min-height: 78vh;
-    height: auto;
+:host {
+    display: block;
     width: 100%;
-    display: flex;
-    // background: url('/assets/christmas_mode.jpg') no-repeat center center fixed;
-    // background-size: cover;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    min-height: 100vh;
 }
 
-.image {
-    width: 100vw; 
-    height: 100vh; 
-    object-fit: cover;
+.home {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* ── Background ── */
+
+.bg-image {
     position: absolute;
-    top: 0;
-    left: 0;
-    z-index: -1; 
-}
-
-.dark-mode-main {
-    min-height: 78vh;
-    height: auto;
+    inset: 0;
     width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+
+.bg-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+.theme-light .bg-overlay {
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.6) 70%);
+}
+
+.theme-dark .bg-overlay {
+    background: radial-gradient(ellipse at center, rgba(20, 22, 30, 0.9) 0%, rgba(20, 22, 30, 0.65) 70%);
+}
+
+.theme-christmas .bg-overlay {
+    background: radial-gradient(ellipse at center, rgba(0, 35, 28, 0.88) 0%, rgba(0, 35, 28, 0.6) 70%);
+}
+
+.theme-valentines .bg-overlay {
+    background: radial-gradient(ellipse at center, rgba(245, 220, 215, 0.88) 0%, rgba(245, 220, 215, 0.6) 70%);
+}
+
+/* ── Hero Content ── */
+
+.hero-content {
+    position: relative;
+    z-index: 2;
     display: flex;
-    background-size: cover;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    text-align: center;
+    padding: 40px 32px;
+    gap: 8px;
 }
-.justified {
+
+.logo {
+    width: 130px;
+    height: 130px;
+    object-fit: contain;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 6px 20px rgba(0, 0, 0, 0.15));
+}
+
+.title {
+    font-size: 4.5rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin: 0;
+    line-height: 1;
+}
+
+.theme-light .title {
+    color: #0a436c;
+}
+
+.theme-dark .title {
+    color: #fff;
+}
+
+.theme-christmas .title {
+    color: #a8d5a0;
+}
+
+.theme-valentines .title {
+    color: #8b3a62;
+}
+
+.subtitle {
+    font-size: 1.25rem;
+    margin: 4px 0 0;
+    max-width: 400px;
+    line-height: 1.5;
+}
+
+.theme-light .subtitle {
+    color: #4a6a80;
+}
+
+.theme-dark .subtitle {
+    color: #b0bec5;
+}
+
+.theme-christmas .subtitle {
+    color: #8fc9a0;
+}
+
+.theme-valentines .subtitle {
+    color: #a85a7a;
+}
+
+/* ── Buttons ── */
+
+.buttons {
     display: flex;
-    justify-content: space-between;
     flex-direction: column;
+    gap: 18px;
+    margin-top: 36px;
+    width: 100%;
+    max-width: 420px;
+}
+
+.action-btn {
+    display: flex;
     align-items: center;
-}
-
-.button {
-    margin-top: 40px;
-    text-align: center;
-    border-radius: 15px;
-    padding: 10px;
-    width: 350px;
-    height: 60px;
-    border: #ffffff;
-    font-size: 25px;
-}
-
-.clr-turquoise {
-    background-color: #0ebccc !important;
-}
-
-.team-name {
-    margin-top: 0.25em;
-    margin-bottom: 0.25em;
-}
-
-.header-item {
     justify-content: center;
-    text-align: center;
-    font-size: 80px;
+    gap: 14px;
+    width: 100%;
+    height: 68px;
+    border: none;
+    border-radius: 16px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    letter-spacing: 0.01em;
+
+    mat-icon {
+        font-size: 28px;
+        width: 28px;
+        height: 28px;
+    }
+
+    &:hover {
+        transform: translateY(-3px) scale(1.02);
+    }
+
+    &:active {
+        transform: translateY(0) scale(0.99);
+    }
 }
 
-.light-mode {
-    text-align: center;
-    font-size: 20px;
-    margin-top: 100px;
-    background-color: #ffffff;
-}
-.dark-mode {
-    text-align: center;
-    font-size: 20px;
-    margin-top: 100px;
-    background-color: rgba(44, 45, 49, 255);
+.btn-join {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    box-shadow: 0 6px 24px rgba(79, 172, 254, 0.4);
+
+    &:hover {
+        box-shadow: 0 10px 32px rgba(79, 172, 254, 0.55);
+    }
 }
 
-.christmas {
-    text-align: center;
-    font-size: 20px;
-    margin-top: 100px;
-    background-color: #002D24;
+.btn-create {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    box-shadow: 0 6px 24px rgba(245, 87, 108, 0.4);
+
+    &:hover {
+        box-shadow: 0 10px 32px rgba(245, 87, 108, 0.55);
+    }
 }
 
-.valentines {
-    text-align: center;
-    font-size: 20px;
-    margin-top: 100px;
-    background-color: #e8bdb5;
+.btn-manage {
+    background: linear-gradient(135deg, #5ee7df 0%, #b490ca 100%);
+    box-shadow: 0 6px 24px rgba(94, 231, 223, 0.35);
+
+    &:hover {
+        box-shadow: 0 10px 32px rgba(94, 231, 223, 0.5);
+    }
 }
 
-.color-green {
-    background-color: #77DD77 !important;
+/* ── Christmas overrides ── */
+
+.theme-christmas {
+    .btn-join {
+        background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+        box-shadow: 0 6px 24px rgba(86, 171, 47, 0.4);
+
+        &:hover {
+            box-shadow: 0 10px 32px rgba(86, 171, 47, 0.55);
+        }
+    }
+
+    .btn-create {
+        background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
+        box-shadow: 0 6px 24px rgba(231, 76, 60, 0.4);
+
+        &:hover {
+            box-shadow: 0 10px 32px rgba(231, 76, 60, 0.55);
+        }
+    }
+
+    .btn-manage {
+        background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%);
+        box-shadow: 0 6px 24px rgba(241, 196, 15, 0.35);
+        color: #333;
+
+        &:hover {
+            box-shadow: 0 10px 32px rgba(241, 196, 15, 0.5);
+        }
+    }
 }
 
-.color-pink {
-    background-color: #FFB6C1 !important;
+/* ── Valentines overrides ── */
+
+.theme-valentines {
+    .btn-join {
+        background: linear-gradient(135deg, #ee9ca7 0%, #ffdde1 100%);
+        box-shadow: 0 6px 24px rgba(238, 156, 167, 0.4);
+        color: #6b2040;
+
+        &:hover {
+            box-shadow: 0 10px 32px rgba(238, 156, 167, 0.55);
+        }
+    }
+
+    .btn-create {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+        box-shadow: 0 6px 24px rgba(255, 107, 107, 0.4);
+
+        &:hover {
+            box-shadow: 0 10px 32px rgba(255, 107, 107, 0.55);
+        }
+    }
+
+    .btn-manage {
+        background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+        box-shadow: 0 6px 24px rgba(161, 140, 209, 0.35);
+
+        &:hover {
+            box-shadow: 0 10px 32px rgba(161, 140, 209, 0.5);
+        }
+    }
 }
