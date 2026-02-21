@@ -113,5 +113,22 @@ export class FriendService {
         await this.blockNormalUser(userId, otherUserId);
     }
 
+    async cancelFriendRequest(senderId: string, receiverId: string): Promise<void> {
+        const request = await this.friendModel.findOne({
+            senderId: senderId,
+            receiverId: receiverId,
+            status: 'pending',
+        });
 
+        if (!request) {
+            throw new BadRequestException('No pending friend request found to cancel.');
+        }
+
+        await this.accountService.removeFriendRequestFromAccount(request);
+        await request.deleteOne();
+    }
+
+    async unblockUser(userId: string, blockedUserId: string): Promise<void> {
+        await this.accountService.removeFromBlockList(userId, blockedUserId);
+    }
 }

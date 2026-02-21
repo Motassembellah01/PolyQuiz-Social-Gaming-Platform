@@ -1,130 +1,291 @@
-<div class="container">
-    <!-- Search Section -->
-    <div class="search-section">
-        <input type="text" [(ngModel)]="searchTerm" (input)="filterAccounts()" placeholder="{{ 'FRIENDS.SEARCH' | translate }}" />
+<div class="friends-panel">
+    <!-- Panel Header -->
+    <div class="panel-header">
+        <h2 class="panel-title">
+            <mat-icon class="title-icon">group</mat-icon>
+            {{ 'FRIENDS.PANEL_TITLE' | translate }}
+        </h2>
+        <span class="friend-count" *ngIf="friendCount > 0">{{ friendCount }}</span>
     </div>
 
-    <!-- Tabs -->
-    <div class="tabs">
-        <button *ngFor="let tab of tabs" class="tab" [class.active]="currentTab === tab" (click)="switchTab(tab)">
-            {{ tab }}
-            <span
-                *ngIf="tab === ('FRIENDS.FRIEND_REQUEST' | translate) && accountListenerService.friendRequestsReceived.length > 0"
-                class="tab-badge"
-            >
-                {{ accountListenerService.friendRequestsReceived.length }}
-            </span>
+    <!-- Search Section -->
+    <div class="search-wrapper">
+        <mat-icon class="search-icon">search</mat-icon>
+        <input
+            type="text"
+            class="search-input"
+            [(ngModel)]="searchTerm"
+            (input)="onSearchInput()"
+            placeholder="{{ 'FRIENDS.SEARCH' | translate }}"
+        />
+        <button class="search-clear" *ngIf="searchTerm" (click)="clearSearch()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+        <button
+            class="tab-btn"
+            [class.active]="currentTab === FriendTab.Discover"
+            (click)="switchTab(FriendTab.Discover)"
+        >
+            <mat-icon class="tab-icon">explore</mat-icon>
+            <span class="tab-label">{{ tabLabel.discover }}</span>
+        </button>
+        <button
+            class="tab-btn"
+            [class.active]="currentTab === FriendTab.Friends"
+            (click)="switchTab(FriendTab.Friends)"
+        >
+            <mat-icon class="tab-icon">people</mat-icon>
+            <span class="tab-label">{{ tabLabel.friends }}</span>
+            <span class="tab-count" *ngIf="friendCount > 0">{{ friendCount }}</span>
+        </button>
+        <button
+            class="tab-btn"
+            [class.active]="currentTab === FriendTab.Requests"
+            (click)="switchTab(FriendTab.Requests)"
+        >
+            <mat-icon class="tab-icon">person_add</mat-icon>
+            <span class="tab-label">{{ tabLabel.requests }}</span>
+            <span class="tab-count notification" *ngIf="requestCount > 0">{{ requestCount }}</span>
+        </button>
+        <button
+            class="tab-btn"
+            [class.active]="currentTab === FriendTab.Blocked"
+            (click)="switchTab(FriendTab.Blocked)"
+        >
+            <mat-icon class="tab-icon">block</mat-icon>
+            <span class="tab-count" *ngIf="blockedCount > 0">{{ blockedCount }}</span>
         </button>
     </div>
 
     <!-- Tab Content -->
     <div class="tab-content">
-        <!-- Friend Requests Section -->
-        <div *ngIf="currentTab === ('FRIENDS.FRIEND_REQUEST' | translate)" class="friend-requests">
-            <div class="requests-header">
-                <span>{{ 'FRIENDS.PENDING_REQUESTS' | translate }}</span>
+
+        <!-- ===== FRIEND REQUESTS TAB ===== -->
+        <div *ngIf="currentTab === FriendTab.Requests" class="content-section" @fadeIn>
+            <div *ngIf="requestCount === 0" class="empty-state">
+                <mat-icon class="empty-icon">mail_outline</mat-icon>
+                <p class="empty-title">{{ 'FRIENDS.NO_REQUESTS_TITLE' | translate }}</p>
+                <p class="empty-subtitle">{{ 'FRIENDS.NO_REQUESTS_SUBTITLE' | translate }}</p>
             </div>
-            <div class="requests-list">
-                <div *ngFor="let request of accountListenerService.friendRequestsReceived" class="request-item background-blue">
-                    <div class="request-info">
+
+            <div class="card-list" [@listAnimation]="requestCount">
+                <div
+                    *ngFor="let request of accountListenerService.friendRequestsReceived"
+                    class="user-card request-card"
+                    @cardEnter
+                >
+                    <div class="user-info">
                         <div
                             class="avatar"
                             [ngStyle]="{ 'background-image': 'url(' + accountService.getLocalAvatar(request.senderBasicInfo.avatarUrl) + ')' }"
-                        ></div>
-                        <div class="info">
-                            <div class="name">{{ request.senderBasicInfo.pseudonym }}</div>
+                        >
+                            <span class="avatar-status online"></span>
+                        </div>
+                        <div class="user-details">
+                            <span class="user-name">{{ request.senderBasicInfo.pseudonym }}</span>
+                            <span class="user-label">{{ 'FRIENDS.WANTS_TO_CONNECT' | translate }}</span>
                         </div>
                     </div>
                     <div class="request-actions">
-                        <button (click)="acceptFriendRequest(request.requestId)">{{ 'FRIENDS.ACCEPT' | translate }}</button>
-                        <button (click)="rejectFriendRequest(request.requestId)">{{ 'FRIENDS.DECLINE' | translate }}</button>
+                        <button
+                            class="btn btn-accept"
+                            (click)="acceptFriendRequest(request.requestId)"
+                            matTooltip="{{ 'FRIENDS.ACCEPT' | translate }}"
+                        >
+                            <mat-icon>check</mat-icon>
+                        </button>
+                        <button
+                            class="btn btn-decline"
+                            (click)="rejectFriendRequest(request.requestId)"
+                            matTooltip="{{ 'FRIENDS.DECLINE' | translate }}"
+                        >
+                            <mat-icon>close</mat-icon>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Default List Section -->
-        <div *ngIf="currentTab === ('FRIENDS.DISCOVER' | translate)" class="list">
-            <ng-container *ngFor="let account of filterAccounts()">
+        <!-- ===== DISCOVER TAB ===== -->
+        <div *ngIf="currentTab === FriendTab.Discover" class="content-section" @fadeIn>
+            <div *ngIf="filteredDiscoverList.length === 0" class="empty-state">
+                <mat-icon class="empty-icon">person_search</mat-icon>
+                <p class="empty-title">{{ 'FRIENDS.NO_USERS_TITLE' | translate }}</p>
+                <p class="empty-subtitle">{{ 'FRIENDS.NO_USERS_SUBTITLE' | translate }}</p>
+            </div>
+
+            <div class="card-list" [@listAnimation]="filteredDiscoverList.length">
                 <div
-                    *ngIf="!account.isFriend && !account.isBlocked && !account.isBlockingMe && account.userId !== accountService.auth0Id"
-                    class="list-item background-blue"
-                    [attr.data-friend]="account.isFriend"
+                    *ngFor="let account of filteredDiscoverList"
+                    class="user-card"
+                    @cardEnter
                 >
-                    <div class="item-left">
-                        <div class="avatar" [ngStyle]="{ 'background-image': 'url(' + accountService.getLocalAvatar(account.avatarUrl) + ')' }"></div>
-                        <div class="info">
-                            <div class="name">{{ account.pseudonym }}</div>
+                    <div class="user-info">
+                        <div
+                            class="avatar"
+                            [ngStyle]="{ 'background-image': 'url(' + accountService.getLocalAvatar(account.avatarUrl) + ')' }"
+                        ></div>
+                        <div class="user-details">
+                            <span class="user-name">{{ account.pseudonym }}</span>
                         </div>
                     </div>
-                    <div class="actions" *ngIf="!account.isFriend">
+                    <div class="card-actions">
                         <button
-                            class="action-button add-friend"
                             *ngIf="!account.isRequestSent && !account.isRequestReceived"
+                            class="btn btn-primary"
                             (click)="sendFriendRequest(account.userId)"
+                            matTooltip="{{ 'FRIENDS.ADD' | translate }}"
                         >
-                            {{ 'FRIENDS.ADD' | translate }}
-                        </button>
-                        <button
-                            class="action-button pending"
-                            *ngIf="account.isRequestSent && !account.isRequestReceived"
-                            matTooltip="Friend request sent"
-                        >
-                            {{ 'FRIENDS.PENDING' | translate }}
-                        </button>
-                        <button
-                            *ngIf="!account.isRequestSent && !account.isRequestReceived"
-                            class="action-button block"
-                            (click)="blockNormalUser(account.userId, account.pseudonym)"
-                            matTooltip="Block User"
-                        >
-                            <mat-icon>block</mat-icon>
+                            <mat-icon>person_add</mat-icon>
                         </button>
 
-                        <button
-                            *ngIf="account.isRequestSent && !account.isRequestReceived"
-                            class="action-button block"
-                            (click)="blockUserWithPendingRequest(account.userId, account.pseudonym)"
-                            matTooltip="Block User"
-                        >
-                            <mat-icon>block</mat-icon>
-                        </button>
+                        <ng-container *ngIf="account.isRequestSent && !account.isRequestReceived">
+                            <span class="badge badge-pending">
+                                <mat-icon>hourglass_top</mat-icon>
+                                {{ 'FRIENDS.PENDING' | translate }}
+                            </span>
+                            <button
+                                class="btn btn-cancel"
+                                (click)="cancelFriendRequest(account.userId, account.pseudonym)"
+                                matTooltip="{{ 'FRIENDS.CANCEL_REQUEST' | translate }}"
+                            >
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </ng-container>
 
-                        <div *ngIf="!account.isRequestSent && account.isRequestReceived">
-                            <div *ngFor="let request of accountListenerService.friendRequestsReceived">
-                                <div
-                                    class="request-actions"
-                                    *ngIf="account.userId == request.senderBasicInfo.userId && !account.isRequestSent && account.isRequestReceived"
+                        <ng-container *ngIf="!account.isRequestSent && account.isRequestReceived">
+                            <ng-container *ngIf="getRequestForUser(account.userId) as request">
+                                <button
+                                    class="btn btn-accept"
+                                    (click)="acceptFriendRequest(request.requestId)"
+                                    matTooltip="{{ 'FRIENDS.ACCEPT' | translate }}"
                                 >
-                                    <button (click)="acceptFriendRequest(request.requestId)">{{ 'FRIENDS.ACCEPT' | translate }}</button>
-                                    <button (click)="rejectFriendRequest(request.requestId)">{{ 'FRIENDS.DECLINE' | translate }}</button>
-                                </div>
-                            </div>
-                        </div>
+                                    <mat-icon>check</mat-icon>
+                                </button>
+                                <button
+                                    class="btn btn-decline"
+                                    (click)="rejectFriendRequest(request.requestId)"
+                                    matTooltip="{{ 'FRIENDS.DECLINE' | translate }}"
+                                >
+                                    <mat-icon>close</mat-icon>
+                                </button>
+                            </ng-container>
+                        </ng-container>
+
+                        <button
+                            *ngIf="!account.isRequestReceived && !account.isRequestSent"
+                            class="btn btn-ghost btn-block-visible"
+                            (click)="blockNormalUser(account.userId, account.pseudonym)"
+                            matTooltip="{{ 'FRIENDS.BLOCK' | translate }}"
+                        >
+                            <mat-icon>block</mat-icon>
+                        </button>
+
+                        <button
+                            *ngIf="account.isRequestSent && !account.isRequestReceived"
+                            class="btn btn-ghost btn-block-visible"
+                            (click)="blockUserWithPendingRequest(account.userId, account.pseudonym)"
+                            matTooltip="{{ 'FRIENDS.BLOCK' | translate }}"
+                        >
+                            <mat-icon>block</mat-icon>
+                        </button>
                     </div>
                 </div>
-            </ng-container>
+            </div>
         </div>
 
-        <div *ngIf="currentTab === ('FRIENDS.FRIENDS' | translate)" class="list">
-            <ng-container *ngFor="let account of filterAccounts()">
-                <div *ngIf="account.isFriend" class="list-item background-blue" [attr.data-friend]="account.isFriend">
-                    <div class="item-left">
-                        <div class="avatar" [ngStyle]="{ 'background-image': 'url(' + accountService.getLocalAvatar(account.avatarUrl) + ')' }"></div>
-                        <div class="info">
-                            <div class="name">{{ account.pseudonym }}</div>
+        <!-- ===== FRIENDS TAB ===== -->
+        <div *ngIf="currentTab === FriendTab.Friends" class="content-section" @fadeIn>
+            <div *ngIf="filteredFriendsList.length === 0" class="empty-state">
+                <mat-icon class="empty-icon">group_add</mat-icon>
+                <p class="empty-title">{{ 'FRIENDS.NO_FRIENDS_TITLE' | translate }}</p>
+                <p class="empty-subtitle">{{ 'FRIENDS.NO_FRIENDS_SUBTITLE' | translate }}</p>
+            </div>
+
+            <div class="card-list" [@listAnimation]="filteredFriendsList.length">
+                <div
+                    *ngFor="let account of filteredFriendsList"
+                    class="user-card friend-card"
+                    @cardEnter
+                >
+                    <div class="user-info">
+                        <div
+                            class="avatar"
+                            [ngStyle]="{ 'background-image': 'url(' + accountService.getLocalAvatar(account.avatarUrl) + ')' }"
+                        >
+                            <span class="avatar-status online"></span>
+                        </div>
+                        <div class="user-details">
+                            <span class="user-name">{{ account.pseudonym }}</span>
+                            <span class="user-label friend-label">
+                                <mat-icon class="inline-icon">check_circle</mat-icon>
+                                {{ 'FRIENDS.FRIENDS' | translate }}
+                            </span>
                         </div>
                     </div>
-                    <div class="actions">
-                        <button class="action-button remove-friend" (click)="removeFriend(account.userId)">
-                            {{ 'FRIENDS.REMOVE' | translate }}
+                    <div class="card-actions">
+                        <button
+                            class="btn btn-outline-danger"
+                            (click)="removeFriend(account.userId, account.pseudonym)"
+                            matTooltip="{{ 'FRIENDS.REMOVE' | translate }}"
+                        >
+                            <mat-icon>person_remove</mat-icon>
                         </button>
-                        <button class="action-button block" (click)="blockFriend(account.userId, account.pseudonym)" matTooltip="Block Friend">
+                        <button
+                            class="btn btn-ghost btn-block-visible"
+                            (click)="blockFriend(account.userId, account.pseudonym)"
+                            matTooltip="{{ 'FRIENDS.BLOCK' | translate }}"
+                        >
                             <mat-icon>block</mat-icon>
                         </button>
                     </div>
                 </div>
-            </ng-container>
+            </div>
+        </div>
+
+        <!-- ===== BLOCKED TAB ===== -->
+        <div *ngIf="currentTab === FriendTab.Blocked" class="content-section" @fadeIn>
+            <div *ngIf="blockedUsersList.length === 0" class="empty-state">
+                <mat-icon class="empty-icon">shield</mat-icon>
+                <p class="empty-title">{{ 'FRIENDS.NO_BLOCKED_TITLE' | translate }}</p>
+                <p class="empty-subtitle">{{ 'FRIENDS.NO_BLOCKED_SUBTITLE' | translate }}</p>
+            </div>
+
+            <div class="card-list" [@listAnimation]="blockedUsersList.length">
+                <div
+                    *ngFor="let account of blockedUsersList"
+                    class="user-card blocked-card"
+                    @cardEnter
+                >
+                    <div class="user-info">
+                        <div
+                            class="avatar avatar-blocked"
+                            [ngStyle]="{ 'background-image': 'url(' + accountService.getLocalAvatar(account.avatarUrl) + ')' }"
+                        ></div>
+                        <div class="user-details">
+                            <span class="user-name">{{ account.pseudonym }}</span>
+                            <span class="user-label blocked-label">
+                                <mat-icon class="inline-icon">block</mat-icon>
+                                {{ 'FRIENDS.BLOCKED_LABEL' | translate }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <button
+                            class="btn btn-unblock"
+                            (click)="unblockUser(account.userId, account.pseudonym)"
+                            matTooltip="{{ 'FRIENDS.UNBLOCK' | translate }}"
+                        >
+                            <mat-icon>lock_open</mat-icon>
+                            <span class="btn-text">{{ 'FRIENDS.UNBLOCK' | translate }}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

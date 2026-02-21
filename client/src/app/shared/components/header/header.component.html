@@ -105,7 +105,7 @@
         valentines: this.accountService.theme === 'valentines',
     }"
     [hidden]="!this.generalChatService.isFriendsOpen && !accountService.isInGame"
-    class="chat-box"
+    class="chat-box friends-box"
     [@headerAnimation]="generalChatService.isFriendsOpen ? 'open' : 'closed'"
     *ngIf="!accountService.isInGame"
 >

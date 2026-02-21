@@ -60,4 +60,18 @@ export class FriendService {
       {}
     );
   }
+
+  cancelFriendRequest(receiverId: string): Observable<void> {
+    return this.http.post<void>(
+      `${this.serverConfig.serverUrl}/friends/cancelRequest/${this.auth0Id}/${receiverId}`,
+      {}
+    );
+  }
+
+  unblockUser(blockedUserId: string): Observable<void> {
+    return this.http.post<void>(
+      `${this.serverConfig.serverUrl}/friends/unblock/${this.auth0Id}/${blockedUserId}`,
+      {}
+    );
+  }
 }

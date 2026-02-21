@@ -54,4 +54,20 @@ export class FriendController {
     ): Promise<void> {
         await this.friendService.blockUserWithPendingRequest(userId, otherUserId);
     }
+
+    @Post('cancelRequest/:senderId/:receiverId')
+    async cancelFriendRequest(
+        @Param('senderId') senderId: string,
+        @Param('receiverId') receiverId: string,
+    ): Promise<void> {
+        await this.friendService.cancelFriendRequest(senderId, receiverId);
+    }
+
+    @Post('unblock/:userId/:blockedUserId')
+    async unblockUser(
+        @Param('userId') userId: string,
+        @Param('blockedUserId') blockedUserId: string,
+    ): Promise<void> {
+        await this.friendService.unblockUser(userId, blockedUserId);
+    }
 }

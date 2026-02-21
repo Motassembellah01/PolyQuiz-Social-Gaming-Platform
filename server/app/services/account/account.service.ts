@@ -219,6 +219,23 @@ export class AccountService {
         this.friendHandlerGateway.updateBlockedByList(blockedPersonId, blockedPerson?.UsersBlockingMe || []);
     }
 
+    async removeFromBlockList(userId: string, blockedPersonId: string): Promise<void> {
+        const user = await this.accountModel.findOneAndUpdate(
+            { userId: userId },
+            { $pull: { UsersBlocked: blockedPersonId } },
+            { new: true, fields: { UsersBlocked: 1 } }
+        );
+
+        const unblockedPerson = await this.accountModel.findOneAndUpdate(
+            { userId: blockedPersonId },
+            { $pull: { UsersBlockingMe: userId } },
+            { new: true, fields: { UsersBlockingMe: 1 } }
+        );
+
+        this.friendHandlerGateway.updateBlockedUsersList(userId, user?.UsersBlocked || []);
+        this.friendHandlerGateway.updateBlockedByList(blockedPersonId, unblockedPerson?.UsersBlockingMe || []);
+    }
+
     async getBlockedUsers(userId: string): Promise<string[]> {
         const account = await this.findByUserId(userId);
         const blockedUsers = account.UsersBlocked;

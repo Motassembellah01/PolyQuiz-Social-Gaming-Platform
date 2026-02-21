@@ -379,13 +379,13 @@ export const ERROR_QUESTION_EN = {
 };
 
 export const FRIENDS_FR = {
-    discover: 'Communauté',
+    discover: 'Découvrir',
     friends: 'Amis',
-    friendRequest: "Demandes d'amis",
+    friendRequest: 'Demandes',
 }
 
 export const FRIENDS_EN = {
-    discover: 'Discover Community',
+    discover: 'Discover',
     friends: 'Friends',
-    friendRequest: 'Friend Requests',
+    friendRequest: 'Requests',
 }
