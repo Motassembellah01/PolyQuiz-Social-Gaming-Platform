@@ -46,15 +46,6 @@
         >
             <i class="material-icons">mark_chat_unread</i>
         </button>
-        <button
-            *ngIf="!accountService.isInGame"
-            mat-button
-            class="money"
-            (click)="toggleSettings()"
-            [class.toggled]="generalChatService.isSettingsOpen"
-        >
-            <img src="assets/icons/ic_settings.png" alt="Money Icon" class="money-icon settings" />
-        </button>
         <div *ngIf="!accountService.isInGame" class="profile">
             <button mat-button class="profile-btn" (click)="toggleProfile()" [class.toggled]="generalChatService.isProfileOpen">
                 <img [src]="accountService.getLocalAvatar()" alt="avatar" />
@@ -127,17 +118,3 @@
     <app-shop></app-shop>
 </section>
 
-<section
-    [ngClass]="{
-        'light-mode': this.accountService.theme === 'light',
-        'dark-mode': this.accountService.theme === 'dark',
-        christmas: this.accountService.theme === 'christmas',
-        valentines: this.accountService.theme === 'valentines',
-    }"
-    [hidden]="!this.generalChatService.isSettingsOpen && !accountService.isInGame"
-    class="chat-box"
-    [@headerAnimation]="generalChatService.isSettingsOpen ? 'open' : 'closed'"
-    *ngIf="!accountService.isInGame"
->
-    <app-settings></app-settings>
-</section>

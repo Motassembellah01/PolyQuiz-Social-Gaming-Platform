@@ -18,7 +18,6 @@ import { ProfileComponent } from '@app/shared/components/profile/profile.compone
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { ShopComponent } from '@app/shared/components/shop/shop.component';
-import { SettingsComponent } from '@app/shared/components/settings/settings.component';
 
 @Component({
     selector: 'app-header',
@@ -35,7 +34,6 @@ import { SettingsComponent } from '@app/shared/components/settings/settings.comp
         RouterModule,
         TranslateModule,
         ShopComponent,
-        SettingsComponent,
     ],
     animations: [
         trigger('headerAnimation', [
@@ -110,7 +108,6 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewChecked {
                 if (this.generalChatService.isProfileOpen) this.generalChatService.isProfileOpen = false;
                 if (this.generalChatService.isFriendsOpen) this.generalChatService.isFriendsOpen = false;
                 if (this.generalChatService.isShopOpen) this.generalChatService.isShopOpen = false;
-                if (this.generalChatService.isSettingsOpen) this.generalChatService.isSettingsOpen = false;
                 this.generalChatService.isChatClosed = false;
                 this.generalChatService.getChannels();
             });
@@ -144,7 +141,6 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewChecked {
             if (this.generalChatService.isProfileOpen) this.generalChatService.isProfileOpen = false;
             if (this.generalChatService.isFriendsOpen) this.generalChatService.isFriendsOpen = false;
             if (this.generalChatService.isShopOpen) this.generalChatService.isShopOpen = false;
-            if (this.generalChatService.isSettingsOpen) this.generalChatService.isSettingsOpen = false;
         }
     }
 
@@ -171,7 +167,6 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewChecked {
         if (this.generalChatService.isProfileOpen) this.generalChatService.isProfileOpen = false;
         if (this.generalChatService.isChatOpen) this.generalChatService.isChatOpen = false;
         if (this.generalChatService.isShopOpen) this.generalChatService.isShopOpen = false;
-        if (this.generalChatService.isSettingsOpen) this.generalChatService.isSettingsOpen = false;
     }
 
     toggleProfile() {
@@ -179,7 +174,6 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewChecked {
         if (this.generalChatService.isChatOpen) this.generalChatService.isChatOpen = false;
         if (this.generalChatService.isFriendsOpen) this.generalChatService.isFriendsOpen = false;
         if (this.generalChatService.isShopOpen) this.generalChatService.isShopOpen = false;
-        if (this.generalChatService.isSettingsOpen) this.generalChatService.isSettingsOpen = false;
     }
 
     toggleShop() {
@@ -187,15 +181,6 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewChecked {
         if (this.generalChatService.isChatOpen) this.generalChatService.isChatOpen = false;
         if (this.generalChatService.isFriendsOpen) this.generalChatService.isFriendsOpen = false;
         if (this.generalChatService.isProfileOpen) this.generalChatService.isProfileOpen = false;
-        if (this.generalChatService.isSettingsOpen) this.generalChatService.isSettingsOpen = false;
-    }
-
-    toggleSettings() {
-        this.generalChatService.isSettingsOpen = !this.generalChatService.isSettingsOpen;
-        if (this.generalChatService.isChatOpen) this.generalChatService.isChatOpen = false;
-        if (this.generalChatService.isFriendsOpen) this.generalChatService.isFriendsOpen = false;
-        if (this.generalChatService.isProfileOpen) this.generalChatService.isProfileOpen = false;
-        if (this.generalChatService.isShopOpen) this.generalChatService.isShopOpen = false;
     }
 
     selectChannel(channel: JoinedChatroom) {
