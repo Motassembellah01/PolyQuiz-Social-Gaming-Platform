@@ -9,6 +9,7 @@ import { Player } from '@app/core/interfaces/player';
 import { HistogramService } from '@app/core/services/histogram-service/histogram.service';
 import { MatchPlayerService } from '@app/core/services/match-player-service/match-player.service';
 import { AppMaterialModule } from '@app/modules/material.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * Component that provides the template for the players list with name and score columns.
@@ -24,7 +25,7 @@ import { AppMaterialModule } from '@app/modules/material.module';
     templateUrl: './players-list.component.html',
     styleUrls: ['./players-list.component.scss'],
     standalone: true,
-    imports: [AppMaterialModule, FormsModule, CommonModule],
+    imports: [AppMaterialModule, FormsModule, CommonModule, TranslateModule],
 })
 export class PlayersListComponent implements OnInit, AfterViewInit {
     @ViewChild(MatSort) sort: MatSort;

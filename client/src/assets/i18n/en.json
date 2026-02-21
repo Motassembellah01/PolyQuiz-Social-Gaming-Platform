@@ -13,7 +13,9 @@
         "SELECT_AVATAR": "Select Your Avatar",
         "SELECTED": "Selected",
         "SELECTED_AVATAR": "Selected Avatar",
-        "UPLOAD_AVATAR": "Upload your avatar"
+        "UPLOAD_AVATAR": "Upload your avatar",
+        "SUPPORTED_FORMATS": "Supported formats: PNG, JPEG",
+        "INVALID_FORMAT_ERROR": "This file format is not supported. Please use a PNG or JPEG image."
     },
     "BUTTONS": {
         "SUBMIT": "Submit",
@@ -295,6 +297,32 @@
         "DURATION": "Duration",
         "SHORT": "Short",
         "LONG": "Long"
-    }
-    
+    },
+    "SHOP": {
+        "TITLE": "Shop",
+        "THEMES": "Themes",
+        "AVATARS": "Avatars",
+        "BUY": "Buy",
+        "INSUFFICIENT_FUNDS": "Insufficient Funds",
+        "NO_COOKIES": "You ate all the cookies.",
+        "OK": "OK"
+    },
+    "JOIN_MATCH_LABELS": {
+        "EXCLUSIVE_FRIEND": "Exclusive Friend",
+        "PUBLIC": "Public",
+        "JOIN_GAME": "Join",
+        "LOCKED_GAME": "Game locked",
+        "CONFIRM": "Confirm",
+        "PAID_MATCH_WARNING": "Paid match! Are you sure you want to join this match?",
+        "CANCEL": "Cancel"
+    },
+    "PLAYERS_LIST": {
+        "NAME": "Name",
+        "SCORE": "Score",
+        "BONUS_FREQUENCY": "Bonus Frequency 20%",
+        "TEAM": "Team",
+        "PLAYERS": "Players",
+        "TEAM_SCORE": "Team Score"
+    },
+    "Manager": "Manager"
 }

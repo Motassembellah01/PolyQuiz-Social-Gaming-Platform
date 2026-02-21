@@ -289,7 +289,7 @@ export class AccountService {
             email,
             avatarUrl: null,
             themeVisual: ThemeVisual.LIGHT,
-            lang: Language.FR,
+            lang: Language.EN,
             gamesPlayed: 0,
             gamesWon: 0,
             avgQuestionsCorrect: 0,
@@ -543,7 +543,7 @@ export class AccountService {
             const accessToken = await this.getAuth0AccessToken();
             const auth0Domain = this.configService.get<string>('AUTH0_DOMAIN')?.replace(/\/$/, '') || '';
             await axios.patch(
-                `${auth0Domain}/api/v2/users/${userId}`,
+                `${auth0Domain}/api/v2/users/${encodeURIComponent(userId)}`,
                 { username: newPseudonym },
                 {
                     headers: {
@@ -554,11 +554,13 @@ export class AccountService {
             );
         } catch (error) {
             this.logger.error(`Failed to update username in Auth0: ${error.message}`);
-
+            this.logger.error(`Auth0 response status: ${error.response?.status}`);
+            this.logger.error(`Auth0 response body: ${JSON.stringify(error.response?.data)}`);
+            this.logger.error(`Auth0 request URL: ${error.config?.url}`);
             throw new BadRequestException({
                 error: {
-                    en: 'The username contains invalid characters',
-                    fr: 'Le nom d’utilisateur contient des caractères non valides',
+                    en: 'Failed to update username in Auth0',
+                    fr: "Impossible de mettre \u00e0 jour le nom d'utilisateur dans Auth0",
                 },
             });
         }
@@ -598,7 +600,6 @@ export class AccountService {
         const accessToken = await this.getAuth0AccessToken();
     
         try {
-            // Fetch all users from Auth0
             const auth0Domain = this.configService.get<string>('AUTH0_DOMAIN')?.replace(/\/$/, '') || '';
             const usersResponse = await axios.get(`${auth0Domain}/api/v2/users`, {
                 headers: {
@@ -622,7 +623,7 @@ export class AccountService {
             await Promise.all(
                 users.map(async (user: { user_id: string }) => {
                     try {
-                        await axios.delete(`${auth0Domain}/api/v2/users/${user.user_id}`, {
+                        await axios.delete(`${auth0Domain}/api/v2/users/${encodeURIComponent(user.user_id)}`, {
                             headers: {
                                 Authorization: `Bearer ${accessToken}`,
                                 'Content-Type': 'application/json',

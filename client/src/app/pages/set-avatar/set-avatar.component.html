@@ -7,17 +7,6 @@
         <img [src]="accountService.getLocalAvatar(selectedAvatar)" alt="Selected Avatar" class="nft-avatar-preview" />
     </div>
 
-    <div class="submit-container">
-        <button mat-raised-button color="primary" (click)="submitAvatar()" [disabled]="!selectedAvatar" class="submit-btn">
-            {{ 'BUTTONS.SUBMIT' | translate }}
-        </button>
-    </div>
-
-    <div class="upload-avatar">
-        <input type="file" accept="image/*" (change)="onFileSelected($event)" id="avatar-upload" hidden />
-        <button mat-raised-button color="accent" (click)="triggerFileInput()">{{ 'SET_AVATAR.UPLOAD_AVATAR' | translate }}</button>
-    </div>
-
     <div class="avatar-grid">
         <div class="avatar-card" *ngFor="let avatar of avatars" (click)="selectAvatar(avatar)" [class.selected]="avatar === selectedAvatar">
             <img [src]="accountService.getLocalAvatar(avatar)" alt="Avatar" class="nft-avatar" />
@@ -31,6 +20,33 @@
         >
             <img [src]="accountService.getLocalAvatar(avatar)" alt="Avatar" class="nft-avatar" />
             <button mat-button *ngIf="avatar === selectedAvatar" color="primary" class="selected-btn">{{ 'SET_AVATAR.SELECTED' | translate }}</button>
+        </div>
+    </div>
+
+    <div class="actions-area">
+        <div class="upload-avatar">
+            <input type="file" accept=".png,.jpeg,.jpg" (change)="onFileSelected($event)" #avatarUpload hidden />
+            <button
+                mat-raised-button
+                color="accent"
+                [disabled]="isPresetAvatarSelected"
+                [class.upload-btn--disabled]="isPresetAvatarSelected"
+                (click)="!isPresetAvatarSelected && avatarUpload.click()"
+            >{{ 'SET_AVATAR.UPLOAD_AVATAR' | translate }}</button>
+            <p class="format-hint">{{ 'SET_AVATAR.SUPPORTED_FORMATS' | translate }}</p>
+            <p *ngIf="uploadError" class="upload-error">{{ 'SET_AVATAR.INVALID_FORMAT_ERROR' | translate }}</p>
+        </div>
+
+        <div class="submit-container">
+            <button
+                mat-raised-button
+                (click)="submitAvatar()"
+                [disabled]="!selectedAvatar"
+                class="submit-btn"
+                [class.submit-btn--active]="selectedAvatar"
+            >
+                {{ 'BUTTONS.SUBMIT' | translate }}
+            </button>
         </div>
     </div>
 </div>

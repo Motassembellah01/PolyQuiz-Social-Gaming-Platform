@@ -2,8 +2,9 @@ import { HttpClient, provideHttpClient, withInterceptors, withInterceptorsFromDi
 import { APP_INITIALIZER, ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { firstValueFrom } from 'rxjs';
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth-interceptor';
 import { httpErrorInterceptor } from './core/interceptors/http-error.interceptor';
@@ -11,6 +12,13 @@ import { ServerConfigService } from './core/services/server-config/server-config
 
 export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
+
+export function preloadTranslations(translate: TranslateService) {
+    return () => {
+        translate.setDefaultLang('en');
+        return firstValueFrom(translate.use('en'));
+    };
 }
 
 export const appConfig: ApplicationConfig = {
@@ -28,6 +36,7 @@ export const appConfig: ApplicationConfig = {
                     deps: [HttpClient]
                 }
             })
-        )
+        ),
+        { provide: APP_INITIALIZER, useFactory: preloadTranslations, deps: [TranslateService], multi: true },
     ],
 };

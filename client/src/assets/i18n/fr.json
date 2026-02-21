@@ -13,7 +13,9 @@
         "SELECT_AVATAR": "Choisissez votre avatar",
         "SELECTED": "Sélectionné",
         "SELECTED_AVATAR": "Avatar sélectionné",
-        "UPLOAD_AVATAR": "Téléversez votre avatar"
+        "UPLOAD_AVATAR": "Téléversez votre avatar",
+        "SUPPORTED_FORMATS": "Formats acceptés : PNG, JPEG",
+        "INVALID_FORMAT_ERROR": "Ce format de fichier n'est pas supporté. Veuillez utiliser une image PNG ou JPEG."
     },
     "BUTTONS": {
         "SUBMIT": "Soumettre",
@@ -295,5 +297,32 @@
         "DURATION": "Durée",
         "SHORT": "Court",
         "LONG": "Long"
-    }
+    },
+    "SHOP": {
+        "TITLE": "Boutique",
+        "THEMES": "Thèmes",
+        "AVATARS": "Avatars",
+        "BUY": "Acheter",
+        "INSUFFICIENT_FUNDS": "Fonds insuffisants",
+        "NO_COOKIES": "Vous avez mangé tous les cookies.",
+        "OK": "OK"
+    },
+    "JOIN_MATCH_LABELS": {
+        "EXCLUSIVE_FRIEND": "Exclusif Ami",
+        "PUBLIC": "Public",
+        "JOIN_GAME": "Rejoindre",
+        "LOCKED_GAME": "Partie verrouillée",
+        "CONFIRM": "Confirmer",
+        "PAID_MATCH_WARNING": "Match payant ! Voulez-vous vraiment rejoindre ce match ?",
+        "CANCEL": "Annuler"
+    },
+    "PLAYERS_LIST": {
+        "NAME": "Nom",
+        "SCORE": "Score",
+        "BONUS_FREQUENCY": "Fréquence Bonus 20%",
+        "TEAM": "Équipe",
+        "PLAYERS": "Joueurs",
+        "TEAM_SCORE": "Score d'Équipe"
+    },
+    "Manager": "Organisateur"
 }

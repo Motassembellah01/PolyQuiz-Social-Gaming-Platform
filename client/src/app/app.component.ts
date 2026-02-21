@@ -57,15 +57,16 @@ export class AppComponent implements OnInit {
             this.accountService.getAccount().subscribe((account: Account) => {
                 this.accountService.account = account;
                 if (!account) {
-                    this.translationService.changeLang(Language.FR);
+                    this.translationService.changeLang(Language.EN);
                     return;
                 }
-                this.translationService.changeLang(account.lang);
                 this.accountService.createSession().subscribe();
                 if (!account.avatarUrl) {
+                    this.translationService.changeLang(Language.EN);
                     this.router.navigateByUrl('/set-avatar');
                     return;
                 }
+                this.translationService.changeLang(account.lang || Language.EN);
             });
         });
     }

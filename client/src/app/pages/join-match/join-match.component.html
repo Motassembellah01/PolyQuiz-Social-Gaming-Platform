@@ -37,11 +37,11 @@
                     <mat-card [ngClass]="{ accessible: game.isAccessible, locked: !game.isAccessible }" class="game-card">
                         <mat-card-content>
                             <h3 *ngIf="game.isFriendMatch && organiserIsFriend(game.managerId)">
-                                {{ game.accessCode }} - Exclusif Ami {{ game.managerName }}
+                                {{ game.accessCode }} - {{ 'JOIN_MATCH_LABELS.EXCLUSIVE_FRIEND' | translate }} {{ game.managerName }}
                             </h3>
-                            <h3 *ngIf="!game.isFriendMatch">{{ game.accessCode }} - Public</h3>
+                            <h3 *ngIf="!game.isFriendMatch">{{ game.accessCode }} - {{ 'JOIN_MATCH_LABELS.PUBLIC' | translate }}</h3>
                             <h3 *ngIf="!((game.isFriendMatch && organiserIsFriend(game.managerId)) || !game.isFriendMatch)">
-                                {{ game.accessCode }} - Exclusif Ami {{ game.managerName }}
+                                {{ game.accessCode }} - {{ 'JOIN_MATCH_LABELS.EXCLUSIVE_FRIEND' | translate }} {{ game.managerName }}
                             </h3>
                             <div class="game-details">
                                 <div class="game-detail">
@@ -63,8 +63,8 @@
                                     </p>
                                 </div>
                             </div>
-                            <button mat-raised-button color="primary" *ngIf="game.isAccessible" (click)="joinGame(game.accessCode)">Rejoindre</button>
-                            <p *ngIf="!game.isAccessible" class="locked"><span class="icon">🔒</span> <strong>Partie verrouillée</strong></p>
+                            <button mat-raised-button color="primary" *ngIf="game.isAccessible" (click)="joinGame(game.accessCode)">{{ 'JOIN_MATCH_LABELS.JOIN_GAME' | translate }}</button>
+                            <p *ngIf="!game.isAccessible" class="locked"><span class="icon">🔒</span> <strong>{{ 'JOIN_MATCH_LABELS.LOCKED_GAME' | translate }}</strong></p>
                         </mat-card-content>
                     </mat-card>
                 </ng-container>
@@ -89,11 +89,11 @@
                 <mat-card *ngFor="let game of getOnGoingGames()" class="game-card ongoing">
                     <mat-card-content>
                         <h3 *ngIf="game.isFriendMatch && organiserIsFriend(game.managerId)">
-                            {{ game.accessCode }} - Exclusif Ami {{ game.managerName }} <mat-icon>check_circle</mat-icon>
+                            {{ game.accessCode }} - {{ 'JOIN_MATCH_LABELS.EXCLUSIVE_FRIEND' | translate }} {{ game.managerName }} <mat-icon>check_circle</mat-icon>
                         </h3>
-                        <h3 *ngIf="!game.isFriendMatch">{{ game.accessCode }} - Public</h3>
+                        <h3 *ngIf="!game.isFriendMatch">{{ game.accessCode }} - {{ 'JOIN_MATCH_LABELS.PUBLIC' | translate }}</h3>
                         <h3 *ngIf="!((game.isFriendMatch && organiserIsFriend(game.managerId)) || !game.isFriendMatch)">
-                            {{ game.accessCode }} - Exclusif Ami {{ game.managerName }} <mat-icon>block</mat-icon>
+                            {{ game.accessCode }} - {{ 'JOIN_MATCH_LABELS.EXCLUSIVE_FRIEND' | translate }} {{ game.managerName }} <mat-icon>block</mat-icon>
                         </h3>
                         <div class="game-details">
                             <div class="game-detail">
@@ -139,18 +139,18 @@
                 'color-brown': this.accountService.theme === 'christmas' || this.accountService.theme === 'dark',
             }"
         >
-            Confirmer
+            {{ 'JOIN_MATCH_LABELS.CONFIRM' | translate }}
         </h2>
         <mat-dialog-content
             [ngClass]="{
                 'color-blue': this.accountService.theme === 'light' || this.accountService.theme === 'valentines',
                 'color-brown': this.accountService.theme === 'christmas' || this.accountService.theme === 'dark',
             }"
-            >Match payant ! Voulez-vous vraiment rejoindre ce match ?</mat-dialog-content
+            >{{ 'JOIN_MATCH_LABELS.PAID_MATCH_WARNING' | translate }}</mat-dialog-content
         >
         <mat-dialog-actions align="end">
-            <button mat-raised-button class="background-red" mat-dialog-close="cancel">Annuler</button>
-            <button mat-raised-button class="background-green" mat-dialog-close="confirm" color="primary">Confirmer</button>
+            <button mat-raised-button class="background-red" mat-dialog-close="cancel">{{ 'JOIN_MATCH_LABELS.CANCEL' | translate }}</button>
+            <button mat-raised-button class="background-green" mat-dialog-close="confirm" color="primary">{{ 'JOIN_MATCH_LABELS.CONFIRM' | translate }}</button>
         </mat-dialog-actions>
     </div>
 </ng-template>
@@ -172,7 +172,7 @@
                 'color-brown': this.accountService.theme === 'christmas' || this.accountService.theme === 'dark',
             }"
         >
-            Fonds insuffisants
+            {{ 'SHOP.INSUFFICIENT_FUNDS' | translate }}
         </h2>
         <div class="dialog-content">
             <img class="no-cookies" src="assets/no_cookies.png" alt="No cookies" />
@@ -181,12 +181,12 @@
                     'color-blue': this.accountService.theme === 'light' || this.accountService.theme === 'valentines',
                     'color-brown': this.accountService.theme === 'christmas' || this.accountService.theme === 'dark',
                 }"
-                >Vous avez mangé tous les cookies.</mat-dialog-content
+                >{{ 'SHOP.NO_COOKIES' | translate }}</mat-dialog-content
             >
         </div>
     </div>
     <mat-dialog-actions align="end">
-        <button mat-raised-button class="background-beige" mat-dialog-close>OK</button>
+        <button mat-raised-button class="background-beige" mat-dialog-close>{{ 'SHOP.OK' | translate }}</button>
     </mat-dialog-actions>
 </ng-template>
 

@@ -7,7 +7,7 @@ import { catchError, finalize, Observable, throwError } from 'rxjs';
 export const httpErrorInterceptor: HttpInterceptorFn = (request: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> => {
     const errorMessageService = inject(ErrorMessageService);
     const translateService = inject(TranslateService);
-    const language = translateService.currentLang ?? 'fr';
+    const language = translateService.currentLang ?? 'en';
     let hasError = false;
     return next(request).pipe(
         catchError((returnedError) => {

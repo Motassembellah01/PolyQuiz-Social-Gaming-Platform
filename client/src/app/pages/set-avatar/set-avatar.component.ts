@@ -1,12 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatDialog } from '@angular/material/dialog';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { Router } from '@angular/router';
 import { AccountService } from '@app/core/http/services/account-service/account.service';
-import { AlertDialogComponent } from '@app/shared/alert-dialog/alert-dialog.component';
 import { LogoComponent } from '@app/shared/components/logo/logo.component';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -19,16 +17,26 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class SetAvatarComponent {
     selectedAvatar: string | null = null;
+    uploadError = false;
+    private errorTimeout: ReturnType<typeof setTimeout> | null = null;
+
     constructor(
         public accountService: AccountService,
         private readonly router: Router,
-        private dialog: MatDialog,
+        private ngZone: NgZone,
     ) {}
 
     avatars = ['m1.png', 'm2.png', 'w1.jpg', 'm3.png'];
 
+    get isPresetAvatarSelected(): boolean {
+        return (
+            !!this.selectedAvatar &&
+            (this.avatars.includes(this.selectedAvatar) || this.accountService.ownedAvatars.includes(this.selectedAvatar))
+        );
+    }
+
     selectAvatar(avatar: string) {
-        this.selectedAvatar = avatar;
+        this.selectedAvatar = this.selectedAvatar === avatar ? null : avatar;
     }
 
     submitAvatar() {
@@ -40,8 +48,14 @@ export class SetAvatarComponent {
         }
     }
 
-    triggerFileInput() {
-        document.getElementById('avatar-upload')?.click();
+    private showUploadError() {
+        if (this.errorTimeout) clearTimeout(this.errorTimeout);
+        this.uploadError = true;
+        this.errorTimeout = setTimeout(() => {
+            this.ngZone.run(() => {
+                this.uploadError = false;
+            });
+        }, 5000);
     }
 
     resizeImage(file: File, maxWidth: number, maxHeight: number, callback: (base64: string) => void) {
@@ -79,26 +93,27 @@ export class SetAvatarComponent {
     }
 
     onFileSelected(event: Event) {
-        const file = (event.target as HTMLInputElement).files?.[0];
+        const input = event.target as HTMLInputElement;
+        const file = input.files?.[0];
 
         if (file) {
             const allowedTypes = ['image/png', 'image/jpeg'];
             if (!allowedTypes.includes(file.type)) {
-                this.dialog.open(AlertDialogComponent, {
-                    data: {
-                        title: 'ERROR_MESSAGE_FOR.INVALID_FILE_TYPE',
-                        messages: [],
-                    },
-                });
+                this.showUploadError();
+                input.value = '';
                 return;
             }
+            this.uploadError = false;
 
             const maxWidth = 100;
             const maxHeight = 100;
 
             this.resizeImage(file, maxWidth, maxHeight, (resizedBase64) => {
-                this.selectedAvatar = resizedBase64;
+                this.ngZone.run(() => {
+                    this.selectedAvatar = resizedBase64;
+                });
             });
         }
+        input.value = '';
     }
 }
