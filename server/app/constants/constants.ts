@@ -83,6 +83,7 @@ export enum SocketsEmitEvents {
     ObserverRemoved = 'observerRemoved',
     UpdateMoney = 'updateMoney',
     SendWinnerName = 'sendWinnerName',
+    MatchListUpdated = 'matchListUpdated',
 }
 
 export enum Passwords {

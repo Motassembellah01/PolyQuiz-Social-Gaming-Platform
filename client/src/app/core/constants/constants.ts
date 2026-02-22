@@ -305,6 +305,7 @@ export enum SocketsOnEvents {
     ObserverRemoved = 'observerRemoved',
     UpdateMoney = 'updateMoney',
     SendWinnerName = 'sendWinnerName',
+    MatchListUpdated = 'matchListUpdated',
 }
 
 export enum ChatSocketsEmitEvents {

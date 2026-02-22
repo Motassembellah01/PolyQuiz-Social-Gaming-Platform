@@ -146,12 +146,14 @@
         "INCORRECT_CODE": "Incorrect access code !",
         "INCORRECT_NAME": "The name entered is invalid or already exists ! Please choose a new name ",
         "JOIN": "Join",
-        "WAITING_ROOM": "Waiting room ",
+        "WAITING_ROOM": "Waiting Room",
         "LOCKED_GAME": "Game locked ",
-        "NO_GAME_WAITING": "No games waiting ",
-        "ALREADY_STARTED": "Already started ",
-        "NO_GAME_STARTED": "No game in progress",
-        "ACCESS_CODE": "Access code"
+        "NO_GAME_WAITING": "No games waiting",
+        "ALREADY_STARTED": "In Progress",
+        "NO_GAME_STARTED": "No games in progress",
+        "ACCESS_CODE": "Access code",
+        "EMPTY_WAITING_SUBTITLE": "New games will appear here automatically",
+        "EMPTY_ONGOING_SUBTITLE": "Games in progress will appear here when they start"
     },
     "STATISTICS": {
         "TITLE": "Statistics ",
@@ -314,7 +316,8 @@
         "LOCKED_GAME": "Game locked",
         "CONFIRM": "Confirm",
         "PAID_MATCH_WARNING": "Paid match! Are you sure you want to join this match?",
-        "CANCEL": "Cancel"
+        "CANCEL": "Cancel",
+        "OBSERVE": "Observe"
     },
     "PLAYERS_LIST": {
         "NAME": "Name",

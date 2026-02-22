@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, HostListener, OnInit, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router, RouterModule } from '@angular/router';
@@ -23,8 +23,7 @@ import { LoginComponent } from '@app/shared/components/login/login.component';
 import { LogoComponent } from '@app/shared/components/logo/logo.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { LocalizedFieldPipe } from '@app/shared/pipes/localized-field.pipe';
-// import { th } from 'date-fns/locale';
-import { map, forkJoin, firstValueFrom, of} from 'rxjs';
+import { map, forkJoin, firstValueFrom, of } from 'rxjs';
 
 export interface OngoingGames {
     name: string;
@@ -48,15 +47,13 @@ export interface WaitingGames {
     standalone: true,
     imports: [AppMaterialModule, LogoComponent, LoginComponent, CommonModule, FormsModule, ErrorMessageComponent, RouterModule, TranslateModule, LocalizedFieldPipe],
 })
-export class JoinMatchComponent implements OnInit {
+export class JoinMatchComponent implements OnInit, OnDestroy {
     accessCodeError: boolean = false;
     errorMessage: string = '';
     accessCode: string = '';
     maxAccessCodeLength: number = 4;
     currentMatches: CurrentMatchesDto[] = [];
-
-    // quizzes: { quizName: string; matchType: string }[] = [];
-
+    isLoading: boolean = true;
 
     @ViewChild('certitudeToEnterGame') certitudeToEnterGame!: TemplateRef<any>;
     @ViewChild('confirmJoinMatchDialog') confirmJoinMatchDialog!: TemplateRef<any>;
@@ -81,11 +78,12 @@ export class JoinMatchComponent implements OnInit {
 
     ngOnInit(): void {
         this.matchPlayerService.cleanCurrentMatch();
-        this.refreshGames();
-    
+        this.refreshGames().then(() => {
+            this.isLoading = false;
+        });
+
         this.socketService.on<JoinedMatchObserverDto>(SocketsOnEvents.JoinedMatchObserver, (joinedMatchObserverDto) => {
             if (joinedMatchObserverDto.addedObserverName === this.accountService.account.pseudonym) {
-                console.log(joinedMatchObserverDto.match.timer)
                 this.accountService.isInGame = true;
                 this.matchPlayerService.setCurrentMatch(
                     new Match(joinedMatchObserverDto.match),
@@ -103,8 +101,15 @@ export class JoinMatchComponent implements OnInit {
                 this.matchPlayerService.match.observers = joinedMatchObserverDto.match.observers;
             }
         });
+
+        this.socketService.on(SocketsOnEvents.MatchListUpdated, () => {
+            this.refreshGames();
+        });
     }
 
+    ngOnDestroy(): void {
+        this.socketService.removeListener(SocketsOnEvents.MatchListUpdated);
+    }
 
     async refreshGames() {
         return new Promise<void>((resolve) => {
@@ -121,13 +126,11 @@ export class JoinMatchComponent implements OnInit {
 
     async getForbidenCodes(): Promise<string[]> {
         await this.refreshGames();
-    
-        // First forbidden list
+
         const firstForbiddenList = this.currentMatches
             .filter(match => !this.organiserIsFriend(match.managerId) && match.isFriendMatch)
             .map(match => match.accessCode);
-    
-        // Second forbidden list (from asynchronous operations)
+
         const secondForbiddenList = await firstValueFrom(
             forkJoin(
                 this.currentMatches.map(match =>
@@ -135,11 +138,11 @@ export class JoinMatchComponent implements OnInit {
                         ? forkJoin(
                               match.players.map(player =>
                                   this.accountService.getAccountByPseudonym(player.name).pipe(
-                                      map(account => account.userId) // Extract userId from the account
+                                      map(account => account.userId)
                                   )
                               )
                           )
-                        : of([]) // Fallback if no players
+                        : of([])
                     ).pipe(
                         map(userIds =>
                             userIds.some(userId => this.accountListenerService.UsersBlockingMe.includes(userId)) ? match.accessCode : null
@@ -147,15 +150,12 @@ export class JoinMatchComponent implements OnInit {
                     )
                 )
             ).pipe(
-                map(results => results.filter(code => code !== null)) // Filter out null values
+                map(results => results.filter(code => code !== null))
             )
-        ).then(results => results.filter((code): code is string => code !== null)); // Additional filtering
-        
-        console.log("here is secondForbiddenList", ...secondForbiddenList);
+        ).then(results => results.filter((code): code is string => code !== null));
+
         return [...firstForbiddenList, ...secondForbiddenList];
     }
-
-
 
     getWaitingGames() {
         return this.currentMatches.filter((match) => !match.hasStarted) || [];
@@ -170,7 +170,7 @@ export class JoinMatchComponent implements OnInit {
 
         if (this.accessCode.trim() === '') {
             this.accessCodeError = true;
-            this.errorMessage = 'Le code d’accès ne peut pas être vide.';
+            this.errorMessage = 'Le code d\u2019acc\u00e8s ne peut pas \u00eatre vide.';
             return;
         }
 
@@ -180,11 +180,11 @@ export class JoinMatchComponent implements OnInit {
             return;
         }
 
-        const match = this.getWaitingGames().find((match) => match.accessCode === this.accessCode);
+        const match = this.getWaitingGames().find((m) => m.accessCode === this.accessCode);
 
         if (!match) {
             this.accessCodeError = true;
-            this.errorMessage = 'Aucun match trouvé avec ce code d’accès.';
+            this.errorMessage = 'Aucun match trouvé avec ce code d\u2019acc\u00e8s.';
             return;
         }
 
@@ -195,7 +195,6 @@ export class JoinMatchComponent implements OnInit {
                 return;
             }
             const dialogRef = this.dialog.open(this.confirmJoinMatchDialog);
-            console.log("Match priced detected");
 
             dialogRef.afterClosed().subscribe((result) => {
                 if (result === 'confirm') {
@@ -207,8 +206,6 @@ export class JoinMatchComponent implements OnInit {
                 }
             });
         } else {
-            console.log("Match priced not detected");
-
             this.matchCommunicationService.joinMatch(this.accessCode, this.accountService.account.pseudonym).subscribe({
                 next: () => {
                     this.handleSuccessfulJoin(this.accessCode);
@@ -242,7 +239,6 @@ export class JoinMatchComponent implements OnInit {
                 return;
             }
             const dialogRef = this.dialog.open(this.confirmJoinMatchDialog);
-            console.log("Attempting to join a priced match");
 
             dialogRef.afterClosed().subscribe((result) => {
                 if (result === 'confirm') {
@@ -263,7 +259,7 @@ export class JoinMatchComponent implements OnInit {
     }
 
     async joinAsObserver(accessCode: string): Promise<void> {
-        if ((await this.getForbidenCodes()).includes(this.accessCode)) {
+        if ((await this.getForbidenCodes()).includes(accessCode)) {
             this.accessCodeError = true;
             this.errorMessage = 'Ceci est un jeu d\'amis ou un joueur vous a bloqué, vous ne pouvez pas accéder.';
             return;
@@ -278,7 +274,6 @@ export class JoinMatchComponent implements OnInit {
         this.joinMatchService.playerName = this.accountService.account.pseudonym;
         this.accountService.isInGame = true;
         const match = this.currentMatches.find((m) => m.accessCode === accessCode);
-
 
         this.socketService.on<NewPlayerDto>(SocketsOnEvents.NewPlayer, (newPlayerDto) => {
             this.matchPlayerService.match.accessCode = accessCode;
@@ -295,8 +290,6 @@ export class JoinMatchComponent implements OnInit {
             if (match.isPricedMatch) {
                 this.accountService.updateMoney(this.accountService.money - match.priceMatch).subscribe((updatedMoneyAccount) => {
                     this.accountService.money = updatedMoneyAccount.money;
-                    console.log(this.accountService.money)
-                    console.log(match.priceMatch)
                 });
             }
         }
@@ -306,31 +299,4 @@ export class JoinMatchComponent implements OnInit {
             name: this.accountService.account.pseudonym,
         });
     }
-
-    // getQuizzesFromMatches(): { quizName: string; matchType: string }[] {
-    //     const waitingGames = this.getWaitingGames().map(match => ({
-    //         quizName: match.quizName,
-    //         matchType: 'Waiting'
-    //     }));
-    
-    //     const ongoingGames = this.getOnGoingGames().map(match => ({
-    //         quizName: match.quizName,
-    //         matchType: 'Ongoing'
-    //     }));
-    
-    //     const quizzes = [...waitingGames, ...ongoingGames];
-    //     console.log('Quizzes retrieved:', quizzes); // Log ici
-    //     return quizzes;
-    // }
-
-    // getGameDetails(quizTitle: string): void {
-    //     this.gameService.getGameByTitle(quizTitle).subscribe({
-    //         next: (game) => {
-    //             console.log('Game details:', game);
-    //         },
-    //         error: (err) => {
-    //             console.error('Error fetching game by title:', err);
-    //         }
-    //     });
-    // }
 }

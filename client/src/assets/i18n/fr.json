@@ -151,7 +151,9 @@
         "NO_GAME_WAITING": "Aucune partie en attente ",
         "ALREADY_STARTED": "Déjà commencé ",
         "NO_GAME_STARTED": "Aucune partie en cours ",
-        "ACCESS_CODE": "Code d’accès"
+        "ACCESS_CODE": "Code d’accès",
+        "EMPTY_WAITING_SUBTITLE": "Les nouvelles parties apparaîtront ici automatiquement",
+        "EMPTY_ONGOING_SUBTITLE": "Les parties en cours apparaîtront ici quand elles commenceront"
     },
     "STATISTICS": {
         "TITLE": "Statistiques ",
@@ -314,7 +316,8 @@
         "LOCKED_GAME": "Partie verrouillée",
         "CONFIRM": "Confirmer",
         "PAID_MATCH_WARNING": "Match payant ! Voulez-vous vraiment rejoindre ce match ?",
-        "CANCEL": "Annuler"
+        "CANCEL": "Annuler",
+        "OBSERVE": "Observer"
     },
     "PLAYERS_LIST": {
         "NAME": "Nom",

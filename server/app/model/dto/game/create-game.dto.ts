@@ -12,8 +12,14 @@ export class CreateGameDto {
     title: string;
 
     @ApiProperty()
+    titleEn?: string;
+
+    @ApiProperty()
     @IsString()
     description: string;
+
+    @ApiProperty()
+    descriptionEn?: string;
 
     @ApiProperty()
     @IsNumber()

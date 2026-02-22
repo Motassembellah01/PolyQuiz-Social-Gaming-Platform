@@ -85,6 +85,7 @@ export class SocketHandlerGateway {
                 nbPlayersJoined: match.nbPlayersJoined,
             };
             this.server.to(parsedPlayer.roomId).emit(SocketsEmitEvents.NewPlayer, newPlayerDto);
+            this.broadcastMatchListUpdate();
         } catch (error) {
             this.matchService.logger.log('an error occurred while getting players list', error);
         }
@@ -105,6 +106,7 @@ export class SocketHandlerGateway {
                 match,
                 addedObserverName: observer.name,
             });
+            this.broadcastMatchListUpdate();
         } catch (error) {
             this.matchService.logger.log('an error occurred while getting players list', error);
         }
@@ -276,6 +278,7 @@ export class SocketHandlerGateway {
             if (match.isTeamMatch) match.teams = match.teams?.filter((team) => team.players.length > 0);
             match.begin = Utils.formatDateToReadable();
             this.server.to(room.id).emit(SocketsEmitEvents.JoinBegunMatch, match);
+            this.broadcastMatchListUpdate();
         } catch (error) {
             this.matchService.logger.log('an error occurred', error);
         }
@@ -313,6 +316,7 @@ export class SocketHandlerGateway {
                 nbPlayersJoined: match.nbPlayersJoined,
             };
             this.server.to(player.roomId).emit(SocketsEmitEvents.PlayerRemoved, newPlayerDto);
+            this.broadcastMatchListUpdate();
             if (player.hasPlayerLeft) {
                 client.leave(player.roomId);
             }
@@ -583,5 +587,11 @@ export class SocketHandlerGateway {
     async sendMoneyUpdateInRoom(accessCode: string, winnerPlayerName: string) {
         const arrayIdsAndMoney = await this.accountService.getUserIdAndMoney();
         this.server.to(accessCode).emit(SocketsEmitEvents.UpdateMoney, { array: arrayIdsAndMoney, winnerPlayerName });
+    }
+
+    broadcastMatchListUpdate(): void {
+        if (this.server) {
+            this.server.emit(SocketsEmitEvents.MatchListUpdated);
+        }
     }
 }

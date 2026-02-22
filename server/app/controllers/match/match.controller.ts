@@ -350,6 +350,7 @@ export class MatchController {
             await this.socketHandler.sendMoneyUpdateInRoom(match.accessCode, winnerPlayerName);
             this.socketHandler.sendWinnerNameInRoom(match.accessCode, winnerPlayerName);
             this.socketHandler.leaveAllRoom(accessCode);
+            this.socketHandler.broadcastMatchListUpdate();
             res.status(HttpStatus.OK).json({ winnerPlayerName });
             this.logger.log(`Match with accessCode ${accessCode} deleted successfully`);
         } catch (error) {
@@ -386,8 +387,8 @@ export class MatchController {
     createMatch(@Body() createMatchDto: CreateMatchDto, @Res() res: Response) {
         try {
             const match: Match = this.matchService.createMatch(createMatchDto);
-            console.log(match);
             res.status(HttpStatus.CREATED).send(match);
+            this.socketHandler.broadcastMatchListUpdate();
         } catch (e) {
             this.logger.log('an error occurred', e);
             res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(e.message);
@@ -405,6 +406,7 @@ export class MatchController {
         try {
             this.matchService.setAccessibility(accessCode);
             response.status(HttpStatus.OK).send();
+            this.socketHandler.broadcastMatchListUpdate();
         } catch (error) {
             response.status(HttpStatus.NOT_FOUND).send(error.message);
         }
