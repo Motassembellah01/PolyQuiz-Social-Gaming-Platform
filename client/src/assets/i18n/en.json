@@ -37,6 +37,7 @@
     },
     "NAV_BUTTONS": {
         "HOME": "Home",
+        "BACK": "Go back",
         "CREATE_GAME": "Create a game",
         "IMPORT_GAME": "Import a game",
         "PREVIOUS_PAGE": "Previous page",

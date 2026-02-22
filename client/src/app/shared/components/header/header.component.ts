@@ -1,9 +1,9 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { AfterViewChecked, Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { AccountService } from '@app/core/http/services/account-service/account.service';
 import { ChatRoomMessageData } from '@app/core/interfaces/chat-interfaces/chatroom-message-data';
 import { JoinedChatroom } from '@app/core/interfaces/chat-interfaces/joined-chatroom';
@@ -16,7 +16,7 @@ import { FriendsComponent } from '@app/shared/components/friends/friends.compone
 import { GeneralChatComponent } from '@app/shared/components/general-chat/general-chat.component';
 import { ProfileComponent } from '@app/shared/components/profile/profile.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { filter, Subscription } from 'rxjs';
 import { ShopComponent } from '@app/shared/components/shop/shop.component';
 
 @Component({
@@ -54,22 +54,27 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewChecked {
     isModifyOpen: boolean = false;
     isSearchOpen: boolean = false;
     newChannelName: string = '';
-    newMessage: string = ''; // Property for new message input
-    avatarUrl = 'path-to-avatar-image'; // Adjust the path to your avatar
+    newMessage: string = '';
+    avatarUrl = 'path-to-avatar-image';
     channels: string[] = [];
     joinedChannels: JoinedChatroom[] = [];
-    currentChannel: JoinedChatroom | null = null; // Add this property
+    currentChannel: JoinedChatroom | null = null;
     searchTerm: string = '';
     filteredChannels: string[] = [];
+    canGoBack: boolean = false;
 
+    private navigationHistory: string[] = [];
     private messageSubscription: Subscription = new Subscription();
     private joinedChannelsSubscription: Subscription = new Subscription();
+    private routerSubscription: Subscription = new Subscription();
 
     constructor(
         public generalChatService: GeneralChatService,
         private timeService: TimeService,
         public accountService: AccountService,
         public accountListenerService: AccountListenerService,
+        private location: Location,
+        private router: Router,
     ) {}
 
     @HostListener('document:keydown.enter', ['$event'])
@@ -88,10 +93,9 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.filteredChannels = [...this.channels];
         this.messageSubscription = this.generalChatService.channels$.subscribe((channels) => {
             this.channels = channels;
-            this.currentChannel = this.generalChatService.currentChannel; // Update currentChannel from the service
+            this.currentChannel = this.generalChatService.currentChannel;
         });
         this.joinedChannelsSubscription = this.generalChatService.joinedChannels$.subscribe((c: JoinedChatroom[]) => (this.joinedChannels = c));
-        // this.generalChatService.getChannels(); We'll get the channels with the getUser
         this.generalChatService.isTyping = false;
         if (this.sendEvent) {
             this.sendEvent.subscribe((event: KeyboardEvent) => {
@@ -99,6 +103,13 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewChecked {
             });
         }
         console.log(this.accountService.account);
+
+        this.routerSubscription = this.router.events
+            .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+            .subscribe((event: NavigationEnd) => {
+                this.navigationHistory.push(event.urlAfterRedirects);
+                this.canGoBack = this.navigationHistory.length > 1;
+            });
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const isChat: boolean = (window as any).chatAPI?.isChatProcess();
@@ -127,6 +138,7 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewChecked {
     ngOnDestroy(): void {
         this.messageSubscription.unsubscribe();
         this.joinedChannelsSubscription.unsubscribe();
+        this.routerSubscription.unsubscribe();
     }
 
     changeTypingState(): void {
@@ -235,5 +247,14 @@ export class HeaderComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     navToHome() {
         this.accountService.isInHomePage = true;
+    }
+
+    goBack() {
+        if (this.canGoBack) {
+            this.navigationHistory.pop();
+            this.location.back();
+        } else {
+            this.router.navigateByUrl('/home');
+        }
     }
 }

@@ -1,14 +1,32 @@
-<div class="header">
-    <div class="header-buttons">
+<div class="header"
+    [ngClass]="{
+        'header-light': accountService.theme === 'light',
+        'header-dark': accountService.theme === 'dark',
+        'header-christmas': accountService.theme === 'christmas',
+        'header-valentines': accountService.theme === 'valentines',
+    }">
+    <div class="header-left" *ngIf="!accountService.isInGame && !accountService.isInHomePage && accountService.account.avatarUrl">
         <button
-            *ngIf="!accountService.isInGame && !accountService.isInHomePage && accountService.account.avatarUrl"
-            class="nav-button background-turquoise home"
-            mat-raised-button
+            *ngIf="canGoBack"
+            mat-icon-button
+            class="nav-icon-btn back-btn"
+            (click)="goBack()"
+            [matTooltip]="'NAV_BUTTONS.BACK' | translate"
+        >
+            <i class="material-icons nav-icon">arrow_back</i>
+        </button>
+        <button
+            mat-button
+            class="nav-icon-btn home-btn"
             routerLink="/home"
             (click)="navToHome()"
+            [matTooltip]="'NAV_BUTTONS.HOME' | translate"
         >
-            {{ 'NAV_BUTTONS.HOME' | translate }}
+            <i class="material-icons nav-icon">home</i>
+            <span class="nav-label">{{ 'NAV_BUTTONS.HOME' | translate }}</span>
         </button>
+    </div>
+    <div class="header-right">
         <div *ngIf="!accountService.isInGame" class="shop-group">
             <div class="cookie-display">
                 <span class="money-amount bold">{{ accountService.money }}</span>

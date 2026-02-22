@@ -29,6 +29,10 @@ export class AppComponent implements OnInit {
         private friendService: FriendService
     ) {}
 
+    get isHeaderVisible(): boolean {
+        return this.showHeader && !!this.accountService.account && !!this.accountService.account.avatarUrl;
+    }
+
     get isSectionOpen(): boolean {
         return (
             (this.generalChatService.isChatOpen && !this.generalChatService.isChatClosed) ||

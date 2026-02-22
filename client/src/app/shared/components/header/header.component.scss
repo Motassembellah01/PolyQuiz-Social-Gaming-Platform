@@ -1,9 +1,115 @@
 .header {
     display: flex;
-    justify-content: flex-end;
-    padding: 10px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    height: 75px;
+    box-sizing: border-box;
     position: relative;
-    transition: transform 0.3s ease-in-out;
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.header-light {
+    background: rgba(255, 255, 255, 0.82);
+}
+
+.header-dark {
+    background: rgba(44, 45, 49, 0.85);
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.header-christmas {
+    background: rgba(0, 45, 36, 0.85);
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.header-valentines {
+    background: rgba(232, 189, 181, 0.85);
+    border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
+.nav-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 10px !important;
+    cursor: pointer;
+    transition: transform 0.15s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    min-width: auto !important;
+    padding: 6px 12px !important;
+    height: 40px;
+}
+
+.nav-icon-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.nav-icon-btn:active {
+    transform: scale(0.97);
+}
+
+.back-btn {
+    background-color: rgba(59, 130, 246, 0.08);
+    width: 40px;
+    padding: 6px !important;
+}
+
+.back-btn:hover {
+    background-color: rgba(59, 130, 246, 0.16);
+}
+
+.back-btn .nav-icon {
+    color: #3b82f6;
+    font-size: 1.4rem;
+}
+
+.home-btn {
+    background-color: rgba(14, 188, 204, 0.1);
+    gap: 4px;
+}
+
+.home-btn:hover {
+    background-color: rgba(14, 188, 204, 0.2);
+}
+
+.home-btn .nav-icon {
+    color: #0ebccc;
+    font-size: 1.4rem;
+}
+
+.nav-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #0ebccc;
+    margin: 0 !important;
+    margin-top: 0 !important;
+    letter-spacing: 0.02em;
+}
+
+.nav-icon {
+    font-size: 1.4rem;
+    position: static !important;
+    margin: 0 !important;
+    margin-bottom: 0 !important;
+    left: auto !important;
+    transition: color 0.2s ease;
 }
 
 .profile {
@@ -12,8 +118,8 @@
 
 .shop-group {
     display: flex;
+    align-items: center;
     margin-left: 10px;
-    margin-top: 0.6rem;
     gap: 2px;
 }
 
@@ -32,7 +138,6 @@
 
 .header-btn {
     margin-left: 6px;
-    margin-top: 0.6rem;
     min-width: 40px !important;
     padding: 0 8px !important;
     border-radius: 8px !important;
@@ -73,10 +178,10 @@
     justify-items: center;
     width: 320px;
     padding: 16px;
-    height: calc(100vh - 60px);
+    height: calc(100vh - 75px);
     z-index: 2;
     position: fixed;
-    top: 60px;
+    top: 75px;
     right: 0;
     border-left: 1px solid rgba(0, 0, 0, 0.08);
     overflow-y: auto;
@@ -106,12 +211,15 @@
     transform: translateX(0);
 }
 
-.header-buttons {
+.header-buttons,
+.header-right {
     display: flex;
+    align-items: center;
     transition: transform 0.3s ease-in-out;
 }
 
-.header-buttons.move {
+.header-buttons.move,
+.header-right.move {
     transform: translateX(-300px);
 }
 
@@ -441,11 +549,6 @@ button.toggled {
     border: 1px solid #09304d;
 }
 
-.home {
-    margin-top: 10px;
-}
-
-
 .color-valentines {
     background-color: #e8bdb5;
 }
@@ -462,12 +565,6 @@ button.toggled {
 
 .friends-box {
     width: 320px;
-}
-
-.nav-button {
-    border: none;
-    margin-right: 0.5rem;
-    font-size: 1.5rem;
 }
 
 .money-amount {
