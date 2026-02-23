@@ -1,23 +1,33 @@
-<app-logo></app-logo>
-<nav class="absolute">
-    <button class="nav-button background-beige" mat-raised-button routerLink="/administration/create-game">
-        {{ 'NAV_BUTTONS.CREATE_GAME' | translate }}
-    </button>
-    <button class="nav-button background-beige" (click)="spreadClickOnImport()" mat-raised-button>
-        {{ 'NAV_BUTTONS.IMPORT_GAME' | translate }}
-        <input type="file" id="gameImport" accept=".json" (change)="import($event)" #importButton />
-    </button>
-</nav>
+<div class="admin-page"
+    [ngClass]="{
+        'theme-dark': accountService.theme === 'dark',
+        'theme-christmas': accountService.theme === 'christmas',
+        'theme-valentines': accountService.theme === 'valentines'
+    }">
 
-<div class="body-container flex-center">
-    <h1
-        [ngClass]="{
-            'color-blue': this.accountService.theme === 'light' || this.accountService.theme === 'valentines',
-            'color-brown': this.accountService.theme === 'christmas' || this.accountService.theme === 'dark',
-        }"
-    >
-        {{ 'TITLES.ADMIN' | translate }}
-    </h1>
-    <app-error-message></app-error-message>
-    <app-paginator [inAdminVue]="true"></app-paginator>
+    <div class="hero-section">
+        <div class="hero-badge">
+            <span class="material-icons">admin_panel_settings</span>
+        </div>
+        <h1 class="hero-title">{{ 'TITLES.ADMIN' | translate }}</h1>
+        <p class="hero-subtitle">{{ 'TITLES.ADMIN_SUBTITLE' | translate }}</p>
+        <div class="hero-actions">
+            <button class="action-btn primary-btn" routerLink="/administration/create-game">
+                <span class="material-icons btn-icon">add_circle_outline</span>
+                <span>{{ 'NAV_BUTTONS.CREATE_GAME' | translate }}</span>
+            </button>
+            <button class="action-btn secondary-btn" (click)="spreadClickOnImport()">
+                <span class="material-icons btn-icon">file_upload</span>
+                <span>{{ 'NAV_BUTTONS.IMPORT_GAME' | translate }}</span>
+                <input type="file" id="gameImport" accept=".json" (change)="import($event)" #importButton />
+            </button>
+        </div>
+    </div>
+
+    <div class="games-section">
+        <app-error-message></app-error-message>
+        <app-paginator [inAdminVue]="true"></app-paginator>
+    </div>
 </div>
+
+<app-logo></app-logo>

@@ -102,7 +102,10 @@
         "ENTER_TEAM_NAME": "Entrez le nom de l'équipe",
         "VALID_TEAMS": "Chaque équipe doit obligatoirement être composée de deux joueurs. Les équipes vides seront ignorées.",
         "MIN_TEAM_PLAYERS": "Un minimum de quatre joueurs est requis pour démarrer une partie en équipe.",
-        "PLAYERS_TO_OBSERVE": "Choisir un joueur à observer"
+        "PLAYERS_TO_OBSERVE": "Choisir un joueur à observer",
+        "ADMIN_SUBTITLE": "Gérez, créez et organisez votre bibliothèque de jeux",
+        "NO_GAMES": "Aucun jeu pour le moment",
+        "NO_GAMES_SUBTITLE": "Créez votre premier jeu ou importez-en un pour commencer"
     },
     "QUESTION_FORM": {
         "POINTS": "Points de la question ",
@@ -129,7 +132,12 @@
     },
     "GAME_PANEL": {
         "MODIFICATION_DATE": "Dernière modification : ",
-        "CREATOR_NAME": "Pseudonym du créateur : "
+        "CREATOR_NAME": "Pseudonym du créateur : ",
+        "EDIT": "Modifier le jeu",
+        "EXPORT": "Exporter en JSON",
+        "DELETE": "Supprimer le jeu",
+        "SHOW": "Rendre visible",
+        "HIDE": "Masquer aux joueurs"
     },
     "HISTORY_PROFILE": {
         "TITLE": "Mon historique ",

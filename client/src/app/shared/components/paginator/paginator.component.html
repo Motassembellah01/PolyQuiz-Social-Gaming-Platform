@@ -135,10 +135,16 @@
     </div>
 </div>
 
-<div *ngIf="inAdminVue">
-    <mat-list class="games-container">
+<div *ngIf="inAdminVue" class="admin-view">
+    <div class="games-container">
         <app-game-panel *ngFor="let filteredGame of dataSource.data" [gameDirective]="filteredGame.game"></app-game-panel>
-    </mat-list>
+    </div>
+
+    <div class="admin-empty-state" *ngIf="dataSource.data.length === 0">
+        <span class="material-icons admin-empty-icon">inventory_2</span>
+        <p class="admin-empty-title">{{ 'TITLES.NO_GAMES' | translate }}</p>
+        <p class="admin-empty-subtitle">{{ 'TITLES.NO_GAMES_SUBTITLE' | translate }}</p>
+    </div>
 
     <div class="paginator-container">
         <mat-paginator

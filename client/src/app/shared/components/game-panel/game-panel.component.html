@@ -1,17 +1,52 @@
-<div class="container">
-    <h2 class="bold">{{ gameDirective | localizedField:'title' }}</h2>
-    <div class="text">
-        <p class="italic">{{ 'GAME_PANEL.MODIFICATION_DATE' | translate }}{{ gameDirective.lastModification }}</p>
-        <p class="italic">{{ 'GAME_PANEL.CREATOR_NAME' | translate }}{{ creatorName }}</p>
-    </div>
-
-    <div class="icons relative">
-        <div *ngIf="accountService.account.pseudonym === creatorName">
-            <i class="material-icons visibility pointer" (click)="toggleVisibility()" *ngIf="isVisible; else notVisible">visibility</i>
+<div class="game-card-admin"
+    [ngClass]="{
+        'theme-dark': accountService.theme === 'dark',
+        'theme-christmas': accountService.theme === 'christmas',
+        'theme-valentines': accountService.theme === 'valentines'
+    }">
+    <div class="card-accent"></div>
+    <div class="card-body">
+        <div class="card-info">
+            <h3 class="game-title">{{ gameDirective | localizedField:'title' }}</h3>
+            <div class="game-meta">
+                <span class="meta-item">
+                    <span class="material-icons meta-icon">schedule</span>
+                    <span>{{ gameDirective.lastModification }}</span>
+                </span>
+                <span class="meta-divider"></span>
+                <span class="meta-item">
+                    <span class="material-icons meta-icon">person_outline</span>
+                    <span>{{ creatorName }}</span>
+                </span>
+            </div>
         </div>
-        <ng-template #notVisible><i class="material-icons visibility pointer" (click)="toggleVisibility()">visibility_off</i> </ng-template>
-        <i class="material-icons modify pointer" (click)="navigateModify()">edit</i>
-        <i class="material-icons export pointer" (click)="export()">file_download</i>
-        <i class="material-icons delete pointer" (click)="deleteGameWithConfirmation()">delete</i>
+        <div class="card-actions">
+            <button
+                *ngIf="accountService.account.pseudonym === creatorName"
+                class="action-icon-btn visibility-btn"
+                [class.active]="isVisible"
+                (click)="toggleVisibility()"
+                [matTooltip]="isVisible ? ('GAME_PANEL.HIDE' | translate) : ('GAME_PANEL.SHOW' | translate)">
+                <span class="material-icons">{{ isVisible ? 'visibility' : 'visibility_off' }}</span>
+            </button>
+            <button
+                class="action-icon-btn edit-btn"
+                (click)="navigateModify()"
+                [matTooltip]="'GAME_PANEL.EDIT' | translate">
+                <span class="material-icons">edit</span>
+            </button>
+            <button
+                class="action-icon-btn export-btn"
+                (click)="export()"
+                [matTooltip]="'GAME_PANEL.EXPORT' | translate">
+                <span class="material-icons">file_download</span>
+            </button>
+            <button
+                class="action-icon-btn delete-btn"
+                (click)="deleteGameWithConfirmation()"
+                [matTooltip]="'GAME_PANEL.DELETE' | translate">
+                <span class="material-icons">delete_outline</span>
+            </button>
+        </div>
     </div>
 </div>

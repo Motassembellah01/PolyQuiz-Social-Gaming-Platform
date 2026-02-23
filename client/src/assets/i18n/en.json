@@ -102,7 +102,10 @@
         "ENTER_TEAM_NAME": "Enter your team name ",
         "VALID_TEAMS": "Each team must have exactly two players. Empty teams will be ignored.",
         "MIN_TEAM_PLAYERS": "A minimum of four players is required to start a team game.",
-        "PLAYERS_TO_OBSERVE": "Choose a player to observe"
+        "PLAYERS_TO_OBSERVE": "Choose a player to observe",
+        "ADMIN_SUBTITLE": "Manage, create and organize your game library",
+        "NO_GAMES": "No games yet",
+        "NO_GAMES_SUBTITLE": "Create your first game or import one to get started"
     },
     "QUESTION_FORM": {
         "POINTS": "Points for the question ",
@@ -129,7 +132,12 @@
     },
     "GAME_PANEL": {
         "MODIFICATION_DATE": "Last modification : ",
-        "CREATOR_NAME": "Creator name : "
+        "CREATOR_NAME": "Creator name : ",
+        "EDIT": "Edit game",
+        "EXPORT": "Export as JSON",
+        "DELETE": "Delete game",
+        "SHOW": "Make visible",
+        "HIDE": "Hide from players"
     },
     "HISTORY_PROFILE": {
         "TITLE": "My history",
