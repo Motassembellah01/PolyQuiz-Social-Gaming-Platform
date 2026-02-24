@@ -6,28 +6,24 @@
     box-sizing: border-box;
     position: relative;
     transition: transform 0.3s ease-in-out, background-color 0.3s ease;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    background: transparent;
+    border-bottom: none;
 }
 
 .header-light {
-    background: rgba(255, 255, 255, 0.82);
+    background: transparent;
 }
 
 .header-dark {
-    background: rgba(44, 45, 49, 0.85);
-    border-bottom-color: rgba(255, 255, 255, 0.06);
+    background: transparent;
 }
 
 .header-christmas {
-    background: rgba(0, 45, 36, 0.85);
-    border-bottom-color: rgba(255, 255, 255, 0.06);
+    background: transparent;
 }
 
 .header-valentines {
-    background: rgba(232, 189, 181, 0.85);
-    border-bottom-color: rgba(0, 0, 0, 0.06);
+    background: transparent;
 }
 
 .header-left {
