@@ -95,3 +95,18 @@ app-chat {
     right: 16px;
     z-index: 1000;
 }
+
+:host-context(.dark-mode),
+:host-context(.christmas) {
+    .observer-indicator,
+    .score-label {
+        color: #d1d5db !important;
+    }
+}
+
+:host-context(.light-mode),
+:host-context(.valentines) {
+    .observer-indicator {
+        color: #374151 !important;
+    }
+}

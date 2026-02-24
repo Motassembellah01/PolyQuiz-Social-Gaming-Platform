@@ -50,3 +50,40 @@ button.buttons:disabled {
     border-radius: 15px;
     margin-top: 0.4rem;
 }
+
+:host-context(.dark-mode),
+:host-context(.christmas) {
+    h2,
+    .button,
+    .div-buttons,
+    .button.toggled {
+        color: #e5e7eb;
+    }
+
+    .button.toggled {
+        background-color: #4b5563;
+    }
+
+    button.buttons:disabled {
+        background-color: #4b5563 !important;
+        color: #d1d5db;
+    }
+}
+
+:host-context(.valentines) {
+    h2,
+    .button,
+    .div-buttons,
+    .button.toggled {
+        color: #4a1f2d;
+    }
+
+    .button.toggled {
+        background-color: #f0d7e2;
+    }
+
+    button.buttons:disabled {
+        background-color: #f0d7e2 !important;
+        color: #6b1f3a;
+    }
+}

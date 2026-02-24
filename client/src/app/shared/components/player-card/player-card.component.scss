@@ -142,3 +142,20 @@ $success: #00b894;
     0%, 100% { opacity: 0.5; }
     50% { opacity: 1; }
 }
+
+:host-context(.light-mode),
+:host-context(.valentines) {
+    .pc-card {
+        background: rgba(255, 255, 255, 0.72);
+        border-color: rgba(17, 24, 39, 0.12);
+    }
+
+    .pc-name {
+        color: #1f2937;
+    }
+
+    .pc-avatar-placeholder i,
+    .pc-kick-btn {
+        color: rgba(31, 41, 55, 0.72);
+    }
+}

@@ -646,3 +646,79 @@ $radius-full: 9999px;
 .btn-text {
     white-space: nowrap;
 }
+
+:host-context(.dark-mode),
+:host-context(.christmas) {
+    .panel-title,
+    .user-name,
+    .tab-btn:hover:not(.active) {
+        color: #e5e7eb;
+    }
+
+    .search-icon,
+    .search-input,
+    .search-input::placeholder,
+    .user-label,
+    .empty-title,
+    .empty-subtitle,
+    .tab-btn,
+    .btn-outline-danger,
+    .btn-ghost,
+    .search-clear {
+        color: #9ca3af;
+    }
+
+    .search-input {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .tab-nav {
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    .tab-btn.active {
+        background: rgba(255, 255, 255, 0.1);
+        color: #c7d2fe;
+    }
+
+    .user-card,
+    .blocked-card {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+}
+
+:host-context(.valentines) {
+    .panel-title,
+    .user-name {
+        color: #4a1f2d;
+    }
+
+    .search-icon,
+    .search-input::placeholder,
+    .user-label,
+    .empty-title,
+    .empty-subtitle,
+    .tab-btn,
+    .btn-outline-danger,
+    .btn-ghost,
+    .search-clear {
+        color: #8b5a6b;
+    }
+
+    .search-input {
+        color: #4a1f2d;
+        background: rgba(255, 255, 255, 0.75);
+        border-color: rgba(190, 18, 60, 0.14);
+    }
+
+    .tab-nav {
+        background: rgba(190, 18, 60, 0.08);
+    }
+
+    .tab-btn.active {
+        background: rgba(255, 255, 255, 0.85);
+        color: #9d174d;
+    }
+}

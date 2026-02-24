@@ -74,3 +74,17 @@ app-chat {
 .abandon  {
     margin-top: -0.4rem;
 }
+
+:host-context(.dark-mode),
+:host-context(.christmas) {
+    .observer-indicator {
+        color: #d1d5db !important;
+    }
+}
+
+:host-context(.light-mode),
+:host-context(.valentines) {
+    .observer-indicator {
+        color: #374151 !important;
+    }
+}

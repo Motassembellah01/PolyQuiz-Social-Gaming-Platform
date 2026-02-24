@@ -20,7 +20,6 @@ import { DialogTransitionService } from '@app/core/services/dialog-transition-se
 import { MatchPlayerService } from '@app/core/services/match-player-service/match-player.service';
 import { ListenerManagerService } from '@app/core/websocket/services/listener-manager/listener-manager.service';
 import { AppMaterialModule } from '@app/modules/material.module';
-import { LogoComponent } from '@app/shared/components/logo/logo.component';
 import { PlayerCardComponent } from '@app/shared/components/player-card/player-card.component';
 import { TransitionDialogComponent } from '@app/shared/components/transition-dialog/transition-dialog.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -37,7 +36,7 @@ import { timer } from 'rxjs';
     templateUrl: './manager-waiting-room.component.html',
     styleUrls: ['./manager-waiting-room.component.scss'],
     standalone: true,
-    imports: [AppMaterialModule, LogoComponent, PlayerCardComponent, CommonModule, ClipboardModule, TranslateModule],
+    imports: [AppMaterialModule, PlayerCardComponent, CommonModule, ClipboardModule, TranslateModule],
 })
 export class ManagerWaitingRoomComponent implements OnInit, OnDestroy {
     waitingRoomIsLocked: boolean = false;

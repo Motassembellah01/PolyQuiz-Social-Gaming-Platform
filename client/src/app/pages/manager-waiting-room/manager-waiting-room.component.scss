@@ -1,33 +1,261 @@
-/* ═══════════════════════════════════════════════════════════════
-   Manager Waiting Room — Premium Design System
-   ═══════════════════════════════════════════════════════════════ */
-
 $primary: #6c5ce7;
 $primary-light: #a29bfe;
 $accent: #00cec9;
-$accent-glow: rgba(0, 206, 201, 0.4);
+$accent-glow: rgba(0, 206, 201, 0.35);
 $danger: #ff6b6b;
-$danger-hover: #ee5a24;
 $warning: #fdcb6e;
 $success: #00b894;
-$surface: rgba(255, 255, 255, 0.08);
-$surface-solid: rgba(255, 255, 255, 0.12);
-$text-primary: #ffffff;
-$text-secondary: rgba(255, 255, 255, 0.7);
-$glass-bg: rgba(255, 255, 255, 0.06);
-$glass-border: rgba(255, 255, 255, 0.12);
-$card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+$text: #ffffff;
+$text-dim: rgba(255, 255, 255, 0.55);
+$glass: rgba(255, 255, 255, 0.05);
+$glass-border: rgba(255, 255, 255, 0.1);
+$glass-hover: rgba(255, 255, 255, 0.1);
 
-/* ── Backdrop ── */
-.mwr-backdrop {
-    position: fixed;
-    inset: 0;
-    background: linear-gradient(135deg, #0c0c1d 0%, #1a1a3e 40%, #2d1b69 70%, #0c0c1d 100%);
+/* ═══════════════════════════════════════════
+   Host — seamless full-bleed background
+   ═══════════════════════════════════════════ */
+:host {
+    display: block;
+    margin-top: -75px;
+    padding: 0;
+    min-height: 100vh;
+    background: linear-gradient(160deg, #080818 0%, #12122e 30%, #1e1050 55%, #2a1060 75%, #12122e 100%);
+    position: relative;
     overflow: hidden;
-    z-index: 0;
 }
 
-/* ── Floating Particles ── */
+/* Theme bridge: keep the waiting room visuals in sync with app-level theme classes */
+:host-context(.light-mode) {
+    .mwr-scene {
+        background: linear-gradient(160deg, #f6f8ff 0%, #e9efff 35%, #f2fbff 100%);
+    }
+
+    .mwr-orb-1 {
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.38) 0%, transparent 70%);
+    }
+
+    .mwr-orb-2 {
+        background: radial-gradient(circle, rgba(14, 188, 204, 0.32) 0%, transparent 70%);
+    }
+
+    .mwr-orb-3 {
+        background: radial-gradient(circle, rgba(249, 203, 168, 0.35) 0%, transparent 70%);
+    }
+
+    .mwr-btn-lock {
+        color: #1f2937;
+        border-color: rgba(17, 24, 39, 0.12);
+        background: rgba(255, 255, 255, 0.62);
+    }
+
+    .mwr-code-label,
+    .mwr-team-count,
+    .mwr-empty {
+        color: rgba(31, 41, 55, 0.65);
+    }
+
+    .mwr-copy-btn {
+        color: #1f2937;
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid rgba(17, 24, 39, 0.12);
+    }
+
+    .mwr-copy-btn:hover {
+        color: #111827;
+        background: rgba(255, 255, 255, 0.92);
+    }
+
+    .mwr-digit {
+        color: #1f2937;
+        background: linear-gradient(145deg, rgba(99, 102, 241, 0.2), rgba(99, 102, 241, 0.08));
+        border-color: rgba(99, 102, 241, 0.25);
+        text-shadow: none;
+    }
+
+    .mwr-players-panel,
+    .mwr-panel,
+    .mwr-team-card {
+        background: rgba(255, 255, 255, 0.68);
+        border-color: rgba(17, 24, 39, 0.1);
+    }
+
+    .mwr-panel-header > span,
+    .mwr-team-head h3 {
+        color: #1f2937;
+    }
+}
+
+:host-context(.dark-mode) {
+    .mwr-scene {
+        background: linear-gradient(160deg, #11131a 0%, #191c27 40%, #232838 100%);
+    }
+}
+
+:host-context(.christmas) {
+    .mwr-scene {
+        background: linear-gradient(160deg, #07271f 0%, #0a382d 45%, #154936 100%);
+    }
+
+    .mwr-orb-1 {
+        background: radial-gradient(circle, rgba(16, 185, 129, 0.35) 0%, transparent 70%);
+    }
+
+    .mwr-orb-2 {
+        background: radial-gradient(circle, rgba(239, 68, 68, 0.3) 0%, transparent 70%);
+    }
+
+    .mwr-orb-3 {
+        background: radial-gradient(circle, rgba(249, 203, 168, 0.32) 0%, transparent 70%);
+    }
+
+    .mwr-btn-lock.locked {
+        background: rgba(16, 185, 129, 0.2);
+        border-color: rgba(16, 185, 129, 0.35);
+        color: #34d399;
+    }
+
+    .mwr-status-pill {
+        background: rgba(16, 185, 129, 0.12);
+        border-color: rgba(16, 185, 129, 0.25);
+        color: #6ee7b7;
+    }
+
+    .mwr-badge {
+        background: linear-gradient(135deg, #10b981, #059669);
+    }
+}
+
+:host-context(.valentines) {
+    .mwr-scene {
+        background: linear-gradient(160deg, #f9e5e1 0%, #f4d4ce 40%, #ebc4be 100%);
+    }
+
+    .mwr-orb-1 {
+        background: radial-gradient(circle, rgba(236, 72, 153, 0.33) 0%, transparent 70%);
+    }
+
+    .mwr-orb-2 {
+        background: radial-gradient(circle, rgba(244, 114, 182, 0.28) 0%, transparent 70%);
+    }
+
+    .mwr-orb-3 {
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.22) 0%, transparent 70%);
+    }
+
+    .mwr-btn-lock {
+        color: #7f1d1d;
+        border-color: rgba(127, 29, 29, 0.2);
+        background: rgba(255, 255, 255, 0.45);
+    }
+
+    .mwr-btn-lock.locked {
+        background: rgba(236, 72, 153, 0.18);
+        border-color: rgba(236, 72, 153, 0.3);
+        color: #be185d;
+        box-shadow: 0 0 20px rgba(236, 72, 153, 0.15);
+    }
+
+    .mwr-code-label,
+    .mwr-team-count,
+    .mwr-empty {
+        color: rgba(127, 29, 29, 0.7);
+    }
+
+    .mwr-copy-btn {
+        color: #6b1f3a;
+        background: rgba(255, 255, 255, 0.74);
+        border: 1px solid rgba(127, 29, 29, 0.16);
+    }
+
+    .mwr-copy-btn:hover {
+        color: #4a1f2d;
+        background: rgba(255, 255, 255, 0.9);
+    }
+
+    .mwr-digit {
+        color: #6b1f3a;
+        background: linear-gradient(145deg, rgba(236, 72, 153, 0.22), rgba(236, 72, 153, 0.08));
+        border-color: rgba(236, 72, 153, 0.3);
+        text-shadow: none;
+    }
+
+    .mwr-players-panel,
+    .mwr-panel,
+    .mwr-team-card {
+        background: rgba(255, 255, 255, 0.52);
+        border-color: rgba(127, 29, 29, 0.12);
+    }
+
+    .mwr-panel-header > span,
+    .mwr-team-head h3 {
+        color: #6b1f3a;
+    }
+
+    .mwr-badge {
+        background: linear-gradient(135deg, #ec4899, #f472b6);
+    }
+}
+
+/* ═══════════════════════════════════════════
+   Scene — full viewport canvas
+   ═══════════════════════════════════════════ */
+.mwr-scene {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Ambient Orbs ── */
+.mwr-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    opacity: 0.35;
+}
+
+.mwr-orb-1 {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, $primary 0%, transparent 70%);
+    top: -5%;
+    right: -5%;
+    animation: orbFloat 20s ease-in-out infinite;
+}
+
+.mwr-orb-2 {
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, $accent 0%, transparent 70%);
+    bottom: -8%;
+    left: -5%;
+    animation: orbFloat 25s ease-in-out infinite reverse;
+}
+
+.mwr-orb-3 {
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, rgba(253, 203, 110, 0.5) 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: orbPulse 15s ease-in-out infinite;
+}
+
+@keyframes orbFloat {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(30px, -20px); }
+    50% { transform: translate(-15px, 25px); }
+    75% { transform: translate(20px, 15px); }
+}
+
+@keyframes orbPulse {
+    0%, 100% { opacity: 0.15; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 0.3; transform: translate(-50%, -50%) scale(1.3); }
+}
+
+/* ── Particles ── */
 .mwr-particles {
     position: absolute;
     inset: 0;
@@ -38,488 +266,276 @@ $card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 .particle {
     position: absolute;
     bottom: -10px;
-    width: 6px;
-    height: 6px;
+    width: 4px;
+    height: 4px;
     border-radius: 50%;
     background: $primary-light;
     opacity: 0;
-    animation: floatUp 8s ease-in-out infinite;
+    animation: floatUp linear infinite;
 
-    &:nth-child(odd) {
-        background: $accent;
-        width: 4px;
-        height: 4px;
-    }
-
-    &:nth-child(3n) {
-        background: $warning;
-        width: 3px;
-        height: 3px;
-    }
+    &:nth-child(odd) { background: $accent; width: 3px; height: 3px; }
+    &:nth-child(3n) { background: rgba($warning, 0.8); width: 2px; height: 2px; }
+    &:nth-child(5n) { background: rgba(255, 255, 255, 0.6); width: 2px; height: 2px; }
 }
 
 @keyframes floatUp {
-    0% {
-        transform: translateY(0) scale(0);
-        opacity: 0;
-    }
-    10% {
-        opacity: 0.6;
-    }
-    50% {
-        opacity: 0.3;
-    }
-    100% {
-        transform: translateY(-100vh) scale(1);
-        opacity: 0;
-    }
+    0% { transform: translateY(0) scale(0); opacity: 0; }
+    8% { opacity: 0.7; }
+    100% { transform: translateY(-100vh) scale(1); opacity: 0; }
 }
 
-/* ── Container ── */
-.mwr-container {
+/* ═══════════════════════════════════════════
+   Action Bar — top floating controls
+   ═══════════════════════════════════════════ */
+.mwr-action-bar {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     display: flex;
-    flex-direction: column;
-    height: 100vh;
-    padding: 1rem 2rem;
-    box-sizing: border-box;
-    overflow-y: auto;
-
-    &::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        background: $glass-border;
-        border-radius: 3px;
-    }
-}
-
-/* ── Header ── */
-.mwr-header {
-    display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: 0.75rem 0;
-    gap: 1rem;
+    padding: 85px 2.5rem 0;
     flex-shrink: 0;
 }
 
-.mwr-header-left,
-.mwr-header-right {
-    flex: 0 0 auto;
-}
-
-.mwr-header-center {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-}
-
-/* ── Buttons ── */
 .mwr-btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.6rem 1.4rem;
+    gap: 0.45rem;
+    padding: 0.55rem 1.2rem;
     border: none;
     border-radius: 12px;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
     letter-spacing: 0.02em;
 
-    i {
-        font-size: 1.2rem;
-    }
-
-    &::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), transparent);
-        opacity: 0;
-        transition: opacity 0.3s;
-    }
-
-    &:hover::before {
-        opacity: 1;
-    }
+    i { font-size: 1.1rem; }
 }
 
 .mwr-btn-cancel {
-    background: linear-gradient(135deg, $danger, darken($danger, 10%));
-    color: white;
-    box-shadow: 0 4px 15px rgba($danger, 0.35);
+    background: rgba($danger, 0.15);
+    color: $danger;
+    border: 1px solid rgba($danger, 0.25);
+    backdrop-filter: blur(12px);
 
     &:hover {
+        background: rgba($danger, 0.25);
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba($danger, 0.5);
-    }
-
-    &:active {
-        transform: translateY(0);
+        box-shadow: 0 4px 16px rgba($danger, 0.25);
     }
 }
 
 .mwr-btn-lock {
-    background: $glass-bg;
-    color: $text-primary;
+    background: $glass;
+    color: $text;
     border: 1px solid $glass-border;
     backdrop-filter: blur(12px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 
     &:hover {
-        background: $surface-solid;
+        background: $glass-hover;
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     }
 
     &.locked {
-        background: linear-gradient(135deg, $accent, darken($accent, 15%));
-        border-color: transparent;
-        box-shadow: 0 4px 20px $accent-glow;
+        background: rgba($accent, 0.15);
+        border-color: rgba($accent, 0.3);
+        color: $accent;
+        box-shadow: 0 0 20px rgba($accent, 0.15);
 
         &:hover {
-            box-shadow: 0 6px 25px rgba($accent, 0.6);
+            background: rgba($accent, 0.25);
+            box-shadow: 0 4px 20px rgba($accent, 0.3);
         }
     }
 }
 
-/* ── Access Code Card ── */
-.mwr-access-code-card {
-    background: $glass-bg;
-    backdrop-filter: blur(20px);
-    border: 1px solid $glass-border;
-    border-radius: 20px;
-    padding: 0.6rem 2rem;
+/* ═══════════════════════════════════════════
+   Central Stage — vertically centered content
+   ═══════════════════════════════════════════ */
+.mwr-stage {
+    position: relative;
+    z-index: 1;
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.2rem;
-    box-shadow: $card-shadow, inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    min-width: 280px;
+    justify-content: center;
+    padding: 1rem 2.5rem 2rem;
+    gap: 1.5rem;
+    min-height: 0;
+}
+
+/* ── Access Code Hero ── */
+.mwr-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+}
+
+.mwr-code-ring {
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.mwr-ring-track {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid rgba($primary-light, 0.12);
+}
+
+.mwr-ring-dot {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: $accent;
+    border-radius: 50%;
+    box-shadow: 0 0 12px $accent, 0 0 4px $accent;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: orbitDot 6s linear infinite;
+    transform-origin: 50% 110px;
+}
+
+@keyframes orbitDot {
+    0% { transform: translateX(-50%) rotate(0deg); }
+    100% { transform: translateX(-50%) rotate(360deg); }
 }
 
 .mwr-code-label {
-    font-size: 0.75rem;
-    font-weight: 600;
+    font-size: 0.7rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.15em;
-    color: $text-secondary;
+    letter-spacing: 0.2em;
+    color: $text-dim;
 }
 
-.mwr-code-value-row {
+.mwr-code-digits {
     display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.mwr-code-value {
-    display: flex;
-    gap: 0.35rem;
+    gap: 0.5rem;
 }
 
 .mwr-digit {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 2.8rem;
-    height: 3.2rem;
-    font-size: 1.8rem;
+    width: 3.5rem;
+    height: 4rem;
+    font-size: 2.2rem;
     font-weight: 800;
-    color: $text-primary;
-    background: linear-gradient(135deg, rgba($primary, 0.3), rgba($primary, 0.1));
-    border: 1px solid rgba($primary-light, 0.3);
-    border-radius: 10px;
-    animation: digitPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-    text-shadow: 0 0 20px rgba($primary-light, 0.5);
+    color: $text;
+    background: linear-gradient(145deg, rgba($primary, 0.25), rgba($primary, 0.08));
+    border: 1px solid rgba($primary-light, 0.25);
+    border-radius: 14px;
+    animation: digitReveal 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    text-shadow: 0 0 25px rgba($primary-light, 0.5);
+    box-shadow: 0 4px 20px rgba($primary, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
-@keyframes digitPop {
-    0% {
-        transform: scale(0) rotateY(90deg);
-        opacity: 0;
-    }
-    100% {
-        transform: scale(1) rotateY(0);
-        opacity: 1;
-    }
+@keyframes digitReveal {
+    0% { transform: scale(0) rotateX(90deg); opacity: 0; }
+    100% { transform: scale(1) rotateX(0); opacity: 1; }
 }
 
 .mwr-copy-btn {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    width: 2.5rem;
-    height: 2.5rem;
+    gap: 0.35rem;
+    padding: 0.35rem 0.8rem;
     border: none;
-    border-radius: 10px;
-    background: $surface;
-    color: $text-secondary;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    color: $text-dim;
+    font-size: 0.75rem;
+    font-weight: 500;
     cursor: pointer;
     transition: all 0.3s;
+    margin-top: 0.25rem;
 
-    i {
-        font-size: 1.2rem;
-    }
+    i { font-size: 0.95rem; }
 
     &:hover {
-        background: $surface-solid;
-        color: $text-primary;
-        transform: scale(1.1);
+        background: rgba(255, 255, 255, 0.12);
+        color: $text;
     }
 
     &.copied {
-        background: rgba($success, 0.2);
         color: $success;
-        animation: copiedBounce 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        background: rgba($success, 0.12);
     }
 }
 
-@keyframes copiedBounce {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.3); }
-    100% { transform: scale(1); }
-}
-
-/* ── Status Strip ── */
-.mwr-status-strip {
+/* ── Status ── */
+.mwr-status {
     display: flex;
     justify-content: center;
-    padding: 0.5rem 0;
-    min-height: 2.5rem;
-    flex-shrink: 0;
+    min-height: 2rem;
 }
 
-.mwr-status-hint {
+.mwr-status-pill {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 1.25rem;
+    padding: 0.4rem 1.1rem;
     border-radius: 50px;
-    background: rgba($primary, 0.15);
-    border: 1px solid rgba($primary-light, 0.2);
+    background: rgba($primary, 0.1);
+    border: 1px solid rgba($primary-light, 0.15);
     color: $primary-light;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 500;
-    animation: fadeSlideIn 0.5s ease both;
+    animation: fadeIn 0.4s ease;
 
-    i {
-        font-size: 1.1rem;
-    }
+    i { font-size: 1rem; }
 
-    &.warning {
-        background: rgba($warning, 0.12);
-        border-color: rgba($warning, 0.25);
+    &.warn {
+        background: rgba($warning, 0.1);
+        border-color: rgba($warning, 0.2);
         color: $warning;
     }
 }
 
-.pulse-icon {
-    animation: gentlePulse 2s ease-in-out infinite;
-}
-
-@keyframes gentlePulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.6; transform: scale(1.15); }
-}
-
-@keyframes fadeSlideIn {
-    0% {
-        opacity: 0;
-        transform: translateY(-8px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* ── Main Content ── */
-.mwr-main {
-    flex: 1;
-    padding: 0.5rem 0;
-    overflow-y: auto;
-
-    &::-webkit-scrollbar {
-        width: 4px;
-    }
-    &::-webkit-scrollbar-thumb {
-        background: $glass-border;
-        border-radius: 2px;
-    }
-}
-
-/* ── Section Header ── */
-.mwr-section-header {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    margin-bottom: 1.25rem;
-
-    > i {
-        font-size: 1.5rem;
-        color: $accent;
-    }
-
-    h2 {
-        font-size: 1.15rem;
-        font-weight: 700;
-        color: $text-primary;
-        margin: 0;
-        letter-spacing: 0.02em;
-    }
-}
-
-.mwr-player-count {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 1.8rem;
-    height: 1.8rem;
-    padding: 0 0.4rem;
-    border-radius: 50px;
-    background: linear-gradient(135deg, $primary, $primary-light);
-    color: white;
-    font-size: 0.8rem;
-    font-weight: 700;
-}
-
-/* ── Players Grid (Solo) ── */
-.mwr-players-section {
-    padding: 1rem 2rem;
-}
-
-.mwr-players-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 1rem;
-
-    &.empty {
-        display: flex;
-        justify-content: center;
-    }
-}
-
-/* ── Empty State ── */
-.mwr-empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    padding: 3rem 2rem;
-    color: $text-secondary;
-
-    p {
-        font-size: 1rem;
-        font-weight: 500;
-        margin: 0;
-    }
-}
-
-.mwr-empty-icon-wrapper {
-    width: 4.5rem;
-    height: 4.5rem;
+.mwr-status-dot-pulse {
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
-    background: $glass-bg;
-    border: 2px dashed $glass-border;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    animation: gentlePulse 3s ease-in-out infinite;
-
-    i {
-        font-size: 2rem;
-        color: $text-secondary;
-    }
+    background: $primary-light;
+    animation: dotPulse 1.5s ease-in-out infinite;
 }
 
-/* ── Player Card Enter Animation ── */
-.mwr-player-card-enter {
-    animation: cardSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+@keyframes dotPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.4); }
 }
 
-@keyframes cardSlideIn {
-    0% {
-        opacity: 0;
-        transform: translateY(20px) scale(0.9);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Team Layout ── */
-.mwr-team-layout {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 2rem;
-    padding: 1rem 2rem;
-    min-height: 0;
-}
-
-.mwr-unassigned-section {
-    background: $glass-bg;
-    backdrop-filter: blur(12px);
+/* ═══════════════════════════════════════════
+   Players Panel (Solo mode)
+   ═══════════════════════════════════════════ */
+.mwr-players-panel {
+    width: 100%;
+    max-width: 800px;
+    background: $glass;
+    backdrop-filter: blur(16px);
     border: 1px solid $glass-border;
     border-radius: 20px;
-    padding: 1.25rem;
-    height: fit-content;
-    max-height: calc(100vh - 16rem);
-    overflow-y: auto;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
-.mwr-unassigned-players {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-/* ── Teams Grid ── */
-.mwr-teams-section {
-    min-height: 0;
-}
-
-.mwr-teams-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.25rem;
-    max-height: calc(100vh - 18rem);
-    overflow-y: auto;
-    padding-right: 0.5rem;
-
-    &::-webkit-scrollbar {
-        width: 4px;
-    }
-    &::-webkit-scrollbar-thumb {
-        background: $glass-border;
-        border-radius: 2px;
-    }
-}
-
-.mwr-team-card {
-    background: $glass-bg;
-    backdrop-filter: blur(12px);
-    border: 1px solid $glass-border;
-    border-radius: 18px;
-    padding: 1.25rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    animation: cardSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-
-    &:hover {
-        border-color: rgba($primary-light, 0.3);
-        box-shadow: 0 8px 30px rgba($primary, 0.15);
-        transform: translateY(-2px);
-    }
-}
-
-.mwr-team-card-header {
+.mwr-panel-header {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -527,43 +543,193 @@ $card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     padding-bottom: 0.75rem;
     border-bottom: 1px solid $glass-border;
 
-    i {
-        font-size: 1.3rem;
-        color: $primary-light;
+    > i {
+        font-size: 1.2rem;
+        color: $accent;
     }
 
-    h3 {
-        flex: 1;
-        margin: 0;
-        font-size: 1rem;
+    > span {
+        font-size: 0.9rem;
         font-weight: 700;
-        color: $text-primary;
+        color: $text;
+        letter-spacing: 0.02em;
     }
 }
 
-.mwr-team-member-count {
-    font-size: 0.8rem;
+.mwr-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.5rem;
+    height: 1.5rem;
+    padding: 0 0.35rem;
+    border-radius: 50px;
+    background: linear-gradient(135deg, $primary, $primary-light);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-left: auto;
+}
+
+.mwr-players-wrap {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 0.65rem;
+}
+
+.mwr-card-enter {
+    animation: cardPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes cardPop {
+    0% { opacity: 0; transform: translateY(12px) scale(0.92); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Empty / Scanning ── */
+.mwr-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 2rem 1rem;
+    color: $text-dim;
+
+    > span {
+        font-size: 0.85rem;
+        font-weight: 500;
+        letter-spacing: 0.03em;
+    }
+}
+
+.mwr-empty-radar {
+    position: relative;
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 1.5px solid rgba($accent, 0.2);
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 8px;
+        border-radius: 50%;
+        border: 1px solid rgba($accent, 0.12);
+    }
+
+    > i {
+        font-size: 1.5rem;
+        color: $accent;
+        opacity: 0.7;
+        z-index: 1;
+    }
+}
+
+.mwr-radar-sweep {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent 0%, transparent 70%, rgba($accent, 0.25) 100%);
+    animation: radarSweep 2.5s linear infinite;
+}
+
+@keyframes radarSweep {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ═══════════════════════════════════════════
+   Team Layout
+   ═══════════════════════════════════════════ */
+.mwr-team-layout {
+    width: 100%;
+    max-width: 1000px;
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 1.5rem;
+}
+
+.mwr-panel {
+    background: $glass;
+    backdrop-filter: blur(16px);
+    border: 1px solid $glass-border;
+    border-radius: 20px;
+    padding: 1.25rem;
+}
+
+.mwr-unassigned-panel {
+    height: fit-content;
+    max-height: 50vh;
+    overflow-y: auto;
+}
+
+.mwr-panel-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.mwr-teams-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+}
+
+.mwr-team-card {
+    background: $glass;
+    backdrop-filter: blur(12px);
+    border: 1px solid $glass-border;
+    border-radius: 16px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+    animation: cardPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+
+    &:hover {
+        border-color: rgba($primary-light, 0.25);
+        box-shadow: 0 6px 24px rgba($primary, 0.12);
+        transform: translateY(-2px);
+    }
+}
+
+.mwr-team-head {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid $glass-border;
+
+    i { font-size: 1.1rem; color: $primary-light; }
+    h3 { flex: 1; margin: 0; font-size: 0.9rem; font-weight: 700; color: $text; }
+}
+
+.mwr-team-count {
+    font-size: 0.7rem;
     font-weight: 600;
-    color: $text-secondary;
-    background: $surface;
-    padding: 0.2rem 0.6rem;
+    color: $text-dim;
+    background: $glass;
+    padding: 0.15rem 0.5rem;
     border-radius: 50px;
 }
 
-.mwr-team-players {
+.mwr-team-body {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
-/* ── Start Button Zone ── */
-.mwr-start-zone {
-    flex-shrink: 0;
-    display: flex;
-    justify-content: center;
-    padding: 1rem 0 1.5rem;
-}
-
+/* ═══════════════════════════════════════════
+   Start Button
+   ═══════════════════════════════════════════ */
 .mwr-start-btn {
     position: relative;
     display: inline-flex;
@@ -576,30 +742,26 @@ $card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     overflow: hidden;
     background: transparent;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
 
     &[disabled] {
-        opacity: 0.4;
+        opacity: 0.3;
         cursor: not-allowed;
-        filter: grayscale(0.5);
+        filter: grayscale(0.6);
+        .mwr-start-bg { animation: none; }
+    }
 
-        .mwr-start-btn-bg {
-            animation: none;
-        }
+    &.ready .mwr-start-bg {
+        animation: shimmer 3s ease-in-out infinite;
     }
 
     &.ready {
-        .mwr-start-btn-bg {
-            animation: shimmer 3s ease-in-out infinite;
-        }
+        box-shadow: 0 0 30px rgba($success, 0.2);
     }
 
     &:not([disabled]):hover {
-        transform: translateY(-3px) scale(1.03);
-        box-shadow: 0 12px 40px rgba($success, 0.4);
-
-        .mwr-start-btn-bg {
-            filter: brightness(1.15);
-        }
+        transform: translateY(-3px) scale(1.04);
+        box-shadow: 0 10px 35px rgba($success, 0.4);
     }
 
     &:not([disabled]):active {
@@ -607,10 +769,10 @@ $card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
 }
 
-.mwr-start-btn-bg {
+.mwr-start-bg {
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, $success, darken($success, 10%), lighten($success, 10%));
+    background: linear-gradient(135deg, $success, darken($success, 8%), lighten($success, 8%));
     background-size: 200% 200%;
     border-radius: 16px;
 }
@@ -621,51 +783,38 @@ $card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     100% { background-position: 0% 50%; }
 }
 
-.mwr-start-btn-content {
+.mwr-start-content {
     position: relative;
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    padding: 0.9rem 3rem;
-    font-size: 1.1rem;
+    gap: 0.5rem;
+    padding: 0.85rem 2.5rem;
+    font-size: 1rem;
     font-weight: 700;
     color: white;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.04em;
     z-index: 1;
 
-    i {
-        font-size: 1.6rem;
-    }
+    i { font-size: 1.4rem; }
 }
 
-/* ── Responsive ── */
+/* ═══════════════════════════════════════════
+   Responsive
+   ═══════════════════════════════════════════ */
 @media (max-width: 768px) {
-    .mwr-container {
-        padding: 0.75rem 1rem;
-    }
+    .mwr-action-bar { padding: 85px 1rem 0; }
+    .mwr-stage { padding: 1rem 1rem 2rem; }
 
-    .mwr-header {
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
-
-    .mwr-header-center {
-        order: -1;
-        flex: 1 1 100%;
+    .mwr-digit {
+        width: 2.6rem;
+        height: 3rem;
+        font-size: 1.6rem;
     }
 
     .mwr-team-layout {
         grid-template-columns: 1fr;
     }
 
-    .mwr-digit {
-        width: 2.2rem;
-        height: 2.6rem;
-        font-size: 1.4rem;
-    }
-
-    .mwr-start-btn-content {
-        padding: 0.75rem 2rem;
-        font-size: 1rem;
-    }
+    .mwr-code-ring { width: 170px; height: 170px; }
+    .mwr-ring-dot { transform-origin: 50% 85px; }
 }

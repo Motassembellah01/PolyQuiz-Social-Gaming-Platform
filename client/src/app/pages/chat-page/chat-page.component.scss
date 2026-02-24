@@ -453,3 +453,37 @@ input:focus {
 .header {
     align-self: center;
 }
+
+:host-context(.dark-mode),
+:host-context(.christmas) {
+    .channel-name,
+    .sender,
+    .name-player-right,
+    .name-player-left {
+        color: #e5e7eb;
+    }
+
+    .last-message,
+    .time,
+    .countdown,
+    mat-hint {
+        color: #9ca3af;
+    }
+}
+
+:host-context(.light-mode),
+:host-context(.valentines) {
+    .channel-name,
+    .sender,
+    .name-player-right,
+    .name-player-left {
+        color: #1f2937;
+    }
+
+    .last-message,
+    .time,
+    .countdown,
+    mat-hint {
+        color: #6b7280;
+    }
+}

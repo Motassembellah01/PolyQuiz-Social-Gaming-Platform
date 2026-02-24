@@ -111,3 +111,30 @@ span {
     width: 3rem;
     height: 1.5rem;
 }
+
+:host-context(.dark-mode),
+:host-context(.christmas) {
+    h1,
+    p,
+    span,
+    .item {
+        color: #e5e7eb;
+    }
+
+    .price-container {
+        color: #d1d5db;
+    }
+}
+
+:host-context(.valentines) {
+    h1,
+    p,
+    span,
+    .item {
+        color: #4a1f2d;
+    }
+
+    .price-container {
+        color: #6b1f3a;
+    }
+}

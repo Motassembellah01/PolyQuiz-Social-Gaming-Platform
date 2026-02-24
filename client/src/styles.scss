@@ -179,3 +179,231 @@ body {
         overflow: hidden;
     }
 }
+
+/* Global theme-aware typography tokens */
+:root {
+    --theme-text-primary: #1f2937;
+    --theme-text-muted: rgba(31, 41, 55, 0.72);
+    --theme-link: #0b5ed7;
+}
+
+.pages.light-mode {
+    --theme-text-primary: #1f2937;
+    --theme-text-muted: rgba(31, 41, 55, 0.72);
+    --theme-link: #0b5ed7;
+}
+
+.pages.dark-mode {
+    --theme-text-primary: #f4f6fa;
+    --theme-text-muted: rgba(244, 246, 250, 0.78);
+    --theme-link: #7dc4ff;
+}
+
+.pages.christmas {
+    --theme-text-primary: #edfdf5;
+    --theme-text-muted: rgba(237, 253, 245, 0.8);
+    --theme-link: #86efac;
+}
+
+.pages.valentines {
+    --theme-text-primary: #4a1f2d;
+    --theme-text-muted: rgba(74, 31, 45, 0.74);
+    --theme-link: #9d174d;
+}
+
+/* Baseline readability across routed pages */
+.pages {
+    color: var(--theme-text-primary);
+}
+
+.pages :is(h1, h2, h3, h4, h5, h6, p, li, td, th, label, legend, figcaption, blockquote, dt, dd) {
+    color: inherit;
+}
+
+.pages :is(small, .subtitle, .muted, .hint, mat-hint) {
+    color: var(--theme-text-muted);
+}
+
+.pages a {
+    color: var(--theme-link);
+}
+
+.pages :is(input, textarea, select) {
+    color: var(--theme-text-primary);
+}
+
+.pages :is(input, textarea)::placeholder {
+    color: var(--theme-text-muted);
+}
+
+/* Explicit readability guards for all pages/components (audited selectors) */
+.pages :is(
+    app-manager-waiting-room,
+    app-main-page,
+    app-administration,
+    app-creation,
+    app-join-match,
+    app-set-avatar,
+    app-game-preview,
+    app-waiting-room,
+    app-statistics-profile,
+    app-set-player-name,
+    app-question-result,
+    app-on-going-match,
+    app-match-result,
+    app-match-managers-side,
+    app-login-fail,
+    app-history,
+    app-history-profile,
+    app-create-game,
+    app-chat,
+    app-game-panel,
+    app-question-display,
+    app-question-answer,
+    app-paginator,
+    app-players-list,
+    app-friends,
+    app-profile,
+    app-transition-dialog,
+    app-shop,
+    app-settings,
+    app-question-list,
+    app-question-form,
+    app-qrl-evaluation,
+    app-player-card,
+    app-new-game-name,
+    app-modify-question,
+    app-logo,
+    app-login,
+    app-histogram,
+    app-general-chat,
+    app-game-form,
+    app-error-message,
+    app-create-question,
+    app-confirmation-component,
+    app-chat-message
+) {
+    color: var(--theme-text-primary);
+}
+
+.pages :is(
+    app-manager-waiting-room,
+    app-main-page,
+    app-administration,
+    app-creation,
+    app-join-match,
+    app-set-avatar,
+    app-game-preview,
+    app-waiting-room,
+    app-statistics-profile,
+    app-set-player-name,
+    app-question-result,
+    app-on-going-match,
+    app-match-result,
+    app-match-managers-side,
+    app-login-fail,
+    app-history,
+    app-history-profile,
+    app-create-game,
+    app-chat,
+    app-game-panel,
+    app-question-display,
+    app-question-answer,
+    app-paginator,
+    app-players-list,
+    app-friends,
+    app-profile,
+    app-transition-dialog,
+    app-shop,
+    app-settings,
+    app-question-list,
+    app-question-form,
+    app-qrl-evaluation,
+    app-player-card,
+    app-new-game-name,
+    app-modify-question,
+    app-logo,
+    app-login,
+    app-histogram,
+    app-general-chat,
+    app-game-form,
+    app-error-message,
+    app-create-question,
+    app-confirmation-component,
+    app-chat-message
+) :is(h1, h2, h3, h4, p, li, td, th, label, legend) {
+    color: inherit;
+}
+
+.pages :is(
+    app-manager-waiting-room,
+    app-main-page,
+    app-administration,
+    app-creation,
+    app-join-match,
+    app-set-avatar,
+    app-game-preview,
+    app-waiting-room,
+    app-statistics-profile,
+    app-set-player-name,
+    app-question-result,
+    app-on-going-match,
+    app-match-result,
+    app-match-managers-side,
+    app-login-fail,
+    app-history,
+    app-history-profile,
+    app-create-game,
+    app-chat,
+    app-game-panel,
+    app-question-display,
+    app-question-answer,
+    app-paginator,
+    app-players-list,
+    app-friends,
+    app-profile,
+    app-transition-dialog,
+    app-shop,
+    app-settings,
+    app-question-list,
+    app-question-form,
+    app-qrl-evaluation,
+    app-player-card,
+    app-new-game-name,
+    app-modify-question,
+    app-logo,
+    app-login,
+    app-histogram,
+    app-general-chat,
+    app-game-form,
+    app-error-message,
+    app-create-question,
+    app-confirmation-component,
+    app-chat-message
+) :is(.subtitle, .hint, .observer-indicator, .live-text, .last-message, .time, .empty-subtitle, .countdown) {
+    color: var(--theme-text-muted);
+}
+
+/* Keep utility white-text classes readable on light palettes */
+.pages.light-mode :is(.color-white, .text-white),
+.pages.valentines :is(.color-white, .text-white) {
+    color: var(--theme-text-primary) !important;
+}
+
+/* Critical controls/text that were too low-contrast in some themes */
+.pages.light-mode app-manager-waiting-room .mwr-copy-btn,
+.pages.valentines app-manager-waiting-room .mwr-copy-btn {
+    color: var(--theme-text-primary);
+}
+
+.pages.dark-mode :is(app-join-match, app-waiting-room, app-match-managers-side) .table-header,
+.pages.christmas :is(app-join-match, app-waiting-room, app-match-managers-side) .table-header {
+    color: #eaf2ff;
+}
+
+.pages.dark-mode :is(app-join-match, app-waiting-room, app-match-managers-side) .table-cell,
+.pages.christmas :is(app-join-match, app-waiting-room, app-match-managers-side) .table-cell,
+.pages.dark-mode :is(app-join-match, app-waiting-room, app-match-managers-side) .quiz-name,
+.pages.christmas :is(app-join-match, app-waiting-room, app-match-managers-side) .quiz-name {
+    color: var(--theme-text-primary);
+}

@@ -148,3 +148,50 @@
     justify-content: center;
     gap: 0.5rem;
 }
+
+:host-context(.dark-mode),
+:host-context(.christmas) {
+    .profile-name,
+    .section-title,
+    .pref-label,
+    .panel-btn,
+    .lang-btn {
+        color: #e5e7eb;
+    }
+
+    .divider {
+        background-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .theme-btn:disabled {
+        background-color: #4b5563 !important;
+        color: #d1d5db;
+    }
+
+    .panel-btn.background-blue {
+        color: #334155;
+    }
+
+    .panel-btn.background-blue .btn-icon {
+        color: #64748b;
+    }
+}
+
+:host-context(.valentines) {
+    .profile-name,
+    .section-title,
+    .pref-label,
+    .panel-btn,
+    .lang-btn {
+        color: #4a1f2d;
+    }
+
+    .divider {
+        background-color: rgba(127, 29, 29, 0.14);
+    }
+
+    .theme-btn:disabled {
+        background-color: #f0d7e2 !important;
+        color: #6b1f3a;
+    }
+}

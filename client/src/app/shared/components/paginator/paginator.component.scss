@@ -521,7 +521,7 @@ $card-accents: (#4f46e5, #7c3aed, #0891b2, #059669, #d97706, #e11d48);
     }
 
     .game-description {
-        color: #64748b;
+        color: #9aa8bc;
     }
 
     .meta-chip {
@@ -558,7 +558,14 @@ $card-accents: (#4f46e5, #7c3aed, #0891b2, #059669, #d97706, #e11d48);
     }
 
     .empty-subtitle {
-        color: #64748b;
+        color: #94a3b8;
+    }
+
+    ::ng-deep .mat-mdc-paginator,
+    ::ng-deep .mat-mdc-paginator .mat-mdc-select-value-text,
+    ::ng-deep .mat-mdc-paginator .mat-mdc-paginator-range-label,
+    ::ng-deep .mat-mdc-paginator .mat-mdc-icon-button {
+        color: #cbd5e1 !important;
     }
 }
 
@@ -654,6 +661,13 @@ $card-accents: (#4f46e5, #7c3aed, #0891b2, #059669, #d97706, #e11d48);
 
     .empty-subtitle {
         color: #6b9e80;
+    }
+
+    ::ng-deep .mat-mdc-paginator,
+    ::ng-deep .mat-mdc-paginator .mat-mdc-select-value-text,
+    ::ng-deep .mat-mdc-paginator .mat-mdc-paginator-range-label,
+    ::ng-deep .mat-mdc-paginator .mat-mdc-icon-button {
+        color: #b7e3c2 !important;
     }
 }
 

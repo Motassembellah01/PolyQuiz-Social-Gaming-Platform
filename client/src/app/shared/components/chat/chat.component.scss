@@ -117,3 +117,19 @@ mat-icon.disabled:hover {
     transform: scale(1);
     cursor: default;
 }
+
+:host-context(.dark-mode),
+:host-context(.christmas) {
+    mat-hint,
+    mat-icon {
+        color: #9ca3af;
+    }
+}
+
+:host-context(.light-mode),
+:host-context(.valentines) {
+    mat-hint,
+    mat-icon {
+        color: #4b5563;
+    }
+}

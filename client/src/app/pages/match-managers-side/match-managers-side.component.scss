@@ -156,3 +156,21 @@ app-chat {
         }
     }
 }
+
+:host-context(.dark-mode),
+:host-context(.christmas) {
+    h1,
+    h2,
+    .score-label,
+    .observer-indicator {
+        color: #e5e7eb;
+    }
+}
+
+:host-context(.valentines) {
+    h1,
+    h2,
+    .score-label {
+        color: #4a1f2d;
+    }
+}
