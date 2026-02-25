@@ -25,7 +25,6 @@ import { ListenerManagerService } from '@app/core/websocket/services/listener-ma
 import { SocketService } from '@app/core/websocket/services/socket-service/socket.service';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { AlertDialogComponent } from '@app/shared/alert-dialog/alert-dialog.component';
-import { LogoComponent } from '@app/shared/components/logo/logo.component';
 import { PlayerCardComponent } from '@app/shared/components/player-card/player-card.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
@@ -41,7 +40,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
     templateUrl: './waiting-room.component.html',
     styleUrls: ['./waiting-room.component.scss'],
     standalone: true,
-    imports: [AppMaterialModule, LogoComponent, PlayerCardComponent, CommonModule, TranslateModule, FormsModule],
+    imports: [AppMaterialModule, PlayerCardComponent, CommonModule, TranslateModule, FormsModule],
 })
 export class WaitingRoomComponent implements OnInit, OnDestroy {
     waitingRoomIsLocked: boolean = true;

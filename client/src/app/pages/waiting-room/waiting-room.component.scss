@@ -1,9 +1,29 @@
+:host {
+    display: block;
+    min-height: 100vh;
+    margin-top: -75px;
+    padding-top: 75px;
+    background: linear-gradient(180deg, #f4f8ff 0%, #eaf2ff 26%, #dce8fb 100%);
+}
+
 .wr-scene {
     position: relative;
-    min-height: calc(100vh - 88px);
-    padding: 1rem 1.25rem 2rem;
+    min-height: 100vh;
+    padding: 0 1.25rem 2rem;
     overflow: hidden;
-    background: radial-gradient(circle at 10% 20%, #eff7ff 0%, #e7f0ff 35%, #dce8fb 100%);
+    background: transparent;
+}
+
+.wr-scene::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 34px;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(244, 248, 255, 0.96) 0%, rgba(244, 248, 255, 0.42) 55%, rgba(244, 248, 255, 0) 100%);
+    z-index: 1;
 }
 
 .wr-orb {
@@ -54,6 +74,7 @@
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
+    padding-top: 0.45rem;
 }
 
 .wr-topbar {
@@ -315,7 +336,7 @@
 
 @media (max-width: 720px) {
     .wr-scene {
-        padding: 0.8rem 0.8rem 1.6rem;
+        padding: 0 0.8rem 1.6rem;
     }
 
     .wr-topbar {
