@@ -22,7 +22,7 @@ import { AccountService } from '@app/services/account/account.service';
 import { GameService } from '@app/services/game/game.service';
 import { MatchService } from '@app/services/match/match.service';
 import { Injectable, Logger } from '@nestjs/common';
-import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { ConnectedSocket, MessageBody, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { Utils } from 'utils/utils';
 
@@ -32,11 +32,15 @@ import { Utils } from 'utils/utils';
  */
 @Injectable()
 @WebSocketGateway()
-export class SocketHandlerGateway {
+export class SocketHandlerGateway implements OnGatewayDisconnect {
     @WebSocketServer()
     server: Server;
     timerIntervalMap: Map<string, NodeJS.Timer> = new Map();
     histogramInterval: Map<string, NodeJS.Timer> = new Map();
+    private readonly hostDisconnectGracePeriodMs = 15000;
+    private readonly socketParticipants: Map<string, { accessCode: string; name: string; isObserver: boolean }> = new Map();
+    private readonly managerSocketsByRoom: Map<string, Set<string>> = new Map();
+    private readonly pendingRoomShutdowns: Map<string, ReturnType<typeof setTimeout>> = new Map();
 
     constructor(
         private readonly matchService: MatchService,
@@ -60,8 +64,24 @@ export class SocketHandlerGateway {
         });
         client.join(parsedPlayer.roomId);
         const match = this.matchService.getMatchByAccessCode(parsedPlayer.roomId);
-        if (parsedPlayer.name === NAMES.manager || parsedPlayer.name === NAMES.tester || parsedPlayer.name === match.managerName) return;
+        const isManager = parsedPlayer.name === NAMES.manager || parsedPlayer.name === NAMES.tester || parsedPlayer.name === match.managerName;
+        this.trackSocketParticipant(client, parsedPlayer.roomId, parsedPlayer.name, false, isManager);
+        if (isManager) return;
         try {
+            const existingPlayer = match.players.find((currentPlayer) => currentPlayer.name === parsedPlayer.name);
+            if (existingPlayer) {
+                const currentPlayersList = this.matchService.getPlayersList({ accessCode: parsedPlayer.roomId });
+                const reconnectDto: NewPlayerDto = {
+                    players: currentPlayersList,
+                    isTeamMatch: match.isTeamMatch,
+                    teams: match.teams,
+                    isPricedMatch: match.isPricedMatch,
+                    priceMatch: match.priceMatch,
+                    nbPlayersJoined: match.nbPlayersJoined,
+                };
+                this.server.to(parsedPlayer.roomId).emit(SocketsEmitEvents.NewPlayer, reconnectDto);
+                return;
+            }
             this.matchService.logger.log('Player is joining match: ', parsedPlayer.name);
             this.matchService.logger.log('With accessCode : ' + parsedPlayer.roomId);
             this.matchService.addPlayer({
@@ -95,6 +115,7 @@ export class SocketHandlerGateway {
     joinMatchRoomAsObserver(@ConnectedSocket() client: Socket, @MessageBody() observer: JoinMatchObserverDto): void {
         client.join(observer.accessCode);
         const match = this.matchService.getMatchByAccessCode(observer.accessCode);
+        this.trackSocketParticipant(client, observer.accessCode, observer.name, true, false);
         try {
             this.matchService.logger.log('Observer is joining match: ', observer.name);
             this.matchService.addObserver({
@@ -254,6 +275,7 @@ export class SocketHandlerGateway {
         if (typeof room === 'string') {
             room = JSON.parse(room) as Room;
         }
+        this.clearRoomTracking(room.id);
         this.server.to(room.id).emit(SocketsEmitEvents.GameCanceled);
         this.leaveAllRoom(room.id);
     }
@@ -263,6 +285,7 @@ export class SocketHandlerGateway {
         if (typeof room === 'string') {
             room = JSON.parse(room) as Room;
         }
+        this.clearRoomTracking(room.id);
         this.server.to(room.id).emit(SocketsEmitEvents.MatchFinished, {});
         this.leaveAllRoom(room.id);
     }
@@ -539,6 +562,39 @@ export class SocketHandlerGateway {
         });
     }
 
+    async handleDisconnect(client: Socket): Promise<void> {
+        const participant = this.socketParticipants.get(client.id);
+        if (!participant) {
+            return;
+        }
+        this.socketParticipants.delete(client.id);
+
+        if (participant.isObserver) {
+            this.handleObserverDisconnect(participant.accessCode, participant.name);
+            return;
+        }
+
+        const match = this.findMatch(participant.accessCode);
+        if (!match) {
+            this.clearRoomTracking(participant.accessCode);
+            return;
+        }
+
+        const managerSockets = this.managerSocketsByRoom.get(participant.accessCode);
+        if (managerSockets?.has(client.id)) {
+            managerSockets.delete(client.id);
+            if (managerSockets.size === 0) {
+                this.managerSocketsByRoom.delete(participant.accessCode);
+                this.scheduleRoomShutdownIfManagerMissing(participant.accessCode);
+            }
+            return;
+        }
+
+        if (match.begin.trim() === '') {
+            this.removePlayerFromWaitingRoom(participant.accessCode, participant.name);
+        }
+    }
+
     @SubscribeMessage(SocketsSubscribeEvents.GameEvaluation)
     async gameEvaluation(@ConnectedSocket() client: Socket, @MessageBody() data: GameEvaluation): Promise<void> {
         try {
@@ -593,5 +649,109 @@ export class SocketHandlerGateway {
         if (this.server) {
             this.server.emit(SocketsEmitEvents.MatchListUpdated);
         }
+    }
+
+    private findMatch(accessCode: string): Match | null {
+        try {
+            return this.matchService.getMatchByAccessCode(accessCode);
+        } catch {
+            return null;
+        }
+    }
+
+    private trackSocketParticipant(client: Socket, accessCode: string, name: string, isObserver: boolean, isManager: boolean): void {
+        this.socketParticipants.set(client.id, { accessCode, name, isObserver });
+        if (!isManager) {
+            return;
+        }
+
+        if (this.pendingRoomShutdowns.has(accessCode)) {
+            clearTimeout(this.pendingRoomShutdowns.get(accessCode));
+            this.pendingRoomShutdowns.delete(accessCode);
+        }
+
+        if (!this.managerSocketsByRoom.has(accessCode)) {
+            this.managerSocketsByRoom.set(accessCode, new Set());
+        }
+        this.managerSocketsByRoom.get(accessCode).add(client.id);
+    }
+
+    private scheduleRoomShutdownIfManagerMissing(accessCode: string): void {
+        if (this.pendingRoomShutdowns.has(accessCode)) {
+            return;
+        }
+
+        const timeoutId = setTimeout(async () => {
+            this.pendingRoomShutdowns.delete(accessCode);
+            const hasManagerConnection = (this.managerSocketsByRoom.get(accessCode)?.size || 0) > 0;
+            if (hasManagerConnection) {
+                return;
+            }
+
+            const match = this.findMatch(accessCode);
+            if (!match) {
+                this.clearRoomTracking(accessCode);
+                return;
+            }
+
+            this.stopTimer(this.timerIntervalMap, accessCode);
+            this.server.to(accessCode).emit(SocketsEmitEvents.GameCanceled, {});
+            await this.leaveAllRoom(accessCode);
+            this.matchService.deleteMatchByAccessCode(accessCode);
+            this.clearRoomTracking(accessCode);
+            this.broadcastMatchListUpdate();
+        }, this.hostDisconnectGracePeriodMs);
+
+        this.pendingRoomShutdowns.set(accessCode, timeoutId);
+    }
+
+    private removePlayerFromWaitingRoom(accessCode: string, playerName: string): void {
+        try {
+            this.matchService.removePlayer({
+                accessCode,
+                player: { name: playerName, isActive: true, score: 0, nBonusObtained: 0, chatBlocked: false },
+            });
+            this.matchService.removePlayerToBannedName({
+                accessCode,
+                player: { name: playerName, isActive: true, score: 0, nBonusObtained: 0, chatBlocked: false },
+            });
+
+            const match = this.matchService.getMatchByAccessCode(accessCode);
+            const newPlayerDto: NewPlayerDto = {
+                players: match.players,
+                teams: match.teams,
+                isTeamMatch: match.isTeamMatch,
+                isPricedMatch: match.isPricedMatch,
+                priceMatch: match.priceMatch,
+                nbPlayersJoined: match.nbPlayersJoined,
+            };
+            this.server.to(accessCode).emit(SocketsEmitEvents.PlayerRemoved, newPlayerDto);
+            this.broadcastMatchListUpdate();
+        } catch (error) {
+            this.matchService.logger.log('an error occurred while handling player disconnect', error);
+        }
+    }
+
+    private handleObserverDisconnect(accessCode: string, observerName: string): void {
+        try {
+            const observers: Observer[] = this.matchService.removeObserver(accessCode, observerName);
+            this.server.to(accessCode).emit(SocketsEmitEvents.ObserverRemoved, observers);
+            this.broadcastMatchListUpdate();
+        } catch (error) {
+            this.matchService.logger.log('an error occurred while handling observer disconnect', error);
+        }
+    }
+
+    private clearRoomTracking(accessCode: string): void {
+        if (this.pendingRoomShutdowns.has(accessCode)) {
+            clearTimeout(this.pendingRoomShutdowns.get(accessCode));
+            this.pendingRoomShutdowns.delete(accessCode);
+        }
+        this.managerSocketsByRoom.delete(accessCode);
+        this.socketParticipants.forEach((participant, socketId) => {
+            if (participant.accessCode === accessCode) {
+                this.socketParticipants.delete(socketId);
+            }
+        });
     }
 }

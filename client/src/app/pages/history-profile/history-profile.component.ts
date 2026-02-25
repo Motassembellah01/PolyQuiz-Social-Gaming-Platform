@@ -25,15 +25,15 @@ export class HistoryProfileComponent implements OnInit {
   displayedColumnsGame: string[] = ['gameName', 'startTime', 'status'];
   displayedColumnsSession: string[] = ['DateHeureConnexion', 'DateHeureDeconnexion'];
 
-  profileSessionHistoryList: SessionHistoryDto[];
-  profileMatchHistoryList: PlayerMatchHistory[]
+  profileSessionHistoryList: SessionHistoryDto[] = [];
+  profileMatchHistoryList: PlayerMatchHistory[] = [];
 
 
-  dataSourceGame: MatTableDataSource<PlayerMatchHistory>;
-  dataSourceSession: MatTableDataSource<SessionHistoryDto>;
+  dataSourceGame: MatTableDataSource<PlayerMatchHistory> = new MatTableDataSource<PlayerMatchHistory>([]);
+  dataSourceSession: MatTableDataSource<SessionHistoryDto> = new MatTableDataSource<SessionHistoryDto>([]);
   defaultPageSize = 4;
-  totalGameItems: number;
-  totalSessionItems: number;
+  totalGameItems: number = 0;
+  totalSessionItems: number = 0;
   ngOnInit(): void {
     this.accountService.getSessionHistory().subscribe((sessionHistory: SessionHistoryDto[]) => {
       this.profileSessionHistoryList = sessionHistory;

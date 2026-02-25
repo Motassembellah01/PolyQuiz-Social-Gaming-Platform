@@ -74,6 +74,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
+        this.matchSrv.socketService.removeListener('connect');
         window.onbeforeunload = () => {
             return;
         };
@@ -104,6 +105,9 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     connect(): void {
         this.matchSrv.socketService.connect();
         this.setupListeners();
+        this.matchSrv.socketService.on<void>('connect', () => {
+            this.matchSrv.joinMatchRoom(this.matchSrv.match.accessCode);
+        });
     }
 
     setMatchInformations(match: Match): void {

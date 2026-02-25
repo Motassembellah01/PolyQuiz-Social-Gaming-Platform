@@ -18,7 +18,6 @@ import { CommonModule } from '@angular/common';
     styleUrl: './statistics-profile.component.scss',
 })
 export class StatisticsProfileComponent implements OnInit {
-    constructor(public accountService: AccountService) {}
     displayedColumns: string[] = ['numberPlayedGames', 'numberWonGames', 'averageCorrectAnswers', 'averageTimePerGame'];
     dataSource: MatTableDataSource<StatisticsProfileDto>;
     profileStatistics: StatisticsProfileDto = {
@@ -28,6 +27,9 @@ export class StatisticsProfileComponent implements OnInit {
         averageTimePerGameMinute: 0,
         averageTimePerGameSecond: 0,
     };
+    constructor(public accountService: AccountService) {
+        this.dataSource = new MatTableDataSource([this.profileStatistics]);
+    }
 
     ngOnInit(): void {
         this.accountService.getAccount().subscribe((account: Account) => {

@@ -3,7 +3,7 @@
 }
 
 .title {
-    font-size: 3rem;
+    font-size: clamp(1.6rem, 5vw, 3rem);
     margin-bottom: 20px;
     text-align: center;
     font-weight: bold;
@@ -14,11 +14,14 @@
     justify-content: center;
     gap: 40px;
     padding: 20px;
+    flex-wrap: wrap;
 }
 
 /* Table Section */
 .table-section {
-    width: 45%;
+    flex: 1 1 420px;
+    width: auto;
+    min-width: 0;
 }
 
 .section-title {
@@ -35,6 +38,7 @@
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
 }
 
 /* Table Headers */
@@ -99,15 +103,17 @@
     border: none;
     margin-right: 2rem;
     font-size: 1.5rem;
-    margin-top: -180px;
+    margin-top: 0;
     margin-bottom: 30px;
-    margin-left: 50rem;
+    margin-left: auto;
+    display: block;
 }
 
 .styled-table {
-    display: inline-table;
+    display: table;
     table-layout: auto;
-    width: auto;
+    width: 100%;
+    min-width: 480px;
 }
 
 .game-name-column,
@@ -122,4 +128,15 @@
 .name-cell {
     white-space: normal;
     word-break: break-word;
+}
+
+@media (max-width: 768px) {
+    .table-container {
+        gap: 16px;
+        padding: 8px;
+    }
+
+    .styled-table {
+        min-width: 360px;
+    }
 }

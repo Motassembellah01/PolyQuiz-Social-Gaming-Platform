@@ -505,6 +505,10 @@
     margin: 0 0 6px;
     color: #212121;
     line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
 }
 
 .organizer-row {
@@ -529,6 +533,10 @@
     font-weight: 600;
     color: #7e57c2;
     letter-spacing: 0.2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 14rem;
 }
 
 .card-meta {

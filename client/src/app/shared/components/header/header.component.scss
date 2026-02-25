@@ -1,3 +1,7 @@
+:host {
+    --side-panel-width: min(320px, 100vw);
+}
+
 .header {
     display: flex;
     justify-content: space-between;
@@ -171,7 +175,7 @@
 .chat-box {
     background-color: #ffffff;
     justify-items: center;
-    width: 320px;
+    width: var(--side-panel-width);
     padding: 16px;
     height: calc(100vh - 75px);
     z-index: 2;
@@ -215,7 +219,7 @@
 
 .header-buttons.move,
 .header-right.move {
-    transform: translateX(-300px);
+    transform: translateX(calc(-1 * var(--side-panel-width)));
 }
 
 .channel-item {
@@ -345,7 +349,7 @@ mat-icon:hover,
 
 .chat-margin {
     border: solid #d9d9d9;
-    border-left: -55px;
+    border-left: none;
     border-radius: 2px;
     position: relative;
     overflow-y: scroll;
@@ -559,7 +563,7 @@ button.toggled {
 }
 
 .friends-box {
-    width: 320px;
+    width: var(--side-panel-width);
 }
 
 .money-amount {
@@ -578,4 +582,18 @@ span {
     max-width: 7rem;
     margin: 0;
     font-size: 0.85rem;
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 8px 10px;
+    }
+
+    .nav-label {
+        display: none;
+    }
+
+    .header-btn {
+        padding: 0 6px !important;
+    }
 }

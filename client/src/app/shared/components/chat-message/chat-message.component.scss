@@ -1,75 +1,60 @@
-.a-right {
-    border-left: 16px solid #0a436c;
-}
-.arrow {
-    width: 0;
-    height: 0;
-    margin-top: 13px;
-    border-top: 16px solid transparent;
-    border-bottom: 16px solid transparent;
+.message-row {
+    display: flex;
+    justify-content: flex-start;
+    margin: 0.5rem 0;
 }
 
-.a-left {
-    border-right: 16px solid #0a436c;
+.message-row.own {
+    justify-content: flex-end;
 }
 
-.under-message-right {
-    margin-top: 10px;
-    right: 0;
+.bubble {
+    max-width: min(80%, 34rem);
+    border-radius: 16px;
+    padding: 0.625rem 0.875rem;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.05) 0%, rgba(15, 23, 42, 0.09) 100%);
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
 }
 
-.under-message-left {
-    margin-top: 10px;
-    left: 0;
+.message-row.own .bubble {
+    background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+    border-color: rgba(37, 99, 235, 0.45);
+    color: #f8fafc;
 }
 
-.message-right {
-    margin-top: 30px;
-    margin-right: 5px;
-    margin-bottom: -35px;
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    white-space: normal;
+.meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.35rem;
 }
 
-.message-left {
-    margin-left: 5px;
-    margin-top: 25px;
-    margin-bottom: -35px;
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    white-space: normal;
+.author {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
 }
 
-.c-right {
-    text-align: end;
+.time {
+    font-size: 0.72rem;
+    opacity: 0.75;
+    white-space: nowrap;
 }
 
-.c-left {
-    text-align: start;
+.content {
+    margin: 0;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
-.container {
-    background-color: #cbd7e0;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 80px;
-    max-width: 70%;
-    min-width: 20px;
-}
-
-.chat-content {
-    margin-top: 10px;
-}
-
-.name-player-right {
-    margin-top: -30px;
-    right: 0;
-    font-weight: 500;
-}
-
-.name-player-left {
-    margin-top: -20px;
-    left: 20px;
-    font-weight: 500;
+:host-context(.dark-mode),
+:host-context(.christmas) {
+    .bubble {
+        background: linear-gradient(180deg, rgba(148, 163, 184, 0.16) 0%, rgba(148, 163, 184, 0.24) 100%);
+        border-color: rgba(148, 163, 184, 0.3);
+        color: #e5e7eb;
+    }
 }

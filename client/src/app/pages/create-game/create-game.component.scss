@@ -14,8 +14,11 @@
     --question-border: rgba(31, 122, 184, 0.22);
 
     max-width: 1120px;
-    margin: 1.25rem auto 2.6rem;
-    padding: 0 1rem;
+    min-height: calc(100vh - 130px);
+    margin: 0 auto 2.6rem;
+    padding: clamp(2.4rem, 7vh, 5.2rem) 1rem 0;
+    display: flex;
+    align-items: center;
     color: var(--text-primary);
 }
 
@@ -112,7 +115,9 @@
 
 @media (max-width: 780px) {
     .create-game-page {
-        padding: 0 0.75rem;
+        min-height: auto;
+        padding: 1.1rem 0.75rem 0;
+        align-items: flex-start;
     }
 
     .create-game-shell {

@@ -103,24 +103,24 @@ export class GeneralChatComponent implements OnInit, OnDestroy, AfterViewChecked
         this.generalChatService.isTyping = !this.generalChatService.isTyping;
     }
 
-    toggleChat() {
+    toggleChat(): void {
         this.generalChatService.isChatOpen = !this.generalChatService.isChatOpen;
         if (!this.generalChatService.isChatOpen) this.backToChannels();
     }
 
-    toggleAddChannel() {
+    toggleAddChannel(): void {
         this.isAddOpen = !this.isAddOpen;
         this.isModifyOpen = false;
         this.isSearchOpen = false;
     }
 
-    toggleModifyChannel() {
+    toggleModifyChannel(): void {
         this.isModifyOpen = !this.isModifyOpen;
         this.isAddOpen = false;
         this.isSearchOpen = false;
     }
 
-    toggleSearchChannel() {
+    toggleSearchChannel(): void {
         this.isSearchOpen = !this.isSearchOpen;
         this.isModifyOpen = false;
         this.isAddOpen = false;
@@ -128,7 +128,7 @@ export class GeneralChatComponent implements OnInit, OnDestroy, AfterViewChecked
         this.filteredChannels = [...this.channels];
     }
 
-    async selectChannel(channel: JoinedChatroom) {
+    async selectChannel(channel: JoinedChatroom): Promise<void> {
         this.generalChatService.currentChannel = channel;
         await this.generalChatService.selectChannel(channel);
         this.isChannelOpen = !this.isChannelOpen;
@@ -139,7 +139,8 @@ export class GeneralChatComponent implements OnInit, OnDestroy, AfterViewChecked
         this.filteredChannels = [...this.channels];
 
         if (this.searchTerm) {
-            this.filteredChannels = this.filteredChannels.filter((channel) => channel.includes(this.searchTerm));
+            const normalizedSearch = this.searchTerm.toLowerCase();
+            this.filteredChannels = this.filteredChannels.filter((channel) => channel.toLowerCase().includes(normalizedSearch));
         }
     }
 
@@ -152,7 +153,7 @@ export class GeneralChatComponent implements OnInit, OnDestroy, AfterViewChecked
         return this.joinedChatRooms.reduce((total, channel) => total + this.getUnreadMessageCount(channel), 0);
     }
 
-    sendMessage() {
+    sendMessage(): void {
         if (this.generalChatService.currentChannel && this.newMessage.trim()) {
             const message: ChatRoomMessageData = {
                 chatRoomName: this.generalChatService.currentChannel.chatRoomName,
@@ -167,7 +168,7 @@ export class GeneralChatComponent implements OnInit, OnDestroy, AfterViewChecked
         }
     }
 
-    backToChannels() {
+    backToChannels(): void {
         this.generalChatService.currentChannel = null; // Reset currentChannel
         this.generalChatService.backToChannels(); // Call the service method to reset channel state
     }
@@ -185,7 +186,7 @@ export class GeneralChatComponent implements OnInit, OnDestroy, AfterViewChecked
         return this.joinedChatRooms.some((channelN) => channelN.chatRoomName === channel);
     }
 
-    createChannel() {
+    createChannel(): void {
         const chatRoomInfo = {
             chatRoomName: this.newChannelName,
             chatRoomType: ChatRoomType.Public,
@@ -197,15 +198,15 @@ export class GeneralChatComponent implements OnInit, OnDestroy, AfterViewChecked
         this.newChannelName = '';
     }
 
-    removeChannel(channelName: string) {
+    removeChannel(channelName: string): void {
         this.generalChatService.removeChannel(channelName);
     }
 
-    joinChannel(channel: string) {
+    joinChannel(channel: string): void {
         this.generalChatService.joinChannel(channel);
     }
 
-    openExternalChat() {
+    openExternalChat(): void {
         const userData = { userName: this.accountService.account.pseudonym, avatarPath: this.accountService.account.avatarUrl, theme: this.accountService.account.themeVisual, language: this.accountService.account.lang };
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (window as any).electronAPI.openChatWindow(userData).then(() => {
