@@ -8,19 +8,19 @@ import { TranslateService } from '@ngx-translate/core';
 })
 
 export class TranslationService {
-  static instance: TranslationService;
+    constructor(
+        public readonly translateService: TranslateService,
+        private readonly accountService: AccountService,
+    ) {}
 
-  constructor(
-    public readonly translateService: TranslateService,
-    private readonly accountService: AccountService,
-  ) {TranslationService.instance = this;}
+    changeLang(lang?: Language) {
+        const switchLang: Language = this.translateService.currentLang === Language.FR ? Language.EN : Language.FR;
+        const selectedLang = lang ?? switchLang;
 
-  changeLang(lang?: Language) {
-    const switchLang: Language = this.translateService.currentLang === Language.FR ? Language.EN : Language.FR;
-    this.translateService.use(lang ?? switchLang);
-    this.accountService.changeLang(lang ?? switchLang).subscribe((account) => {
-      console.log(account)
-      this.accountService.account = account;
-    });
-  }
+        this.translateService.use(selectedLang).subscribe();
+
+        this.accountService.changeLang(selectedLang).subscribe((account) => {
+            this.accountService.account = account;
+        });
+    }
 }

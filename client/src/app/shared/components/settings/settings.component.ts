@@ -16,7 +16,6 @@ import { TranslateModule } from '@ngx-translate/core';
     imports: [CommonModule, FormsModule, MatFormFieldModule, AppMaterialModule, TranslateModule],
     templateUrl: './settings.component.html',
     styleUrls: ['./settings.component.scss'],
-    providers: [TranslationService],
 })
 export class SettingsComponent implements OnInit {
     isFrenchSelected: boolean | null = null;

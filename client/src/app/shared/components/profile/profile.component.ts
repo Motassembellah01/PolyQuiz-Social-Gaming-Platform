@@ -17,7 +17,6 @@ import { finalize } from 'rxjs';
     imports: [CommonModule, FormsModule, MatFormFieldModule, AppMaterialModule, TranslateModule],
     templateUrl: './profile.component.html',
     styleUrls: ['./profile.component.scss'],
-    providers: [TranslationService],
 })
 export class ProfileComponent implements OnInit {
     isFrenchSelected: boolean | null = null;
