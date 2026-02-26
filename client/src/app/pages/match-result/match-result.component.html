@@ -1,64 +1,41 @@
-<nav class="nav"><app-logo></app-logo></nav>
-<div id="players">
-    <h1
-        [ngClass]="{
-            'color-blue': this.accountService.theme === 'light' || this.accountService.theme === 'valentines',
-            'color-brown': this.accountService.theme === 'christmas' || this.accountService.theme === 'dark',
-        }"
-    >
-        {{ 'TITLES.MATCH_RESULTS' | translate }}
-    </h1>
-    <app-players-list [isResultView]="true"></app-players-list>
-    <div class="feedbacks">
-        <h2
-            *ngIf="accountService.isWinnerPlayerName"
-            [ngClass]="{
-                'color-white': this.accountService.theme === 'christmas' || this.accountService.theme === 'dark',
-            }"
-        >
-        {{ 'PRICE_WON.WON' | translate }}
-        </h2>
-        <h2
-            *ngIf="accountService.isWinnerPlayerName && this.matchPlayerService.match.isPricedMatch"
-            [ngClass]="{
-                'color-white': this.accountService.theme === 'christmas' || this.accountService.theme === 'dark',
-            }"
-        >
-        {{ 'PRICE_WON.WON_PRICE' | translate }}
-        </h2>
-        <h2
-            *ngIf="!accountService.isWinnerPlayerName && this.accountService.account.pseudonym !== this.matchPlayerService.match.managerName"
-            [ngClass]="{
-                'color-white': this.accountService.theme === 'christmas' || this.accountService.theme === 'dark',
-            }"
-        >
-        {{ 'PRICE_WON.LOST' | translate }}
-        </h2>
-        <h2
-            *ngIf="
-                !accountService.isWinnerPlayerName &&
-                this.matchPlayerService.match.isPricedMatch &&
-                this.accountService.account.pseudonym !== this.matchPlayerService.match.managerName
-            "
-            [ngClass]="{
-                'color-white': this.accountService.theme === 'christmas' || this.accountService.theme === 'dark',
-            }"
-        >
-        {{ 'PRICE_WON.LOST_PRICE' | translate }}
-        </h2>
-    </div>
-</div>
+<div class="result-page">
+    <nav class="nav">
+        <app-logo></app-logo>
+    </nav>
 
-<button
-    mat-raised-button
-    color="primary"
-    class="evaluate"
-    (click)="openEvaluateGame()"
-    *ngIf="this.accountService.account.pseudonym !== this.matchPlayerService.match.managerName"
-    [disabled]="isSubmited"
->
-{{ 'EVALUATION.OPEN' | translate }}
-</button>
+    <mat-card class="results-card">
+        <h1>{{ 'TITLES.MATCH_RESULTS' | translate }}</h1>
+        <app-players-list [isResultView]="true"></app-players-list>
+
+        <div class="feedbacks">
+            <h2 *ngIf="accountService.isWinnerPlayerName">{{ 'PRICE_WON.WON' | translate }}</h2>
+            <h2 *ngIf="accountService.isWinnerPlayerName && this.matchPlayerService.match.isPricedMatch">{{ 'PRICE_WON.WON_PRICE' | translate }}</h2>
+            <h2 *ngIf="!accountService.isWinnerPlayerName && this.accountService.account.pseudonym !== this.matchPlayerService.match.managerName">
+                {{ 'PRICE_WON.LOST' | translate }}
+            </h2>
+            <h2
+                *ngIf="
+                    !accountService.isWinnerPlayerName &&
+                    this.matchPlayerService.match.isPricedMatch &&
+                    this.accountService.account.pseudonym !== this.matchPlayerService.match.managerName
+                "
+            >
+                {{ 'PRICE_WON.LOST_PRICE' | translate }}
+            </h2>
+        </div>
+    </mat-card>
+
+    <button
+        mat-raised-button
+        color="primary"
+        class="evaluate"
+        (click)="openEvaluateGame()"
+        *ngIf="this.accountService.account.pseudonym !== this.matchPlayerService.match.managerName"
+        [disabled]="isSubmited"
+    >
+        {{ 'EVALUATION.OPEN' | translate }}
+    </button>
+</div>
 
 <ng-template #evaluateGame>
     <div
@@ -70,14 +47,7 @@
             valentines: this.accountService.theme === 'valentines',
         }"
     >
-        <h1
-            [ngClass]="{
-                'color-blue': this.accountService.theme === 'light' || this.accountService.theme === 'valentines',
-                'color-brown': this.accountService.theme === 'christmas' || this.accountService.theme === 'dark',
-            }"
-        >
-        {{ 'EVALUATION.TITLE' | translate }}
-        </h1>
+        <h1>{{ 'EVALUATION.TITLE' | translate }}</h1>
 
         <div class="stars">
             <ng-container *ngFor="let star of stars; let index = index">
@@ -86,14 +56,7 @@
         </div>
 
         <div class="toggle-group">
-            <h3
-                [ngClass]="{
-                    'color-blue': this.accountService.theme === 'light' || this.accountService.theme === 'valentines',
-                    'color-brown': this.accountService.theme === 'christmas' || this.accountService.theme === 'dark',
-                }"
-            >
-            {{ 'EVALUATION.DIFFICULTY' | translate }}
-            </h3>
+            <h3>{{ 'EVALUATION.DIFFICULTY' | translate }}</h3>
             <div class="toggle-container">
                 <input type="radio" id="facile" name="difficulty" value="Facile" [(ngModel)]="selectedLabels.difficulty" />
                 <label for="facile">{{ 'EVALUATION.EASY' | translate }}</label>
@@ -107,14 +70,7 @@
         </div>
 
         <div class="toggle-group">
-            <h3
-                [ngClass]="{
-                    'color-blue': this.accountService.theme === 'light' || this.accountService.theme === 'valentines',
-                    'color-brown': this.accountService.theme === 'christmas' || this.accountService.theme === 'dark',
-                }"
-            >
-            {{ 'EVALUATION.INTEREST' | translate }}
-            </h3>
+            <h3>{{ 'EVALUATION.INTEREST' | translate }}</h3>
             <div class="toggle-container">
                 <input type="radio" id="ennuyant" name="interest" value="Ennuyant" [(ngModel)]="selectedLabels.interest" />
                 <label for="ennuyant">{{ 'EVALUATION.BORING' | translate }}</label>
@@ -125,14 +81,7 @@
         </div>
 
         <div class="toggle-group">
-            <h3
-                [ngClass]="{
-                    'color-blue': this.accountService.theme === 'light' || this.accountService.theme === 'valentines',
-                    'color-brown': this.accountService.theme === 'christmas' || this.accountService.theme === 'dark',
-                }"
-            >
-            {{ 'EVALUATION.DURATION' | translate }}
-            </h3>
+            <h3>{{ 'EVALUATION.DURATION' | translate }}</h3>
             <div class="toggle-container">
                 <input type="radio" id="court" name="duration" value="Court" [(ngModel)]="selectedLabels.duration" />
                 <label for="court">{{ 'EVALUATION.SHORT' | translate }}</label>

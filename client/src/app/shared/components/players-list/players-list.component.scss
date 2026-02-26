@@ -6,22 +6,35 @@
     max-height: 42vh;
     overflow: hidden;
     overflow-y: auto;
-    background-color: #e9f3fc;
+    background: linear-gradient(180deg, rgba(248, 250, 252, 0.95), rgba(236, 246, 255, 0.92));
     width: 100%;
+    border-radius: 0.9rem;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 th,
 td {
-    font-size: 18px;
+    font-size: 16px;
     vertical-align: middle;
     white-space: nowrap;
+}
+
+th {
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: var(--theme-text-primary);
+}
+
+td {
+    color: var(--theme-text-primary);
 }
 
 .match-list {
     th,
     td {
         width: 100%;
-        padding-right: 50px;
+        padding-right: 26px;
     }
 }
 
@@ -29,7 +42,7 @@ td {
     th,
     td {
         width: 50%;
-        padding-right: 40px;
+        padding-right: 22px;
     }
 }
 
@@ -82,4 +95,12 @@ td {
 
 .state:hover {
     cursor: pointer;
+}
+
+:host-context(.dark-mode),
+:host-context(.christmas) {
+    #players-list {
+        background: rgba(15, 23, 42, 0.85);
+        border-color: rgba(148, 163, 184, 0.28);
+    }
 }
