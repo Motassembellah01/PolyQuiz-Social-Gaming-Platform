@@ -147,6 +147,11 @@ export class FriendsComponent implements OnInit, OnDestroy {
         this.friendsFacadeService.setSearchTerm(this.searchTerm);
     }
 
+    // Legacy UI hook kept for tab changes after moving filtering to the facade stream.
+    refreshFilteredLists(): void {
+        this.friendsFacadeService.setSearchTerm(this.searchTerm);
+    }
+
     getFilteredList(): AccountFriend[] {
         if (this.currentTab === FriendTab.Discover) {
             return this.filteredDiscoverList;

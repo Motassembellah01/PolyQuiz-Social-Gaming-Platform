@@ -3,6 +3,15 @@ require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 const { app, ipcMain, BrowserWindow } = require('electron');
 
+if (process.env.ELECTRON_DISABLE_GPU === '1') {
+    // Emergency fallback for machines with broken GPU drivers.
+    app.disableHardwareAcceleration();
+    app.commandLine.appendSwitch('disable-gpu');
+}
+
+// Keep default fast GPU path and silence noisy Chromium GPU probe logs.
+app.commandLine.appendSwitch('log-level', '3');
+
 const instanceId = `inst-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 app.setPath('userData', path.join(app.getPath('userData'), instanceId));
 app.name = `PolyQuiz-${instanceId}`;
