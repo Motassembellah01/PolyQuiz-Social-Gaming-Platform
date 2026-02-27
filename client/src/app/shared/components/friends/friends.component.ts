@@ -3,7 +3,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { AccountService } from '@app/core/http/services/account-service/account.service';
-import { FriendService } from '@app/core/http/services/friend-service/friend.service';
 import { AccountListenerService } from '@app/core/services/account-listener/account-listener.service';
 import { AccountFriend } from '@app/core/interfaces/account/account_friends';
 import { AppMaterialModule } from '@app/modules/material.module';
@@ -12,6 +11,7 @@ import { FRIENDS_EN, FRIENDS_FR } from '@app/core/constants/constants';
 import { Subscription } from 'rxjs';
 import { CancelConfirmationService } from '@app/core/services/cancel-confirmation/cancel-confirmation.service';
 import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
+import { FriendsFacadeService } from '@app/core/services/friends/friends-facade.service';
 
 export enum FriendTab {
     Discover = 'discover',
@@ -64,12 +64,10 @@ export class FriendsComponent implements OnInit, OnDestroy {
 
     private langChangeSubscription: Subscription;
     private accountsChangeSubscription: Subscription;
-    private lastFilteredAccountsLength = 0;
-
     constructor(
         public accountService: AccountService,
         public accountListenerService: AccountListenerService,
-        private readonly friendService: FriendService,
+        private readonly friendsFacadeService: FriendsFacadeService,
         private translateService: TranslateService,
         public cancelConfirmationService: CancelConfirmationService,
     ) {
@@ -77,12 +75,9 @@ export class FriendsComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.informUserOfPeopleAlreadyRequestedAtLogin();
-        this.getFriendListAtLogin();
-        this.getFriendRequestsListAtLogin();
-        this.getListAllAccountsExistingAtLogin();
-        this.getBlockedUsersListAtLogin();
-        this.getBlockedByListAtLogin();
+        this.friendsFacadeService.initializeData().subscribe(() => {
+            this.refreshFilteredLists();
+        });
         this.accountListenerService.setUpListeners();
 
         this.langChangeSubscription = this.translateService.onLangChange.subscribe(() => {
@@ -114,15 +109,15 @@ export class FriendsComponent implements OnInit, OnDestroy {
     }
 
     get friendCount(): number {
-        return this.accountListenerService.accounts.filter((a) => a.isFriend).length;
+        return this.friendsFacadeService.getFriendCount();
     }
 
     get requestCount(): number {
-        return this.accountListenerService.friendRequestsReceived.length;
+        return this.friendsFacadeService.getRequestCount();
     }
 
     get blockedCount(): number {
-        return this.accountListenerService.blocked.length;
+        return this.friendsFacadeService.getBlockedCount();
     }
 
     updateLanguageDependentProperties(): void {
@@ -130,43 +125,6 @@ export class FriendsComponent implements OnInit, OnDestroy {
         this.tabs = isFrench
             ? [FRIENDS_FR.discover, FRIENDS_FR.friends, FRIENDS_FR.friendRequest]
             : [FRIENDS_EN.discover, FRIENDS_EN.friends, FRIENDS_EN.friendRequest];
-    }
-
-    getListAllAccountsExistingAtLogin(): void {
-        this.accountService.getAccounts().subscribe((accounts: any[]) => {
-            this.accountListenerService.accounts = this.accountListenerService.mapAccounts(accounts);
-            this.refreshFilteredLists();
-        });
-    }
-
-    informUserOfPeopleAlreadyRequestedAtLogin(): void {
-        this.accountService.getFriendsThatUserRequested().subscribe((friends) => {
-            this.accountListenerService.friendsThatUserRequested = friends;
-        });
-    }
-
-    getFriendListAtLogin(): void {
-        this.accountService.getFriends().subscribe((friends) => {
-            this.accountListenerService.friends = friends;
-        });
-    }
-
-    getFriendRequestsListAtLogin(): void {
-        this.accountService.getFriendRequests().subscribe((friendRequests) => {
-            this.accountListenerService.friendRequestsReceived = friendRequests;
-        });
-    }
-
-    getBlockedUsersListAtLogin(): void {
-        this.accountService.getBlockedUsers().subscribe((blockedUsers) => {
-            this.accountListenerService.blocked = blockedUsers;
-        });
-    }
-
-    getBlockedByListAtLogin(): void {
-        this.accountService.getBlockedBy().subscribe((blockedBy) => {
-            this.accountListenerService.UsersBlockingMe = blockedBy;
-        });
     }
 
     switchTab(tab: FriendTab): void {
@@ -184,34 +142,13 @@ export class FriendsComponent implements OnInit, OnDestroy {
     }
 
     refreshFilteredLists(): void {
-        const term = this.searchTerm.toLowerCase();
-        const accounts = this.accountListenerService.accounts;
-
-        this.filteredDiscoverList = accounts.filter(
-            (a) =>
-                !a.isFriend &&
-                !a.isBlocked &&
-                !a.isBlockingMe &&
-                a.userId !== this.accountService.auth0Id &&
-                a.pseudonym.toLowerCase().includes(term),
-        );
-
-        this.filteredFriendsList = accounts.filter(
-            (a) => a.isFriend && a.pseudonym.toLowerCase().includes(term),
-        );
-
-        this.blockedUsersList = accounts.filter(
-            (a) => a.isBlocked && a.pseudonym.toLowerCase().includes(term),
-        );
-
-        this.lastFilteredAccountsLength = accounts.length;
+        const lists = this.friendsFacadeService.buildViewLists(this.searchTerm);
+        this.filteredDiscoverList = lists.discover;
+        this.filteredFriendsList = lists.friends;
+        this.blockedUsersList = lists.blocked;
     }
 
     getFilteredList(): AccountFriend[] {
-        if (this.accountListenerService.accounts.length !== this.lastFilteredAccountsLength) {
-            this.refreshFilteredLists();
-        }
-
         if (this.currentTab === FriendTab.Discover) {
             return this.filteredDiscoverList;
         }
@@ -222,13 +159,11 @@ export class FriendsComponent implements OnInit, OnDestroy {
     }
 
     getRequestForUser(userId: string) {
-        return this.accountListenerService.friendRequestsReceived.find(
-            (r) => r.senderBasicInfo.userId === userId,
-        );
+        return this.friendsFacadeService.getRequestForUser(userId);
     }
 
     sendFriendRequest(userId: string): void {
-        this.friendService.sendFriendRequest(userId).subscribe(() => {
+        this.friendsFacadeService.sendFriendRequest(userId).subscribe(() => {
             this.refreshFilteredLists();
         });
     }
@@ -240,20 +175,20 @@ export class FriendsComponent implements OnInit, OnDestroy {
                 : `cancel the friend request sent to ${pseudonym}`;
 
         this.cancelConfirmationService.askConfirmation(() => {
-            this.friendService.cancelFriendRequest(receiverId).subscribe(() => {
+            this.friendsFacadeService.cancelFriendRequest(receiverId).subscribe(() => {
                 this.refreshFilteredLists();
             });
         }, dialogMessage);
     }
 
     acceptFriendRequest(requestId: string): void {
-        this.friendService.acceptFriendRequest(requestId).subscribe(() => {
+        this.friendsFacadeService.acceptFriendRequest(requestId).subscribe(() => {
             this.refreshFilteredLists();
         });
     }
 
     rejectFriendRequest(requestId: string): void {
-        this.friendService.rejectFriendRequest(requestId).subscribe(() => {
+        this.friendsFacadeService.rejectFriendRequest(requestId).subscribe(() => {
             this.refreshFilteredLists();
         });
     }
@@ -265,7 +200,7 @@ export class FriendsComponent implements OnInit, OnDestroy {
                 : `remove ${pseudonym} from your friends`;
 
         this.cancelConfirmationService.askConfirmation(() => {
-            this.friendService.removeFriend(friendId).subscribe(() => {
+            this.friendsFacadeService.removeFriend(friendId).subscribe(() => {
                 this.refreshFilteredLists();
             });
         }, dialogMessage);
@@ -278,7 +213,7 @@ export class FriendsComponent implements OnInit, OnDestroy {
                 : `block ${pseudonym}`;
 
         this.cancelConfirmationService.askConfirmation(() => {
-            this.friendService.blockNormalUser(blockedUserId).subscribe(() => {
+            this.friendsFacadeService.blockNormalUser(blockedUserId).subscribe(() => {
                 this.refreshFilteredLists();
             });
         }, dialogMessage);
@@ -291,7 +226,7 @@ export class FriendsComponent implements OnInit, OnDestroy {
                 : `block your friend ${pseudonym}`;
 
         this.cancelConfirmationService.askConfirmation(() => {
-            this.friendService.blockFriend(blockedFriendId).subscribe(() => {
+            this.friendsFacadeService.blockFriend(blockedFriendId).subscribe(() => {
                 this.refreshFilteredLists();
             });
         }, dialogMessage);
@@ -304,7 +239,7 @@ export class FriendsComponent implements OnInit, OnDestroy {
                 : `block ${pseudonym}`;
 
         this.cancelConfirmationService.askConfirmation(() => {
-            this.friendService.blockUserWithPendingRequest(otherUserId).subscribe(() => {
+            this.friendsFacadeService.blockUserWithPendingRequest(otherUserId).subscribe(() => {
                 this.refreshFilteredLists();
             });
         }, dialogMessage);
@@ -317,7 +252,7 @@ export class FriendsComponent implements OnInit, OnDestroy {
                 : `unblock ${pseudonym}`;
 
         this.cancelConfirmationService.askConfirmation(() => {
-            this.friendService.unblockUser(blockedUserId).subscribe(() => {
+            this.friendsFacadeService.unblockUser(blockedUserId).subscribe(() => {
                 this.refreshFilteredLists();
             });
         }, dialogMessage);

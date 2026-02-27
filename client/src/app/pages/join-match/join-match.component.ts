@@ -16,6 +16,7 @@ import { AccountListenerService } from '@app/core/services/account-listener/acco
 import { HistogramService } from '@app/core/services/histogram-service/histogram.service';
 import { JoinMatchService } from '@app/core/services/join-match/join-match.service';
 import { MatchPlayerService } from '@app/core/services/match-player-service/match-player.service';
+import { RelationshipPolicyService } from '@app/core/services/relationship-policy/relationship-policy.service';
 import { SocketService } from '@app/core/websocket/services/socket-service/socket.service';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { ErrorMessageComponent } from '@app/shared/components/error-message/error-message.component';
@@ -70,6 +71,7 @@ export class JoinMatchComponent implements OnInit, OnDestroy {
         public joinMatchService: JoinMatchService,
         public accountListenerService: AccountListenerService,
         private translateService: TranslateService,
+        private readonly relationshipPolicyService: RelationshipPolicyService,
     ) {}
 
     clearError(): void {
@@ -129,10 +131,10 @@ export class JoinMatchComponent implements OnInit, OnDestroy {
     }
 
     organiserIsFriend(managerId: string): boolean {
-        return this.accountListenerService.friends.includes(managerId);
+        return this.relationshipPolicyService.canAccessFriendOnlyMatch(managerId, true, this.accountListenerService.friends);
     }
 
-    async getForbidenCodes(): Promise<string[]> {
+    async getForbiddenCodes(): Promise<string[]> {
         await this.refreshGames();
 
         const firstForbiddenList = this.currentMatches
@@ -153,7 +155,9 @@ export class JoinMatchComponent implements OnInit, OnDestroy {
                         : of([])
                     ).pipe(
                         map(userIds =>
-                            userIds.some(userId => this.accountListenerService.UsersBlockingMe.includes(userId)) ? match.accessCode : null
+                            userIds.some(userId => this.relationshipPolicyService.isBlockingCurrentUser(userId, this.accountListenerService.usersBlockingMe))
+                                ? match.accessCode
+                                : null
                         )
                     )
                 )
@@ -166,14 +170,18 @@ export class JoinMatchComponent implements OnInit, OnDestroy {
     }
 
     getWaitingGames() {
-        return this.currentMatches.filter((match) =>
-            !match.hasStarted && (!match.isFriendMatch || this.organiserIsFriend(match.managerId))
+        return this.currentMatches.filter(
+            (match) =>
+                !match.hasStarted &&
+                this.relationshipPolicyService.canAccessFriendOnlyMatch(match.managerId, match.isFriendMatch, this.accountListenerService.friends),
         ) || [];
     }
 
     getOnGoingGames() {
-        return this.currentMatches.filter((match) =>
-            match.hasStarted && (!match.isFriendMatch || this.organiserIsFriend(match.managerId))
+        return this.currentMatches.filter(
+            (match) =>
+                match.hasStarted &&
+                this.relationshipPolicyService.canAccessFriendOnlyMatch(match.managerId, match.isFriendMatch, this.accountListenerService.friends),
         ) || [];
     }
 
@@ -186,7 +194,7 @@ export class JoinMatchComponent implements OnInit, OnDestroy {
             return;
         }
 
-        if ((await this.getForbidenCodes()).includes(this.accessCode)) {
+        if ((await this.getForbiddenCodes()).includes(this.accessCode)) {
             this.accessCodeError = true;
             this.errorMessage = this.translateService.instant('JOIN_MATCH.ERROR_FORBIDDEN');
             return;
@@ -245,7 +253,7 @@ export class JoinMatchComponent implements OnInit, OnDestroy {
     }
 
     async joinGame(accessCode: string): Promise<void> {
-        if ((await this.getForbidenCodes()).includes(accessCode)) {
+        if ((await this.getForbiddenCodes()).includes(accessCode)) {
             this.accessCodeError = true;
             this.errorMessage = this.translateService.instant('JOIN_MATCH.ERROR_FORBIDDEN');
             return;
@@ -285,7 +293,7 @@ export class JoinMatchComponent implements OnInit, OnDestroy {
     }
 
     async joinAsObserver(accessCode: string): Promise<void> {
-        if ((await this.getForbidenCodes()).includes(accessCode)) {
+        if ((await this.getForbiddenCodes()).includes(accessCode)) {
             this.accessCodeError = true;
             this.errorMessage = this.translateService.instant('JOIN_MATCH.ERROR_FORBIDDEN_OBSERVER');
             return;

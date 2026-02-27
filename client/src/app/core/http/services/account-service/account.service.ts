@@ -35,8 +35,8 @@ export class AccountService {
         return this.http.post(`${this.serverConfig.serverUrl}/sessions/create/${this.auth0Id}`, {});
     }
 
-    getAccount(userID: string = this.auth0Id) {
-        return this.http.get<Account>(`${this.serverConfig.serverUrl}/accounts/${userID}`);
+    getAccount(userId: string = this.auth0Id) {
+        return this.http.get<Account>(`${this.serverConfig.serverUrl}/accounts/${userId}`);
     }
 
     getAccountByPseudonym(pseudo: string) {
@@ -118,7 +118,7 @@ export class AccountService {
 
     isAvatarOwned(avatar: string): boolean {
         return this.ownedAvatars?.includes(avatar) ?? false;
-    } 
+    }
 
     getBlockedUsers() {
         return this.http.get<string[]>(`${this.serverConfig.serverUrl}/accounts/${this.auth0Id}/blockedUsers`);

@@ -6,76 +6,88 @@ import { SocketService } from '@app/core/websocket/services/socket-service/socke
 import { Subject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class AccountListenerService {
-  accounts: AccountFriend[] = [];
-  friendRequestsReceived: FriendRequestData[] = [];
-  friendsThatUserRequested: string[] = [];
-  friends: string[] = [];
-  blocked: string[] = [];
-  UsersBlockingMe: string[] = [];
-  accountsChanged$ = new Subject<void>();
-  constructor(private socketService: SocketService) {}
+    accounts: AccountFriend[] = [];
+    friendRequestsReceived: FriendRequestData[] = [];
+    friendsThatUserRequested: string[] = [];
+    friends: string[] = [];
+    blocked: string[] = [];
+    usersBlockingMe: string[] = [];
+    accountsChanged$ = new Subject<void>();
 
-  setUpListeners(): void {
-    this.accounts = this.mapAccounts(this.accounts);
-    this.accounts = this.mapAccounts(this.accounts);
-    this.socketService.on('accountCreated', (accounts: Partial<Account>[]) => {
-      this.accounts = this.mapAccounts(accounts);
-      this.accountsChanged$.next();
-    });
+    private listenersInitialized = false;
 
-    this.socketService.on('friendRequestsThatUserReceived', (friendRequests: FriendRequestData[]) => {
-      this.friendRequestsReceived = friendRequests;
-      this.accounts = this.mapAccounts(this.accounts);
-      this.accountsChanged$.next();
-    });
+    constructor(private readonly socketService: SocketService) {}
 
-    this.socketService.on('friendsThatUserRequested', (friendsThatUserRequested: string[]) => {
-      this.friendsThatUserRequested = friendsThatUserRequested;
-      this.accounts = this.mapAccounts(this.accounts);
-      this.accountsChanged$.next();
-    });
+    setUpListeners(): void {
+        if (this.listenersInitialized) {
+            return;
+        }
+        this.listenersInitialized = true;
 
-    this.socketService.on('updateFriendListReceiver', (friendsReceiver: string[]) => {
-      this.friends = friendsReceiver;
-      this.accounts = this.mapAccounts(this.accounts);
-      this.accountsChanged$.next();
-    });
+        this.socketService.on('accountCreated', (accounts: Partial<Account>[]) => {
+            this.accounts = this.mapAccounts(accounts);
+            this.accountsChanged$.next();
+        });
 
-    this.socketService.on('updateFriendListSender', (friendsSender: string[]) => {
-      this.friends = friendsSender;
-      this.accounts = this.mapAccounts(this.accounts);
-      this.accountsChanged$.next();
-    });
+        this.socketService.on('friendRequestsThatUserReceived', (friendRequests: FriendRequestData[]) => {
+            this.friendRequestsReceived = friendRequests;
+            this.accounts = this.mapAccounts(this.accounts);
+            this.accountsChanged$.next();
+        });
 
-    this.socketService.on('updateBlockedUsers', (blockedUsers: string[]) => {
-      this.blocked = blockedUsers;
-      this.accounts = this.mapAccounts(this.accounts);
-      this.accountsChanged$.next();
-    });
+        this.socketService.on('friendsThatUserRequested', (friendsThatUserRequested: string[]) => {
+            this.friendsThatUserRequested = friendsThatUserRequested;
+            this.accounts = this.mapAccounts(this.accounts);
+            this.accountsChanged$.next();
+        });
 
-    this.socketService.on('updateBlockedBy', (blockedBy: string[]) => {
-      this.UsersBlockingMe = blockedBy;
-      this.accounts = this.mapAccounts(this.accounts);
-      this.accountsChanged$.next();
-    });
-  }
+        this.socketService.on('updateFriendListReceiver', (friendsReceiver: string[]) => {
+            this.friends = friendsReceiver;
+            this.accounts = this.mapAccounts(this.accounts);
+            this.accountsChanged$.next();
+        });
 
-  mapAccounts(accounts: Partial<Account>[]): AccountFriend[] {
-    return accounts.map((account) => {
-      return {
-        userId: account.userId!,
-        pseudonym: account.pseudonym!,
-        avatarUrl: account.avatarUrl!,
-        isFriend: this.friends.includes(account.userId!),
-        isRequestReceived: this.friendRequestsReceived.map((request) => request.senderBasicInfo.userId).includes(account.userId!),
-        isRequestSent: this.friendsThatUserRequested.includes(account.userId!),
-        isBlocked: this.blocked.includes(account.userId!),
-        isBlockingMe: this.UsersBlockingMe.includes(account.userId!)
-      };
-    });
-  }
+        this.socketService.on('updateFriendListSender', (friendsSender: string[]) => {
+            this.friends = friendsSender;
+            this.accounts = this.mapAccounts(this.accounts);
+            this.accountsChanged$.next();
+        });
 
+        this.socketService.on('updateBlockedUsers', (blockedUsers: string[]) => {
+            this.blocked = blockedUsers;
+            this.accounts = this.mapAccounts(this.accounts);
+            this.accountsChanged$.next();
+        });
+
+        this.socketService.on('updateBlockedBy', (blockedBy: string[]) => {
+            this.usersBlockingMe = blockedBy;
+            this.accounts = this.mapAccounts(this.accounts);
+            this.accountsChanged$.next();
+        });
+    }
+
+    mapAccounts(accounts: Partial<Account>[]): AccountFriend[] {
+        const requestSenderIds = this.friendRequestsReceived
+            .map((request) => request.senderBasicInfo.userId)
+            .filter((userId): userId is string => Boolean(userId));
+
+        return accounts
+            .filter((account) => Boolean(account.userId && account.pseudonym))
+            .map((account) => {
+                const userId = account.userId ?? '';
+                return {
+                    userId,
+                    pseudonym: account.pseudonym ?? '',
+                    avatarUrl: account.avatarUrl ?? '',
+                    isFriend: this.friends.includes(userId),
+                    isRequestReceived: requestSenderIds.includes(userId),
+                    isRequestSent: this.friendsThatUserRequested.includes(userId),
+                    isBlocked: this.blocked.includes(userId),
+                    isBlockingMe: this.usersBlockingMe.includes(userId),
+                };
+            });
+    }
 }

@@ -9,6 +9,7 @@ import { ChatRoomMessageData } from '@app/core/interfaces/chat-interfaces/chatro
 import { JoinedChatroom } from '@app/core/interfaces/chat-interfaces/joined-chatroom';
 import { AccountListenerService } from '@app/core/services/account-listener/account-listener.service';
 import { GeneralChatService } from '@app/core/services/general-chat-service/general-chat.service';
+import { RelationshipPolicyService } from '@app/core/services/relationship-policy/relationship-policy.service';
 import { TimeService } from '@app/core/websocket/services/time-service/time.service';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { ChatMessageComponent } from '@app/shared/components/chat-message/chat-message.component';
@@ -52,7 +53,8 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
         public generalChatService: GeneralChatService,
         private timeService: TimeService,
         public accountService: AccountService,
-        public accountListenerService: AccountListenerService
+        public accountListenerService: AccountListenerService,
+        private readonly relationshipPolicyService: RelationshipPolicyService,
     ) {}
 
     @HostListener('document:keydown.enter', ['$event'])
@@ -83,12 +85,12 @@ export class ChatPageComponent implements OnInit, OnDestroy, AfterViewChecked {
         });
     }
 
-    isBlocked(userID: string): boolean {
-        return this.accountListenerService.blocked.includes(userID);
+    isBlocked(userId: string): boolean {
+        return this.relationshipPolicyService.isBlockedByCurrentUser(userId, this.accountListenerService.blocked);
     }
 
     isBlockedByHim(userId: string): boolean {
-        return this.accountListenerService.UsersBlockingMe.includes(userId);
+        return this.relationshipPolicyService.isBlockingCurrentUser(userId, this.accountListenerService.usersBlockingMe);
     }
 
     ngAfterViewChecked(): void {

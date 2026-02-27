@@ -8,7 +8,7 @@ import { BadRequestException, Injectable, InternalServerErrorException, Logger, 
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import axios from 'axios';
-import { Model } from 'mongoose';
+import { ClientSession, Model } from 'mongoose';
 
 @Injectable()
 export class AccountService {
@@ -76,7 +76,7 @@ export class AccountService {
         return Promise.all(friendRequests);
     }
 
-    async addFriendRequest(userId: string, senderBasicInfo: Partial<Account>, requestId: string): Promise<void> {
+    async addFriendRequest(userId: string, senderBasicInfo: Partial<Account>, requestId: string, session?: ClientSession): Promise<void> {
         // Get all information related to the friend request
         const friendRequest: FriendRequestDto = new FriendRequestDto();
         friendRequest.requestId = requestId;
@@ -85,8 +85,8 @@ export class AccountService {
         // Add the receiverId to the list of friends that the sender has requested (In sender account)
         const senderAccountUpdate = await this.accountModel.findOneAndUpdate(
             { userId: senderBasicInfo.userId },
-            { $push: { friendsThatUserRequested: userId } },
-            { new: true, fields: { friendsThatUserRequested: 1 } },
+            { $addToSet: { friendsThatUserRequested: userId } },
+            this.buildQueryOptions({ friendsThatUserRequested: 1 }, session),
         );
 
         // Inform the friend handler gateway to update the list of friends already requested by sender list
@@ -94,18 +94,18 @@ export class AccountService {
 
         // Add the friend request to the receiver's account
         const receiverAccountUpdate = await this.accountModel
-            .findOneAndUpdate({ userId }, { $push: { friendRequests: friendRequest } }, { new: true, fields: { friendRequests: 1 } })
+            .findOneAndUpdate({ userId }, { $addToSet: { friendRequests: friendRequest } }, this.buildQueryOptions({ friendRequests: 1 }, session))
             .exec();
 
         const friendRequestsListUpdated = receiverAccountUpdate?.friendRequests || [];
         this.friendHandlerGateway.updateFriendRequestsThatUserReceived(userId, friendRequestsListUpdated);
     }
 
-    async removeFriendRequestFromAccount(request: Friend): Promise<void> {
+    async removeFriendRequestFromAccount(request: Friend, session?: ClientSession): Promise<void> {
         const accountReceiver = await this.accountModel.findOneAndUpdate(
             { userId: request.receiverId },
             { $pull: { friendRequests: { requestId: request.requestId } } },
-            { new: true, fields: { friendRequests: 1 } },
+            this.buildQueryOptions({ friendRequests: 1 }, session),
         );
         const friendRequestsReceiverListUpdated = accountReceiver?.friendRequests || [];
         this.friendHandlerGateway.updateFriendRequestsThatUserReceived(request.receiverId, friendRequestsReceiverListUpdated);
@@ -114,23 +114,23 @@ export class AccountService {
         const accountSender = await this.accountModel.findOneAndUpdate(
             { userId: request.senderId },
             { $pull: { friendsThatUserRequested: request.receiverId } },
-            { new: true, fields: { friendsThatUserRequested: 1 } },
+            this.buildQueryOptions({ friendsThatUserRequested: 1 }, session),
         );
         const friendsThatUserRequestedUpdated = accountSender?.friendsThatUserRequested || [];
         this.friendHandlerGateway.updateFriendRequestSentList(request.senderId, friendsThatUserRequestedUpdated);
     }
 
-    async addFriend(request: Friend): Promise<void> {
+    async addFriend(request: Friend, session?: ClientSession): Promise<void> {
         const receiverAccount = await this.accountModel.findOneAndUpdate(
             { userId: request.receiverId },
-            { $push: { friends: request.senderId } },
-            { new: true, fields: { friends: 1 } },
+            { $addToSet: { friends: request.senderId } },
+            this.buildQueryOptions({ friends: 1 }, session),
         );
 
         const senderAccount = await this.accountModel.findOneAndUpdate(
             { userId: request.senderId },
-            { $push: { friends: request.receiverId } },
-            { new: true, fields: { friends: 1 } },
+            { $addToSet: { friends: request.receiverId } },
+            this.buildQueryOptions({ friends: 1 }, session),
         );
 
         this.friendHandlerGateway.updateFriendListReceiver(request.receiverId, receiverAccount?.friends || []);
@@ -140,7 +140,7 @@ export class AccountService {
         const receiverAccountUpdate = await this.accountModel.findOneAndUpdate(
             { userId: request.receiverId },
             { $pull: { friendRequests: { requestId: request.requestId } } },
-            { new: true, fields: { friendRequests: 1 } },
+            this.buildQueryOptions({ friendRequests: 1 }, session),
         );
 
         const friendRequestsListUpdated = receiverAccountUpdate?.friendRequests || [];
@@ -150,7 +150,7 @@ export class AccountService {
         const senderAccountUpdate = await this.accountModel.findOneAndUpdate(
             { userId: request.senderId },
             { $pull: { friendsThatUserRequested: request.receiverId } },
-            { new: true, fields: { friendsThatUserRequested: 1 } },
+            this.buildQueryOptions({ friendsThatUserRequested: 1 }, session),
         );
 
         const friendsThatUserRequestedUpdated = senderAccountUpdate?.friendsThatUserRequested || [];
@@ -163,11 +163,11 @@ export class AccountService {
         return Promise.all(friendsThatUserRequested);
     }
 
-    async removeFriend(request: Friend): Promise<void> {
+    async removeFriend(request: Friend, session?: ClientSession): Promise<void> {
         const senderAccount = await this.accountModel.findOneAndUpdate(
             { userId: request.senderId },
             { $pull: { friends: request.receiverId } },
-            { new: true, fields: { friends: 1 } },
+            this.buildQueryOptions({ friends: 1 }, session),
         );
 
         if (!senderAccount) {
@@ -177,7 +177,7 @@ export class AccountService {
         const receiverAccount = await this.accountModel.findOneAndUpdate(
             { userId: request.receiverId },
             { $pull: { friends: request.senderId } },
-            { new: true, fields: { friends: 1 } },
+            this.buildQueryOptions({ friends: 1 }, session),
         );
 
         if (!receiverAccount) {
@@ -202,34 +202,34 @@ export class AccountService {
         }));
     }
 
-    async addToBlockList(userId: string, blockedPersonId: string): Promise<void> {
+    async addToBlockList(userId: string, blockedPersonId: string, session?: ClientSession): Promise<void> {
         const user = await this.accountModel.findOneAndUpdate(
-            { userId: userId },
-            { $push: { UsersBlocked: blockedPersonId } },
-            { new: true, fields: { UsersBlocked: 1 } }
+            { userId },
+            { $addToSet: { UsersBlocked: blockedPersonId } },
+            this.buildQueryOptions({ UsersBlocked: 1 }, session),
         );
 
         const blockedPerson = await this.accountModel.findOneAndUpdate(
             { userId: blockedPersonId },
-            { $push: { UsersBlockingMe: userId } },
-            { new: true, fields: { UsersBlockingMe: 1 } }
+            { $addToSet: { UsersBlockingMe: userId } },
+            this.buildQueryOptions({ UsersBlockingMe: 1 }, session),
         );
 
         this.friendHandlerGateway.updateBlockedUsersList(userId, user?.UsersBlocked || []);
         this.friendHandlerGateway.updateBlockedByList(blockedPersonId, blockedPerson?.UsersBlockingMe || []);
     }
 
-    async removeFromBlockList(userId: string, blockedPersonId: string): Promise<void> {
+    async removeFromBlockList(userId: string, blockedPersonId: string, session?: ClientSession): Promise<void> {
         const user = await this.accountModel.findOneAndUpdate(
-            { userId: userId },
+            { userId },
             { $pull: { UsersBlocked: blockedPersonId } },
-            { new: true, fields: { UsersBlocked: 1 } }
+            this.buildQueryOptions({ UsersBlocked: 1 }, session),
         );
 
         const unblockedPerson = await this.accountModel.findOneAndUpdate(
             { userId: blockedPersonId },
             { $pull: { UsersBlockingMe: userId } },
-            { new: true, fields: { UsersBlockingMe: 1 } }
+            this.buildQueryOptions({ UsersBlockingMe: 1 }, session),
         );
 
         this.friendHandlerGateway.updateBlockedUsersList(userId, user?.UsersBlocked || []);
@@ -649,5 +649,7 @@ export class AccountService {
             });
         }
     }
-    
+    private buildQueryOptions<T>(fields: T, session?: ClientSession): { new: true; fields: T; session?: ClientSession } {
+        return session ? { new: true, fields, session } : { new: true, fields };
+    }
 }

@@ -9,7 +9,7 @@ import { ChatSocketHandler } from './gateways/chat-socket-handler/chat-socket-ha
 import { SocketHandlerGateway } from './gateways/socket-handler/socket-handler.gateway';
 import { Account, accountSchema } from './model/database/account';
 import { Game, gameSchema } from './model/database/game';
-import { Friend, friendSchema} from './model/database/friend';
+import { Friend, friendSchema } from './model/database/friend';
 import { MatchHistory, matchHistorySchema } from './model/database/match-history';
 import { AccountService } from './services/account/account.service';
 import { GameService } from './services/game/game.service';
@@ -22,10 +22,11 @@ import { Chatroom, chatRoomSchema } from './model/database/chatroom';
 import { Session, sessionSchema } from './model/database/session';
 import { ChatRoomService } from './services/chatroom/chatroom.service';
 import { SessionService } from './services/session/session.service';
-import { FriendService } from './services/friend/friend.service';
 import { AccountHandlerGateway } from './gateways/accounts-handler/account-handler.gateway';
 import { FriendController } from './controllers/friend/friend.controller';
 import { FriendHandlerGateway } from './gateways/friend-handler/friend-handler';
+import { FriendApplicationService } from './services/friend/friend-application.service';
+import { FriendRepository } from './services/friend/friend.repository';
 
 @Module({
     imports: [
@@ -43,7 +44,7 @@ import { FriendHandlerGateway } from './gateways/friend-handler/friend-handler';
             { name: Account.name, schema: accountSchema },
             { name: Session.name, schema: sessionSchema },
             { name: Chatroom.name, schema: chatRoomSchema },
-            { name: Friend.name, schema: friendSchema},
+            { name: Friend.name, schema: friendSchema },
         ]),
         AuthorizationModule,
     ],
@@ -59,7 +60,8 @@ import { FriendHandlerGateway } from './gateways/friend-handler/friend-handler';
         ChatSocketHandler,
         RedisClient,
         ChatRoomService,
-        FriendService,
+        FriendApplicationService,
+        FriendRepository,
         FriendHandlerGateway,
     ],
 })

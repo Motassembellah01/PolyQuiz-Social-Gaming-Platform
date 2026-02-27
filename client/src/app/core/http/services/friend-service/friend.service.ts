@@ -4,74 +4,53 @@ import { ServerConfigService } from '@app/core/services/server-config/server-con
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class FriendService {
-  auth0Id: string;
-  constructor(
-    private readonly http: HttpClient,
-    private readonly serverConfig: ServerConfigService,
-  ) {}
+    auth0Id: string;
 
-  sendFriendRequest(receiverId: string): Observable<void> {
-    return this.http.post<void>(
-      `${this.serverConfig.serverUrl}/friends/send/${this.auth0Id}/${receiverId}`,
-      {}
-    );
-  }
+    constructor(
+        private readonly http: HttpClient,
+        private readonly serverConfig: ServerConfigService,
+    ) {}
 
-  acceptFriendRequest(requestId: string): Observable<void> {
-    return this.http.post<void>(
-      `${this.serverConfig.serverUrl}/friends/accept/${requestId}`,
-      {}
-    );
-  }
+    private get actorUserId(): string {
+        return this.auth0Id;
+    }
 
-  rejectFriendRequest(requestId: string): Observable<void> {
-    return this.http.post<void>(
-      `${this.serverConfig.serverUrl}/friends/reject/${requestId}`,
-      {}
-    );
-  }
+    sendFriendRequest(receiverId: string): Observable<void> {
+        return this.http.post<void>(`${this.serverConfig.serverUrl}/friends/send/${this.actorUserId}/${receiverId}`, {});
+    }
 
-  removeFriend(friendId: string): Observable<void> {
-    return this.http.delete<void>(
-      `${this.serverConfig.serverUrl}/friends/remove/${this.auth0Id}/${friendId}`
-    );
-  }
+    acceptFriendRequest(requestId: string): Observable<void> {
+        return this.http.post<void>(`${this.serverConfig.serverUrl}/friends/accept/${requestId}`, {});
+    }
 
-  blockNormalUser(blockedUserId: string): Observable<void> {
-    return this.http.post<void>(
-      `${this.serverConfig.serverUrl}/friends/block/${this.auth0Id}/${blockedUserId}`,
-      {}
-    );
-  }
+    rejectFriendRequest(requestId: string): Observable<void> {
+        return this.http.post<void>(`${this.serverConfig.serverUrl}/friends/reject/${requestId}`, {});
+    }
 
-  blockFriend(blockedFriendId: string): Observable<void>{
-    return this.http.post<void>(
-      `${this.serverConfig.serverUrl}/friends/blockFriend/${this.auth0Id}/${blockedFriendId}`,
-      {}
-    );
-  }
+    removeFriend(friendId: string): Observable<void> {
+        return this.http.delete<void>(`${this.serverConfig.serverUrl}/friends/remove/${this.actorUserId}/${friendId}`);
+    }
 
-  blockUserWithPendingRequest(otherUserId: string): Observable<void> {
-    return this.http.post<void>(
-      `${this.serverConfig.serverUrl}/friends/blockUserWithPendingRequest/${this.auth0Id}/${otherUserId}`,
-      {}
-    );
-  }
+    blockNormalUser(blockedUserId: string): Observable<void> {
+        return this.http.post<void>(`${this.serverConfig.serverUrl}/friends/block/${this.actorUserId}/${blockedUserId}`, {});
+    }
 
-  cancelFriendRequest(receiverId: string): Observable<void> {
-    return this.http.post<void>(
-      `${this.serverConfig.serverUrl}/friends/cancelRequest/${this.auth0Id}/${receiverId}`,
-      {}
-    );
-  }
+    blockFriend(blockedFriendId: string): Observable<void> {
+        return this.http.post<void>(`${this.serverConfig.serverUrl}/friends/blockFriend/${this.actorUserId}/${blockedFriendId}`, {});
+    }
 
-  unblockUser(blockedUserId: string): Observable<void> {
-    return this.http.post<void>(
-      `${this.serverConfig.serverUrl}/friends/unblock/${this.auth0Id}/${blockedUserId}`,
-      {}
-    );
-  }
+    blockUserWithPendingRequest(otherUserId: string): Observable<void> {
+        return this.http.post<void>(`${this.serverConfig.serverUrl}/friends/blockUserWithPendingRequest/${this.actorUserId}/${otherUserId}`, {});
+    }
+
+    cancelFriendRequest(receiverId: string): Observable<void> {
+        return this.http.post<void>(`${this.serverConfig.serverUrl}/friends/cancelRequest/${this.actorUserId}/${receiverId}`, {});
+    }
+
+    unblockUser(blockedUserId: string): Observable<void> {
+        return this.http.post<void>(`${this.serverConfig.serverUrl}/friends/unblock/${this.actorUserId}/${blockedUserId}`, {});
+    }
 }

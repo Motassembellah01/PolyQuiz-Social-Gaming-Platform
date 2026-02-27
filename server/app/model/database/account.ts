@@ -6,7 +6,7 @@ import { FriendRequestDto } from '../dto/friend-request/friend-request-dto';
 
 export type AccountDocument = Account & Document;
 
-@Schema({ collection: 'account' })
+@Schema({ collection: 'account', timestamps: true })
 export class Account {
     @ApiProperty()
     @Prop({ required: true })
@@ -110,3 +110,7 @@ export class Account {
 }
 
 export const accountSchema = SchemaFactory.createForClass(Account);
+
+accountSchema.index({ userId: 1 }, { unique: true });
+accountSchema.index({ email: 1 }, { unique: true });
+accountSchema.index({ pseudonym: 1 }, { unique: true });

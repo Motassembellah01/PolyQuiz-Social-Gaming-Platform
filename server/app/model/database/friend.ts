@@ -1,28 +1,33 @@
-import { Language, ThemeVisual } from '@app/constants/constants';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
 export type FriendDocument = Friend & Document;
 
-@Schema({collection: 'friend'})
+@Schema({ collection: 'friend', timestamps: true })
 export class Friend {
-
-    @Prop({required: true, default: () => new Types.ObjectId().toString(), unique: true })
+    @Prop({ required: true, default: () => new Types.ObjectId().toString(), unique: true })
     requestId: string;
 
-    @Prop({required: true, ref: 'account'})
+    @Prop({ required: true, ref: 'account' })
     senderId: string;
 
-    @Prop({required: true, ref: 'account'})
+    @Prop({ required: true, ref: 'account' })
     receiverId: string;
 
-    @Prop({required: true, enum: ['pending', 'accepted', 'rejected'], default: 'pending'})
+    @Prop({ required: true, enum: ['pending', 'accepted', 'rejected'], default: 'pending' })
     status: 'pending' | 'accepted' | 'rejected';
 
-    @Prop({required: true, default: Date.now()})
+    @Prop({ required: true })
+    pairKey: string;
+
+    @Prop({ required: true, default: Date.now })
     createdAt: Date;
 
+    updatedAt: Date;
 }
 
 export const friendSchema = SchemaFactory.createForClass(Friend);
 
+friendSchema.index({ requestId: 1 }, { unique: true });
+friendSchema.index({ pairKey: 1, status: 1 }, { unique: true, partialFilterExpression: { status: { $in: ['pending', 'accepted'] } } });
+friendSchema.index({ senderId: 1, receiverId: 1, status: 1 });
