@@ -169,7 +169,7 @@ export class FriendsComponent implements OnInit, OnDestroy {
     getOfflineElapsedLabel(account: AccountFriend): string {
         const lastSeenDate = this.parseTimestamp(account.lastSeenAt);
         if (!lastSeenDate) {
-            return this.translateService.currentLang === 'fr' ? 'hors ligne' : 'offline';
+            return '1m';
         }
         return this.formatRelativeTimeCompact(lastSeenDate);
     }
@@ -320,7 +320,7 @@ export class FriendsComponent implements OnInit, OnDestroy {
         const isFrench = this.translateService.currentLang === 'fr';
 
         if (elapsedMinutes < 1) {
-            return isFrench ? "à l'instant" : 'now';
+            return '1m';
         }
         if (elapsedMinutes < 60) {
             return `${elapsedMinutes}m`;

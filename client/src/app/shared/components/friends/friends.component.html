@@ -35,6 +35,14 @@
             <span class="tab-count" *ngIf="friendCount > 0">{{ friendCount > 99 ? '99+' : friendCount }}</span>
         </button>
         <button
+            class="tab-btn tab-btn--icon"
+            [class.active]="currentTab === FriendTab.Discover"
+            (click)="switchTab(FriendTab.Discover)"
+            matTooltip="{{ tabLabel.discover }}"
+        >
+            <mat-icon class="tab-icon">explore</mat-icon>
+        </button>
+        <button
             class="tab-btn"
             [class.tab-btn--icon-count]="requestCount > 0"
             [class.tab-btn--icon]="requestCount === 0"
@@ -44,14 +52,6 @@
         >
             <mat-icon class="tab-icon">person_add</mat-icon>
             <span class="tab-count notification" *ngIf="requestCount > 0">{{ requestCount > 99 ? '99+' : requestCount }}</span>
-        </button>
-        <button
-            class="tab-btn tab-btn--icon"
-            [class.active]="currentTab === FriendTab.Discover"
-            (click)="switchTab(FriendTab.Discover)"
-            matTooltip="{{ tabLabel.discover }}"
-        >
-            <mat-icon class="tab-icon">explore</mat-icon>
         </button>
         <button
             class="tab-btn"
