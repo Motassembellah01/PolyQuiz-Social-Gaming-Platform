@@ -29,9 +29,10 @@ export class SetAvatarComponent {
     avatars = ['m1.png', 'm2.png', 'w1.jpg', 'm3.png'];
 
     get isPresetAvatarSelected(): boolean {
+        const ownedAvatars = this.accountService.ownedAvatars ?? [];
         return (
             !!this.selectedAvatar &&
-            (this.avatars.includes(this.selectedAvatar) || this.accountService.ownedAvatars.includes(this.selectedAvatar))
+            (this.avatars.includes(this.selectedAvatar) || ownedAvatars.includes(this.selectedAvatar))
         );
     }
 

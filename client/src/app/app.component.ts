@@ -70,6 +70,8 @@ export class AppComponent implements OnInit {
                     this.translationService.changeLang(Language.EN);
                     return;
                 }
+                this.accountService.ownedThemes = account.visualThemesOwned || [];
+                this.accountService.ownedAvatars = account.avatarsUrlOwned || [];
                 this.accountService.createSession().subscribe();
                 if (!account.avatarUrl) {
                     this.translationService.changeLang(Language.EN);

@@ -16,8 +16,8 @@ export class AccountService {
     isLightMode: boolean | null = null;
     theme: string;
     money: number;
-    ownedThemes: string[];
-    ownedAvatars: string[];
+    ownedThemes: string[] = [];
+    ownedAvatars: string[] = [];
     isWinnerPlayerName: boolean = false;
 
     isInGame: boolean = false;
