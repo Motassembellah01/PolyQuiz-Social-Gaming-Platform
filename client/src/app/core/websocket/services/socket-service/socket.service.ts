@@ -36,8 +36,11 @@ export class SocketService {
     }
 
     disconnect(): void {
-        this.socket.disconnect();
+        if (!this.socket) {
+            return;
+        }
         this.socket.emit('unregister', this.auth0Id);
+        this.socket.disconnect();
     }
 
     on<T>(event: string, action: (data: T) => void): void {

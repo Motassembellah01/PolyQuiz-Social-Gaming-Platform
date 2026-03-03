@@ -166,6 +166,14 @@ export class FriendsComponent implements OnInit, OnDestroy {
         return this.friendsFacadeService.getRequestForUser(userId);
     }
 
+    getOfflineElapsedLabel(account: AccountFriend): string {
+        const lastSeenDate = this.parseTimestamp(account.lastSeenAt);
+        if (!lastSeenDate) {
+            return this.translateService.currentLang === 'fr' ? 'hors ligne' : 'offline';
+        }
+        return this.formatRelativeTimeCompact(lastSeenDate);
+    }
+
     // Command handlers: each intent delegates to facade + optionally asks confirmation.
     sendFriendRequest(userId: string): void {
         this.friendsFacadeService.sendFriendRequest(userId).subscribe(() => {
@@ -272,5 +280,56 @@ export class FriendsComponent implements OnInit, OnDestroy {
         this.friendCount = viewModel.friendCount;
         this.requestCount = viewModel.requestCount;
         this.blockedCount = viewModel.blockedCount;
+    }
+
+    private parseTimestamp(rawValue: string | null): Date | null {
+        if (!rawValue) {
+            return null;
+        }
+        const parsed = new Date(rawValue);
+        if (!Number.isNaN(parsed.getTime())) {
+            return parsed;
+        }
+
+        const match = rawValue.match(/^(\d{2})\/(\d{2})\/(\d{4}),\s*(\d{2}):(\d{2}):(\d{2})(?:\s*(AM|PM))?$/i);
+        if (!match) {
+            return null;
+        }
+
+        const month = Number(match[1]);
+        const day = Number(match[2]);
+        const year = Number(match[3]);
+        let hours = Number(match[4]);
+        const minutes = Number(match[5]);
+        const seconds = Number(match[6]);
+        const meridiem = match[7]?.toUpperCase();
+
+        if (meridiem === 'PM' && hours < 12) {
+            hours += 12;
+        } else if (meridiem === 'AM' && hours === 12) {
+            hours = 0;
+        }
+
+        return new Date(year, month - 1, day, hours, minutes, seconds);
+    }
+
+    private formatRelativeTimeCompact(lastSeenDate: Date): string {
+        const elapsedMs = Date.now() - lastSeenDate.getTime();
+        const safeElapsedMs = Number.isFinite(elapsedMs) && elapsedMs > 0 ? elapsedMs : 0;
+        const elapsedMinutes = Math.floor(safeElapsedMs / 60000);
+        const isFrench = this.translateService.currentLang === 'fr';
+
+        if (elapsedMinutes < 1) {
+            return isFrench ? "à l'instant" : 'now';
+        }
+        if (elapsedMinutes < 60) {
+            return `${elapsedMinutes}m`;
+        }
+        const elapsedHours = Math.floor(elapsedMinutes / 60);
+        if (elapsedHours < 24) {
+            return `${elapsedHours}h`;
+        }
+        const elapsedDays = Math.floor(elapsedHours / 24);
+        return `${elapsedDays}${isFrench ? 'j' : 'd'}`;
     }
 }

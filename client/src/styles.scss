@@ -204,30 +204,97 @@ body {
     --theme-text-primary: #1f2937;
     --theme-text-muted: rgba(31, 41, 55, 0.72);
     --theme-link: #0b5ed7;
+    --ui-surface-0: #f8fafc;
+    --ui-surface-1: #ffffff;
+    --ui-surface-2: #f8fafc;
+    --ui-surface-3: #eef4ff;
+    --ui-border-subtle: rgba(15, 23, 42, 0.1);
+    --ui-text-primary: #1f2937;
+    --ui-text-secondary: #475569;
+    --ui-text-muted: #94a3b8;
+    --ui-accent: #3b82f6;
+    --ui-accent-soft: rgba(59, 130, 246, 0.14);
+    --ui-success: #22c55e;
+    --ui-danger: #ef4444;
+    --ui-focus-ring: rgba(59, 130, 246, 0.35);
+    --ui-shadow-sm: 0 1px 4px rgba(15, 23, 42, 0.08);
+    --ui-shadow-md: 0 10px 28px rgba(15, 23, 42, 0.14);
 }
 
 .pages.light-mode {
     --theme-text-primary: #1f2937;
     --theme-text-muted: rgba(31, 41, 55, 0.72);
     --theme-link: #0b5ed7;
+    --ui-surface-0: #f8fafc;
+    --ui-surface-1: #ffffff;
+    --ui-surface-2: #f8fafc;
+    --ui-surface-3: #eef4ff;
+    --ui-border-subtle: rgba(15, 23, 42, 0.1);
+    --ui-text-primary: #1f2937;
+    --ui-text-secondary: #475569;
+    --ui-text-muted: #94a3b8;
+    --ui-accent: #3b82f6;
+    --ui-accent-soft: rgba(59, 130, 246, 0.14);
+    --ui-success: #22c55e;
+    --ui-danger: #ef4444;
+    --ui-focus-ring: rgba(59, 130, 246, 0.35);
 }
 
 .pages.dark-mode {
     --theme-text-primary: #f4f6fa;
     --theme-text-muted: rgba(244, 246, 250, 0.78);
     --theme-link: #7dc4ff;
+    --ui-surface-0: #171b24;
+    --ui-surface-1: #222733;
+    --ui-surface-2: #2b3140;
+    --ui-surface-3: #32394a;
+    --ui-border-subtle: rgba(226, 232, 240, 0.14);
+    --ui-text-primary: #f4f6fa;
+    --ui-text-secondary: #cfd8e3;
+    --ui-text-muted: #9aa8bd;
+    --ui-accent: #60a5fa;
+    --ui-accent-soft: rgba(96, 165, 250, 0.2);
+    --ui-success: #4ade80;
+    --ui-danger: #fb7185;
+    --ui-focus-ring: rgba(96, 165, 250, 0.45);
 }
 
 .pages.christmas {
     --theme-text-primary: #edfdf5;
     --theme-text-muted: rgba(237, 253, 245, 0.8);
     --theme-link: #86efac;
+    --ui-surface-0: #072019;
+    --ui-surface-1: #0f2f26;
+    --ui-surface-2: #184135;
+    --ui-surface-3: #225447;
+    --ui-border-subtle: rgba(226, 232, 240, 0.16);
+    --ui-text-primary: #edfdf5;
+    --ui-text-secondary: #cde9dd;
+    --ui-text-muted: #96b8a9;
+    --ui-accent: #86efac;
+    --ui-accent-soft: rgba(134, 239, 172, 0.2);
+    --ui-success: #4ade80;
+    --ui-danger: #f87171;
+    --ui-focus-ring: rgba(134, 239, 172, 0.4);
 }
 
 .pages.valentines {
     --theme-text-primary: #4a1f2d;
     --theme-text-muted: rgba(74, 31, 45, 0.74);
     --theme-link: #9d174d;
+    --ui-surface-0: #fff4f7;
+    --ui-surface-1: #ffe9ef;
+    --ui-surface-2: #ffdce7;
+    --ui-surface-3: #ffd0df;
+    --ui-border-subtle: rgba(136, 19, 55, 0.16);
+    --ui-text-primary: #4a1f2d;
+    --ui-text-secondary: #6f2f45;
+    --ui-text-muted: #9a5e72;
+    --ui-accent: #d9467b;
+    --ui-accent-soft: rgba(217, 70, 123, 0.16);
+    --ui-success: #16a34a;
+    --ui-danger: #dc2626;
+    --ui-focus-ring: rgba(217, 70, 123, 0.32);
 }
 
 /* Baseline readability across routed pages */

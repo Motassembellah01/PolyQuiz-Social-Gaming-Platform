@@ -250,6 +250,13 @@
         "CANCEL_REQUEST": "Annuler la demande d'ami",
         "CANCEL": "Annuler",
         "BLOCKED_LABEL": "Bloqué",
+        "ONLINE": "En ligne",
+        "OFFLINE": "Hors ligne",
+        "LAST_SEEN": "Vu {{time}}",
+        "JUST_NOW": "à l'instant",
+        "MINUTES_AGO": "il y a {{count}} min",
+        "HOURS_AGO": "il y a {{count}} h",
+        "DAYS_AGO": "il y a {{count}} j",
         "UNBLOCK": "Débloquer",
         "NO_BLOCKED_TITLE": "Aucun utilisateur bloqué",
         "NO_BLOCKED_SUBTITLE": "Les utilisateurs que vous bloquez apparaîtront ici. Vous pouvez les débloquer à tout moment."

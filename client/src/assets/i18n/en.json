@@ -250,6 +250,13 @@
         "CANCEL_REQUEST": "Cancel friend request",
         "CANCEL": "Cancel",
         "BLOCKED_LABEL": "Blocked",
+        "ONLINE": "Online",
+        "OFFLINE": "Offline",
+        "LAST_SEEN": "Last seen {{time}}",
+        "JUST_NOW": "just now",
+        "MINUTES_AGO": "{{count}} min ago",
+        "HOURS_AGO": "{{count}} h ago",
+        "DAYS_AGO": "{{count}} d ago",
         "UNBLOCK": "Unblock",
         "NO_BLOCKED_TITLE": "No blocked users",
         "NO_BLOCKED_SUBTITLE": "Users you block will appear here. You can unblock them at any time."

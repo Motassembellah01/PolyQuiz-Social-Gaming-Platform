@@ -5,6 +5,12 @@ import { FriendRequestData } from '@app/core/interfaces/friend-request-data';
 import { SocketService } from '@app/core/websocket/services/socket-service/socket.service';
 import { BehaviorSubject, Subject, combineLatest, map, shareReplay } from 'rxjs';
 
+interface FriendPresenceEntry {
+    userId: string;
+    isOnline: boolean;
+    lastSeenAt: string | null;
+}
+
 /**
  * Reactive read-model store for friend/account relationship state.
  *
@@ -25,6 +31,7 @@ export class AccountListenerService {
     private readonly friendsSubject = new BehaviorSubject<string[]>([]);
     private readonly blockedSubject = new BehaviorSubject<string[]>([]);
     private readonly usersBlockingMeSubject = new BehaviorSubject<string[]>([]);
+    private readonly friendPresenceByUserIdSubject = new BehaviorSubject<Record<string, FriendPresenceEntry>>({});
 
     // Synchronous snapshot kept for compatibility with non-reactive consumers.
     private accountsSnapshot: AccountFriend[] = [];
@@ -36,6 +43,7 @@ export class AccountListenerService {
     readonly friends$ = this.friendsSubject.asObservable();
     readonly blocked$ = this.blockedSubject.asObservable();
     readonly usersBlockingMe$ = this.usersBlockingMeSubject.asObservable();
+    readonly friendPresenceByUserId$ = this.friendPresenceByUserIdSubject.asObservable();
 
     // Main derived stream consumed by facade/components.
     readonly accounts$ = combineLatest([
@@ -45,9 +53,10 @@ export class AccountListenerService {
         this.friends$,
         this.blocked$,
         this.usersBlockingMe$,
+        this.friendPresenceByUserId$,
     ]).pipe(
-        map(([rawAccounts, friendRequestsReceived, friendsThatUserRequested, friends, blocked, usersBlockingMe]) =>
-            this.mapAccounts(rawAccounts, friendRequestsReceived, friendsThatUserRequested, friends, blocked, usersBlockingMe),
+        map(([rawAccounts, friendRequestsReceived, friendsThatUserRequested, friends, blocked, usersBlockingMe, friendPresenceByUserId]) =>
+            this.mapAccounts(rawAccounts, friendRequestsReceived, friendsThatUserRequested, friends, blocked, usersBlockingMe, friendPresenceByUserId),
         ),
         shareReplay(1),
     );
@@ -158,6 +167,14 @@ export class AccountListenerService {
         this.socketService.on('blockedByUsersUpdated', (blockedByUserIds: string[]) => {
             this.usersBlockingMe = blockedByUserIds;
         });
+
+        this.socketService.on('friendsPresenceSnapshot', (presenceEntries: FriendPresenceEntry[]) => {
+            this.mergePresenceEntries(presenceEntries);
+        });
+
+        this.socketService.on('friendPresenceUpdated', (presenceEntry: FriendPresenceEntry) => {
+            this.mergePresenceEntries([presenceEntry]);
+        });
     }
 
     /**
@@ -171,6 +188,7 @@ export class AccountListenerService {
         friends: string[],
         blockedUsers: string[],
         usersBlockingMe: string[],
+        friendPresenceByUserId: Record<string, FriendPresenceEntry>,
     ): AccountFriend[] {
         const requestSenderIds = friendRequestsReceived
             .map((request) => request.senderBasicInfo.userId)
@@ -189,7 +207,24 @@ export class AccountListenerService {
                     isRequestSent: friendsThatUserRequested.includes(userId),
                     isBlocked: blockedUsers.includes(userId),
                     isBlockingMe: usersBlockingMe.includes(userId),
+                    isOnline: friendPresenceByUserId[userId]?.isOnline ?? false,
+                    lastSeenAt: friendPresenceByUserId[userId]?.lastSeenAt ?? null,
                 };
             });
+    }
+
+    private mergePresenceEntries(presenceEntries: FriendPresenceEntry[]): void {
+        const next = { ...this.friendPresenceByUserIdSubject.value };
+        presenceEntries.forEach((entry) => {
+            if (!entry?.userId) {
+                return;
+            }
+            next[entry.userId] = {
+                userId: entry.userId,
+                isOnline: entry.isOnline,
+                lastSeenAt: entry.lastSeenAt ?? null,
+            };
+        });
+        this.friendPresenceByUserIdSubject.next(next);
     }
 }

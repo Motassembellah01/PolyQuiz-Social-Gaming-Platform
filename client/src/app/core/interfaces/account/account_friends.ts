@@ -6,4 +6,6 @@ export interface AccountFriend extends Pick<Account, 'userId' | 'pseudonym' | 'a
     isRequestSent: boolean;
     isBlocked: boolean;
     isBlockingMe: boolean;
+    isOnline: boolean;
+    lastSeenAt: string | null;
 }

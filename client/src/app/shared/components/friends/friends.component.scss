@@ -150,7 +150,8 @@ $radius-full: 9999px;
 /* ── Tab Navigation ── */
 
 .tab-nav {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
     gap: 2px;
     background: $border-light;
     border-radius: $radius-md;
@@ -159,22 +160,22 @@ $radius-full: 9999px;
 }
 
 .tab-btn {
-    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    padding: 8px 4px;
+    gap: 5px;
+    padding: 8px 6px;
     border: none;
     border-radius: $radius-sm;
     background: transparent;
     color: $text-secondary;
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
     white-space: nowrap;
+    min-width: 0;
 
     &:hover:not(.active) {
         background: rgba($surface, 0.7);
@@ -197,8 +198,9 @@ $radius-full: 9999px;
 
 .tab-label {
     display: inline;
+    white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
+    text-overflow: clip;
 }
 
 .tab-count {
@@ -314,24 +316,49 @@ $radius-full: 9999px;
     background-position: center;
     background-color: $border-light;
     position: relative;
+    overflow: visible;
 }
 
 .avatar-status {
     position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 10px;
-    height: 10px;
+    bottom: -1px;
+    right: -1px;
+    width: 12px;
+    height: 12px;
     border-radius: $radius-full;
     border: 2px solid $surface;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.04);
+    transition: opacity 0.15s ease, transform 0.15s ease;
 
     &.online {
         background: $accent-green;
     }
+}
 
-    &.offline {
-        background: $text-muted;
-    }
+.avatar-status.hidden {
+    opacity: 0;
+    transform: scale(0.8);
+}
+
+.avatar-last-seen {
+    position: absolute;
+    left: 50%;
+    bottom: -16px;
+    transform: translateX(-50%);
+    min-width: 26px;
+    height: 18px;
+    padding: 0 7px;
+    border-radius: 999px;
+    border: 1px solid var(--friends-border);
+    background: var(--friends-card-bg);
+    color: var(--friends-success);
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 17px;
+    text-align: center;
+    white-space: nowrap;
+    pointer-events: none;
+    box-shadow: var(--friends-shadow-sm);
 }
 
 /* ── User Info ── */
@@ -721,4 +748,190 @@ $radius-full: 9999px;
         background: rgba(255, 255, 255, 0.85);
         color: #9d174d;
     }
+}
+
+/* Theme-polished visual system */
+:host {
+    --friends-panel-bg: #ffffff;
+    --friends-card-bg: #f8fafc;
+    --friends-card-hover-bg: #f1f5f9;
+    --friends-border: rgba(15, 23, 42, 0.1);
+    --friends-text-primary: #1f2937;
+    --friends-text-secondary: #475569;
+    --friends-text-muted: #94a3b8;
+    --friends-accent: #3b82f6;
+    --friends-accent-soft: rgba(59, 130, 246, 0.14);
+    --friends-success: #22c55e;
+    --friends-danger: #ef4444;
+    --friends-focus-ring: rgba(59, 130, 246, 0.35);
+    --friends-shadow-sm: 0 1px 4px rgba(15, 23, 42, 0.08);
+    --friends-shadow-md: 0 10px 28px rgba(15, 23, 42, 0.16);
+}
+
+:host-context(.dark-mode) {
+    --friends-panel-bg: #222733;
+    --friends-card-bg: #2b3140;
+    --friends-card-hover-bg: #32394a;
+    --friends-border: rgba(226, 232, 240, 0.14);
+    --friends-text-primary: #f4f6fa;
+    --friends-text-secondary: #cfd8e3;
+    --friends-text-muted: #9aa8bd;
+    --friends-accent: #60a5fa;
+    --friends-accent-soft: rgba(96, 165, 250, 0.2);
+    --friends-success: #4ade80;
+    --friends-danger: #fb7185;
+    --friends-focus-ring: rgba(96, 165, 250, 0.45);
+}
+
+:host-context(.christmas) {
+    --friends-panel-bg: #0f2f26;
+    --friends-card-bg: #184135;
+    --friends-card-hover-bg: #225447;
+    --friends-border: rgba(226, 232, 240, 0.16);
+    --friends-text-primary: #edfdf5;
+    --friends-text-secondary: #cde9dd;
+    --friends-text-muted: #96b8a9;
+    --friends-accent: #86efac;
+    --friends-accent-soft: rgba(134, 239, 172, 0.2);
+    --friends-success: #4ade80;
+    --friends-danger: #f87171;
+    --friends-focus-ring: rgba(134, 239, 172, 0.4);
+}
+
+:host-context(.valentines) {
+    --friends-panel-bg: #ffe9ef;
+    --friends-card-bg: #ffdce7;
+    --friends-card-hover-bg: #ffd0df;
+    --friends-border: rgba(136, 19, 55, 0.16);
+    --friends-text-primary: #4a1f2d;
+    --friends-text-secondary: #6f2f45;
+    --friends-text-muted: #9a5e72;
+    --friends-accent: #d9467b;
+    --friends-accent-soft: rgba(217, 70, 123, 0.16);
+    --friends-success: #16a34a;
+    --friends-danger: #dc2626;
+    --friends-focus-ring: rgba(217, 70, 123, 0.32);
+}
+
+.friends-panel {
+    background: linear-gradient(180deg, color-mix(in srgb, var(--friends-panel-bg) 88%, white 12%) 0%, var(--friends-panel-bg) 100%);
+    border: 1px solid var(--friends-border);
+    border-radius: 16px;
+    box-shadow: var(--friends-shadow-md);
+}
+
+.panel-title,
+.user-name {
+    color: var(--friends-text-primary);
+}
+
+.friend-count {
+    background: var(--friends-accent-soft);
+    color: var(--friends-accent);
+    box-shadow: var(--friends-shadow-sm);
+}
+
+.search-input {
+    background: color-mix(in srgb, var(--friends-card-bg) 92%, white 8%);
+    border-color: var(--friends-border);
+    color: var(--friends-text-primary);
+}
+
+.search-input::placeholder,
+.search-icon,
+.search-clear {
+    color: var(--friends-text-muted);
+}
+
+.search-input:focus-visible {
+    outline: 2px solid var(--friends-focus-ring);
+    outline-offset: 1px;
+}
+
+.tab-nav {
+    background: color-mix(in srgb, var(--friends-card-bg) 90%, var(--friends-accent-soft) 10%);
+    border: 1px solid var(--friends-border);
+}
+
+.tab-btn {
+    color: var(--friends-text-secondary);
+}
+
+.tab-btn.active {
+    background: color-mix(in srgb, var(--friends-card-bg) 84%, white 16%);
+    color: var(--friends-accent);
+    box-shadow: var(--friends-shadow-sm);
+}
+
+.tab-btn:hover:not(.active) {
+    background: color-mix(in srgb, var(--friends-card-hover-bg) 92%, white 8%);
+    color: var(--friends-text-primary);
+}
+
+.tab-count {
+    background: var(--friends-accent-soft);
+    color: var(--friends-accent);
+}
+
+.user-card,
+.blocked-card {
+    background: var(--friends-card-bg);
+    border-color: var(--friends-border);
+    box-shadow: var(--friends-shadow-sm);
+}
+
+.user-card:hover,
+.blocked-card:hover {
+    background: var(--friends-card-hover-bg);
+    border-color: color-mix(in srgb, var(--friends-accent) 35%, var(--friends-border) 65%);
+    transform: translateY(-1px);
+}
+
+.friend-card {
+    border-left-color: var(--friends-success);
+}
+
+.request-card {
+    border-left-color: var(--friends-accent);
+    background: color-mix(in srgb, var(--friends-accent-soft) 48%, var(--friends-card-bg) 52%);
+}
+
+.friend-label {
+    color: var(--friends-success);
+}
+
+.user-label,
+.empty-title,
+.empty-subtitle {
+    color: var(--friends-text-muted);
+}
+
+.avatar-status {
+    border-color: var(--friends-card-bg);
+}
+
+.avatar-status.offline {
+    background: var(--friends-text-muted);
+}
+
+.btn-primary {
+    background: var(--friends-accent);
+}
+
+.btn-primary:hover {
+    background: color-mix(in srgb, var(--friends-accent) 88%, black 12%);
+}
+
+.btn-outline-danger:hover,
+.btn-cancel:hover,
+.btn-decline:hover,
+.btn-block-visible:hover {
+    background: color-mix(in srgb, var(--friends-danger) 18%, transparent 82%) !important;
+    border-color: color-mix(in srgb, var(--friends-danger) 24%, transparent 76%);
+    color: var(--friends-danger) !important;
+}
+
+.friends-panel :is(button, input):focus-visible {
+    outline: 2px solid var(--friends-focus-ring);
+    outline-offset: 2px;
 }
