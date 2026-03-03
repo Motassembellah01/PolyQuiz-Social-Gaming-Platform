@@ -150,8 +150,8 @@ $radius-full: 9999px;
 /* ── Tab Navigation ── */
 
 .tab-nav {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr auto;
+    display: flex;
+    align-items: center;
     gap: 2px;
     background: $border-light;
     border-radius: $radius-md;
@@ -176,6 +176,7 @@ $radius-full: 9999px;
     position: relative;
     white-space: nowrap;
     min-width: 0;
+    flex: 0 0 auto;
 
     &:hover:not(.active) {
         background: rgba($surface, 0.7);
@@ -189,6 +190,27 @@ $radius-full: 9999px;
     }
 }
 
+.tab-btn--label {
+    flex: 1 1 auto;
+    justify-content: flex-start;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.tab-btn--icon {
+    width: 42px;
+    min-width: 42px;
+    justify-content: center;
+    padding: 8px 0;
+}
+
+.tab-btn--icon-count {
+    width: 60px;
+    min-width: 60px;
+    justify-content: space-between;
+    padding: 8px 7px;
+}
+
 .tab-icon {
     font-size: 17px;
     width: 17px;
@@ -200,8 +222,14 @@ $radius-full: 9999px;
     display: inline;
     white-space: nowrap;
     overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tab-btn--friends .tab-label {
+    overflow: visible;
     text-overflow: clip;
 }
+
 
 .tab-count {
     display: inline-flex;
@@ -216,6 +244,7 @@ $radius-full: 9999px;
     font-size: 0.72rem;
     font-weight: 700;
     line-height: 1;
+    flex-shrink: 0;
 
     &.notification {
         background: $accent-red;
@@ -224,10 +253,22 @@ $radius-full: 9999px;
     }
 }
 
+.tab-btn--friends .tab-count {
+    margin-left: auto;
+}
+
+.tab-btn--icon-count .tab-count {
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    font-size: 0.64rem;
+}
+
 @keyframes pulse-badge {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.12); }
 }
+
 
 /* ── Tab Content ── */
 
