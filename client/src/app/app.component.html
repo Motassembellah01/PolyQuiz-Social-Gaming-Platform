@@ -9,10 +9,10 @@
     [style.paddingRight.px]="isSectionOpen ? 350 : 0"
     [style.paddingTop.px]="isHeaderVisible && shouldApplyHeaderOffset ? 75 : 0"
     [ngClass]="{
-        'light-mode': this.accountService.theme === 'light' && this.showBackground,
-        'dark-mode': this.accountService.theme === 'dark' && this.showBackground,
-        'christmas': this.accountService.theme === 'christmas' && this.showBackground,
-        'valentines': this.accountService.theme === 'valentines' && this.showBackground
+        'light-mode': this.accountService.theme === 'light',
+        'dark-mode': this.accountService.theme === 'dark',
+        'christmas': this.accountService.theme === 'christmas',
+        'valentines': this.accountService.theme === 'valentines'
     }">
     <router-outlet></router-outlet>
 </div>

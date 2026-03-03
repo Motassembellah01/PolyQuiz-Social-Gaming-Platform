@@ -3,6 +3,7 @@
 }
 
 .header {
+    --header-panel-bg: #ffffff;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -15,18 +16,22 @@
 }
 
 .header-light {
+    --header-panel-bg: #ffffff;
     background: transparent;
 }
 
 .header-dark {
+    --header-panel-bg: #2b303b;
     background: transparent;
 }
 
 .header-christmas {
+    --header-panel-bg: #13382e;
     background: transparent;
 }
 
 .header-valentines {
+    --header-panel-bg: #f5e0dc;
     background: transparent;
 }
 
@@ -40,6 +45,9 @@
     display: flex;
     align-items: center;
     margin-left: auto;
+    border-radius: 0 0 0 12px;
+    background-color: var(--header-panel-bg);
+    transition: background-color 0.3s ease;
 }
 
 .nav-icon-btn {
@@ -173,7 +181,7 @@
 }
 
 .chat-box {
-    background-color: #ffffff;
+    background-color: var(--header-panel-bg);
     justify-items: center;
     width: var(--side-panel-width);
     padding: 16px;
@@ -188,17 +196,17 @@
 }
 
 .dark-mode.chat-box {
-    background-color: #1e2028;
+    background-color: var(--header-panel-bg);
     border-left-color: rgba(255, 255, 255, 0.06);
 }
 
 .christmas.chat-box {
-    background-color: #0d2920;
+    background-color: var(--header-panel-bg);
     border-left-color: rgba(255, 255, 255, 0.06);
 }
 
 .valentines.chat-box {
-    background-color: #f5e0dc;
+    background-color: var(--header-panel-bg);
     border-left-color: rgba(0, 0, 0, 0.06);
 }
 

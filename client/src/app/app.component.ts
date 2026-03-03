@@ -19,7 +19,6 @@ import { FriendService } from './core/http/services/friend-service/friend.servic
 })
 export class AppComponent implements OnInit {
     showHeader: boolean = true;
-    showBackground: boolean = true;
     constructor(
         public accountService: AccountService,
         public auth: AuthService,
@@ -55,7 +54,6 @@ export class AppComponent implements OnInit {
             this.router.navigateByUrl('/chat');
         }
         this.updateHeaderVisibility();
-        this.updateMainVisibility();
 
         (window as any).electronAPI.getProfile().then((profile: any) => {
             if (!profile) {
@@ -89,9 +87,4 @@ export class AppComponent implements OnInit {
         });
     }
 
-    private updateMainVisibility() {
-        this.router.events.subscribe(() => {
-            this.showBackground = this.router.url !== '/home' && this.router.url !== '/login-fail';
-        });
-    }
 }
