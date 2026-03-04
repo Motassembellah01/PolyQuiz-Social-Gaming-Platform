@@ -4,6 +4,11 @@ const path = require('path');
 let chatWindow;
 
 function createChatWin() {
+    if (chatWindow && !chatWindow.isDestroyed()) {
+        chatWindow.focus();
+        return;
+    }
+
     chatWindow = new BrowserWindow({
         width: 600,
         height: 1000,

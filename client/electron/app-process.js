@@ -4,6 +4,14 @@ const axios = require('axios');
 const authService = require('./auth-service');
 
 let mainWindow;
+let isChatClosedListenerRegistered = false;
+
+function handleChatClosed() {
+    if (!mainWindow || mainWindow.isDestroyed()) {
+        return;
+    }
+    mainWindow.webContents.send('fromMain', 'Chat fermé');
+}
 
 function createAppWindow() {
     mainWindow = new BrowserWindow({
@@ -45,13 +53,10 @@ function createAppWindow() {
         }
     });
 
-    ipcMain.on('chat-closed', () => {
-        mainWindow.webContents.send('fromMain', 'Chat fermé');
-    });
-
-    ipcMain.on('chat-closed', () => {
-        mainWindow.webContents.send('fromMain', 'Chat fermé');
-    });
+    if (!isChatClosedListenerRegistered) {
+        ipcMain.on('chat-closed', handleChatClosed);
+        isChatClosedListenerRegistered = true;
+    }
 }
 
 function destroyAppWin() {
