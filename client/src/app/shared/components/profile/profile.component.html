@@ -2,7 +2,7 @@
     <!-- Profile Header -->
     <div class="profile-header">
         <img [src]="accountService.getLocalAvatar()" alt="avatar" class="profile-avatar" />
-        <h3 class="profile-name">{{ accountService.account.pseudonym }}</h3>
+        <h3 class="profile-name">{{ accountService.getDisplayPseudonym(accountService.account.pseudonym) }}</h3>
     </div>
 
     <div class="divider"></div>

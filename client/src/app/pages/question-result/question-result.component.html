@@ -15,8 +15,8 @@
     <mat-card class="summary-card">
         <h1>{{ 'TITLES.QUESTION_RESULT' | translate }}</h1>
 
-        <p *ngIf="!matchSrv.isObserver()"><strong>{{ accountService.account.pseudonym }}</strong>, {{ this.matchSrv.feedBackMessages[0] }}</p>
-        <p *ngIf="matchSrv.isObserver()"><strong>{{ matchSrv.getObservedName() }}</strong>, {{ this.matchSrv.feedBackMessages[0] }}</p>
+        <p *ngIf="!matchSrv.isObserver()"><strong>{{ accountService.getDisplayPseudonym(accountService.account.pseudonym) }}</strong>, {{ this.matchSrv.feedBackMessages[0] }}</p>
+        <p *ngIf="matchSrv.isObserver()"><strong>{{ accountService.getDisplayPseudonym(matchSrv.getObservedName()) }}</strong>, {{ this.matchSrv.feedBackMessages[0] }}</p>
         <p>{{ this.matchSrv.feedBackMessages[1] }}</p>
 
         <mat-card class="score-chip" *ngIf="!matchSrv.match.isTeamMatch && !matchSrv.isObserver()">
@@ -30,11 +30,11 @@
         <div class="team-details" *ngIf="matchSrv.match.isTeamMatch && !matchSrv.isObserver()">
             <p>Ton score: {{ matchSrv.player.score }}</p>
             <p *ngIf="matchSrv.getTeammate(accountService.account.pseudonym)!.isActive">
-                Score de <strong>{{ matchSrv.getTeammate(accountService.account.pseudonym)!.name }}</strong> :
+                Score de <strong>{{ accountService.getDisplayPseudonym(matchSrv.getTeammate(accountService.account.pseudonym)!.name) }}</strong> :
                 {{ matchSrv.getTeammate(accountService.account.pseudonym)!.score }}
             </p>
             <p *ngIf="!matchSrv.getTeammate(accountService.account.pseudonym)!.isActive">
-                <strong>{{ matchSrv.getTeammate(accountService.account.pseudonym)!.name }}</strong> a quitté la partie avec un score de
+                <strong>{{ accountService.getDisplayPseudonym(matchSrv.getTeammate(accountService.account.pseudonym)!.name) }}</strong> a quitté la partie avec un score de
                 {{ matchSrv.getTeammate(accountService.account.pseudonym)!.score }}
             </p>
             <mat-card class="score-chip">
@@ -48,11 +48,11 @@
         <div class="team-details" *ngIf="matchSrv.match.isTeamMatch && matchSrv.isObserver()">
             <p>Ton score: {{ matchSrv.match.getScoreOfPlayerByName(matchSrv.getObservedName()) }}</p>
             <p *ngIf="matchSrv.getTeammate(matchSrv.getObservedName())!.isActive">
-                Score de <strong>{{ matchSrv.getTeammate(matchSrv.getObservedName())!.name }}</strong> :
+                Score de <strong>{{ accountService.getDisplayPseudonym(matchSrv.getTeammate(matchSrv.getObservedName())!.name) }}</strong> :
                 {{ matchSrv.getTeammate(matchSrv.getObservedName())!.score }}
             </p>
             <p *ngIf="!matchSrv.getTeammate(matchSrv.getObservedName())!.isActive">
-                <strong>{{ matchSrv.getTeammate(matchSrv.getObservedName())!.name }}</strong> a quitté la partie avec un score de
+                <strong>{{ accountService.getDisplayPseudonym(matchSrv.getTeammate(matchSrv.getObservedName())!.name) }}</strong> a quitté la partie avec un score de
                 {{ matchSrv.getTeammate(matchSrv.getObservedName())!.score }}
             </p>
             <mat-card class="score-chip">
@@ -75,7 +75,7 @@
         <mat-label>{{ 'TITLES.PLAYERS' | translate }}</mat-label>
         <mat-select [(value)]="selectedPlayer" (selectionChange)="onPlayerSelect($event.value)">
             <mat-option *ngFor="let player of matchSrv.match.players" [value]="player.name">
-                {{ player.name }}
+                {{ accountService.getDisplayPseudonym(player.name) }}
             </mat-option>
             <mat-option [value]="matchSrv.match.managerName">{{ 'Manager' | translate }}</mat-option>
         </mat-select>

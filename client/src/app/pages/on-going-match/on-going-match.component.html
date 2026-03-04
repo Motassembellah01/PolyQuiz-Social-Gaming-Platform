@@ -39,7 +39,7 @@
         <mat-label>{{ 'TITLES.PLAYERS' | translate }}</mat-label>
         <mat-select [(value)]="selectedPlayer" (selectionChange)="onPlayerSelect($event.value)">
             <mat-option *ngFor="let player of matchSrv.match.players" [value]="player.name">
-                {{ player.name }}
+                {{ accountService.getDisplayPseudonym(player.name) }}
             </mat-option>
             <mat-option [value]="matchSrv.match.managerName">{{ 'Manager' | translate }}</mat-option>
         </mat-select>

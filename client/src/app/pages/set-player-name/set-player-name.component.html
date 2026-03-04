@@ -2,7 +2,7 @@
 <div class="avatar-selection-container">
     <h1 class="title color-blue margin">{{ 'TITLES.SET_NEW_NAME' | translate }}</h1>
     <app-error-message class="block error"></app-error-message>
-    <h2>{{ 'TITLES.CURRENT_NAME' | translate }}{{ this.accountService.account.pseudonym }}</h2>
+    <h2>{{ 'TITLES.CURRENT_NAME' | translate }}{{ this.accountService.getDisplayPseudonym(this.accountService.account.pseudonym) }}</h2>
     <br />
     <mat-form-field id="input-form">
         <input 

@@ -127,4 +127,11 @@ export class AccountService {
     getBlockedBy() {
         return this.http.get<string[]>(`${this.serverConfig.serverUrl}/accounts/${this.auth0Id}/blockedBy`);
     }
+
+    getDisplayPseudonym(pseudonym: string | null | undefined): string {
+        if (!pseudonym) {
+            return '';
+        }
+        return pseudonym.charAt(0).toUpperCase() + pseudonym.slice(1);
+    }
 }

@@ -76,7 +76,7 @@
                         'color-white': this.accountService.theme === 'christmas' || this.accountService.theme === 'dark',
                     }"
                 >
-                    {{ accountService.account.pseudonym }}
+                    {{ accountService.getDisplayPseudonym(accountService.account.pseudonym) }}
                 </p>
             </button>
         </div>

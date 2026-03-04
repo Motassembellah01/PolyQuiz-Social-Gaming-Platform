@@ -104,7 +104,7 @@
                             <header class="message-meta">
                                 <span class="message-author">
                                     <i class="material-icons author-icon">{{ msg.playerName === accountService.account.pseudonym ? 'person' : 'alternate_email' }}</i>
-                                    {{ msg.playerName }}
+                                    {{ accountService.getDisplayPseudonym(msg.playerName) }}
                                 </span>
                                 <span class="message-time italic">{{ msg.time }}</span>
                             </header>

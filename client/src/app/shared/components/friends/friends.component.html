@@ -89,7 +89,7 @@
                         >
                         </div>
                         <div class="user-details">
-                            <span class="user-name">{{ request.senderBasicInfo.pseudonym }}</span>
+                            <span class="user-name">{{ accountService.getDisplayPseudonym(request.senderBasicInfo.pseudonym) }}</span>
                             <span class="user-label">{{ 'FRIENDS.WANTS_TO_CONNECT' | translate }}</span>
                         </div>
                     </div>
@@ -133,7 +133,7 @@
                             [ngStyle]="{ 'background-image': 'url(' + accountService.getLocalAvatar(account.avatarUrl) + ')' }"
                         ></div>
                         <div class="user-details">
-                            <span class="user-name">{{ account.pseudonym }}</span>
+                            <span class="user-name">{{ accountService.getDisplayPseudonym(account.pseudonym) }}</span>
                         </div>
                     </div>
                     <div class="card-actions">
@@ -224,7 +224,7 @@
                             <span class="avatar-last-seen" *ngIf="!account.isOnline">{{ getOfflineElapsedLabel(account) }}</span>
                         </div>
                         <div class="user-details">
-                            <span class="user-name">{{ account.pseudonym }}</span>
+                            <span class="user-name">{{ accountService.getDisplayPseudonym(account.pseudonym) }}</span>
                         </div>
                     </div>
                     <div class="card-actions">
@@ -267,7 +267,7 @@
                             [ngStyle]="{ 'background-image': 'url(' + accountService.getLocalAvatar(account.avatarUrl) + ')' }"
                         ></div>
                         <div class="user-details">
-                            <span class="user-name">{{ account.pseudonym }}</span>
+                            <span class="user-name">{{ accountService.getDisplayPseudonym(account.pseudonym) }}</span>
                             <span class="user-label blocked-label">
                                 <mat-icon class="inline-icon">block</mat-icon>
                                 {{ 'FRIENDS.BLOCKED_LABEL' | translate }}
