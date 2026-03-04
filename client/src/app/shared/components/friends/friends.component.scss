@@ -151,7 +151,7 @@ $radius-full: 9999px;
 
 .tab-nav {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1.25fr) minmax(0, 0.85fr) minmax(0, 0.65fr);
     gap: 2px;
     background: $border-light;
     border-radius: $radius-md;
@@ -221,12 +221,13 @@ $radius-full: 9999px;
     display: inline;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
+    text-overflow: clip;
+    max-width: 100%;
 }
 
 .tab-btn--friends .tab-label {
     overflow: hidden;
-    text-overflow: ellipsis;
+    text-overflow: clip;
 }
 
 
